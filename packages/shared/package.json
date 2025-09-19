@@ -1,0 +1,11 @@
+{
+  "name": "@wallpaper/shared",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "scripts": {
+    "build": "tsc"
+  },
+  "version": "1.0.0",
+  "license": "MIT"
+}
