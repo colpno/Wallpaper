@@ -8,6 +8,8 @@
     "lint": "eslint --fix ."
   },
   "dependencies": {
+    "@asteasolutions/zod-to-openapi": "^8.1.0",
+    "@scalar/express-api-reference": "^0.8.19",
     "@types/supertest": "^6.0.3",
     "@wallpaper/shared": "^1.0.0",
     "cloudinary": "^2.7.0",
@@ -20,7 +22,8 @@
     "supertest": "^7.1.4",
     "tsx": "^4.20.5",
     "vitest": "^3.2.4",
-    "winston": "^3.17.0"
+    "winston": "^3.17.0",
+    "zod": "^4.1.11"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",
