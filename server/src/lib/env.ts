@@ -22,6 +22,10 @@ const envSchema = z.object({
   LOG_LEVEL: z
     .enum<LogLevel[]>(["error", "warn", "info", "http", "verbose", "debug", "silly"])
     .default("info"),
+  CLOUDINARY_FOLDER: z.string(),
+  CLOUDINARY_CLOUD_NAME: z.string(),
+  CLOUDINARY_API_KEY: z.string(),
+  CLOUDINARY_API_SECRET: z.string(),
 });
 
 let env: z.infer<typeof envSchema>;
