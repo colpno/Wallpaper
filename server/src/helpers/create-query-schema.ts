@@ -1,6 +1,5 @@
 import { Types } from "@wallpaper/shared";
 
-import { objectIdSchema } from "@/constants/schema.constants";
 import z from "@/lib/zod";
 import type { TSToZodObjectShape } from "@/types";
 
@@ -209,7 +208,7 @@ function flattenObject<O extends Record<string, unknown>>(
 export default function createQuerySchema<
   TObject extends Record<string, unknown> = Record<string, SchemaKey>,
   TDepth extends number = 5,
->(input: Input<TObject, TDepth>) {
+>(input: Input<TObject & { _id: "string" }, TDepth>) {
   type ShapeKey = keyof Shape<TObject, TDepth>;
   type ShapeValue = Shape<TObject, TDepth>[ShapeKey];
 
@@ -228,7 +227,6 @@ export default function createQuerySchema<
       or: z.array(z.object(shape).partial()),
       and: z.array(z.object(shape).partial()),
       nor: z.array(z.object(shape).partial()),
-      _id: objectIdSchema,
     })
     .partial();
 }

@@ -10,5 +10,6 @@ export { default as jsonContent } from "./json-content";
 export { default as openApiToExpressRoute } from "./open-api-to-express-route";
 export { default as queryWithOptions } from "./query-with-options";
 export { default as registerRoute } from "./register-route";
+export { default as urlToBlob } from "./url-to-blob";
 
 export { default as HttpError } from "./HttpError";
