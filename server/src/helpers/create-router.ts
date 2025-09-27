@@ -1,12 +1,60 @@
 import type { RouteConfig } from "@asteasolutions/zod-to-openapi";
 import { HttpStatusCodes } from "@wallpaper/shared";
 import { type RequestHandler, Router } from "express";
+import multer from "multer";
 
+import { fileSchema } from "@/constants/schema.constants";
 import { openApiToExpressRoute } from "@/helpers";
 import z from "@/lib/zod";
 import type { RouteRequestKeys } from "@/types";
 
 import createErrorObjectFromZod from "./create-error-object-from-zod";
+
+/**
+ * Creates file handling and validation middlewares
+ * using multer and zod based on the OpenAPI body schema.
+ * @param body The body schema from the OpenAPI route configuration.
+ * @returns An array of Express middlewares.
+ */
+
+const fileHandlingMiddlewares = <TConfig extends RouteConfig>(
+  body: NonNullable<TConfig["request"]>["body"]
+) => {
+  try {
+    const bodyShape: Record<string, z.ZodType> | undefined = (
+      body?.content["multipart/form-data"]?.schema as z.ZodObject | undefined
+    )?.shape;
+
+    if (!bodyShape) return [];
+
+    const allFileSchemasShape = Object.entries(bodyShape).filter(([_, schema]) => {
+      const s = (schema instanceof z.ZodArray ? schema.unwrap() : schema) as z.ZodType;
+      return s.safeParse({
+        fieldname: "test",
+        originalname: "test.jpg",
+        encoding: "7bit",
+        mimetype: "image/jpeg",
+        size: 1024,
+        buffer: Buffer.from([]),
+      } satisfies z.infer<typeof fileSchema>).success;
+    });
+
+    if (allFileSchemasShape.length === 0) return [];
+
+    const fileSchemaFields: multer.Field[] = allFileSchemasShape.map(([fieldName, _]) => ({
+      name: fieldName,
+    }));
+
+    const copyReqFilesToReqBody: RequestHandler = (req, _, next) => {
+      Object.assign(req.body ?? {}, req.files ?? {});
+      next();
+    };
+
+    return [multer().fields(fileSchemaFields), copyReqFilesToReqBody];
+  } catch (error) {
+    throw error;
+  }
+};
 
 /**
  * Middleware to validate incoming requests against the OpenAPI route configuration.
@@ -77,7 +125,12 @@ export default function createRouter() {
       try {
         const path = openApiToExpressRoute(routeConfig.path, (_, paramName) => `:${paramName}`);
 
-        router[routeConfig.method](path, requestValidator(routeConfig), ...handlers);
+        router[routeConfig.method](
+          path,
+          ...fileHandlingMiddlewares(routeConfig.request?.body),
+          requestValidator(routeConfig),
+          ...handlers
+        );
         return api;
       } catch (error) {
         throw error;
