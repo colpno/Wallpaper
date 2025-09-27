@@ -1,0 +1,12 @@
+{
+  "name": "wallpaper",
+  "private": true,
+  "scripts": {
+    "build": "npm run build -w @wallpaper/shared && npm run build -w client && npm run build -w server"
+  },
+  "workspaces": [
+    "packages/shared",
+    "server",
+    "client"
+  ]
+}
