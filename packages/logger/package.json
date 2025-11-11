@@ -1,0 +1,24 @@
+{
+  "name": "@repo/logger",
+  "version": "0.0.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "lint": "eslint src/",
+    "test": "vitest run",
+    "test:watch": "vitest --watch",
+    "test:coverage": "vitest --coverage",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "pino": "^10.0.0",
+    "pino-pretty": "^13.1.1"
+  },
+  "type": "module",
+  "private": true
+}

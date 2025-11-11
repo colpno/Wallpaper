@@ -1,0 +1,35 @@
+{
+  "name": "wallpaper",
+  "private": true,
+  "scripts": {
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "dev": "turbo run dev",
+    "build": "turbo run build",
+    "clean": "turbo run clean",
+    "lint": "turbo run lint",
+    "test": "turbo run test",
+    "test:watch": "vitest --watch",
+    "test:coverage": "turbo run test:coverage",
+    "check-types": "turbo run check-types"
+  },
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/prettier-config": "*",
+    "@repo/typescript-config": "*",
+    "@repo/vitest-config": "*",
+    "@types/node": "^24.6.2",
+    "eslint": "^9.33.0",
+    "prettier": "^3.6.0",
+    "turbo": "^2.5.8",
+    "typescript": "^5.9.3",
+    "vitest": "^3.2.4"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "packageManager": "npm@11.5.1",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ]
+}

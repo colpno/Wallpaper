@@ -1,0 +1,34 @@
+name: Checking
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22.x
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Check Code Style
+        run: npm run format
+
+      - name: Check Code Quality
+        run: npm run lint
+
+      - name: Build Project
+        run: npm run build
+
+      - name: Run Tests
+        run: npm test

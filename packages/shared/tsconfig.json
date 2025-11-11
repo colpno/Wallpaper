@@ -1,0 +1,8 @@
+{
+  "extends": "@repo/typescript-config",
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "include": ["src"]
+}
