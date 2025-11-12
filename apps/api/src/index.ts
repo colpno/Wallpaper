@@ -1,14 +1,15 @@
-import express from "express";
+import createApp from "./app";
+import env from "./env";
+import { errorHandler } from "./middlewares";
+import router from "./routes";
 
-const app = express();
+const app = createApp();
 
 app
-  .disable("x-powered-by")
-  .use("/", (_req, res) => {
-    res.send("Hello, World!");
-  })
-  .listen(3000, () => {
-    console.log(`Express server listening on port ${3000}`);
+  .use(router)
+  .use(errorHandler)
+  .listen(env.PORT, () => {
+    console.log(`Express server listening on port ${env.PORT}`);
   });
 
 export default app;
