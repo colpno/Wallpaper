@@ -2,6 +2,9 @@ import createApp from "./app";
 import env from "./env";
 import { errorHandler } from "./middlewares";
 import router from "./routes";
+import { connectDB } from "./services/mongo.service";
+
+connectDB();
 
 const app = createApp();
 

@@ -1,0 +1,18 @@
+name: wallpaper
+
+services:
+  mongodb:
+    container_name: mongodb
+
+    image: mongo:8
+
+    ports:
+      - "27017:27017"
+
+    volumes:
+      - mongodb-data:/data/db
+      - mongodb-config:/data/configdb
+
+volumes:
+  mongodb-data:
+  mongodb-config:
