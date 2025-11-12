@@ -4,6 +4,7 @@ import z from "./lib/zod";
 
 config({
   quiet: true,
+  path: process.env.NODE_ENV === "test" ? ".env.test" : ".env",
 });
 
 const envSchema = z
