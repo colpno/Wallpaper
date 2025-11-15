@@ -1,4 +1,4 @@
-import type { ErrorType } from "@/constants/schema.constants";
+import type { Error } from "@/constants/schema.constants";
 import type { ErrorRequestHandler } from "express";
 
 import { HttpStatusCodes } from "@repo/shared";
@@ -11,7 +11,7 @@ const errorHandler: ErrorRequestHandler = (err, _, res) => {
 
   const statusCode = err.statusCode || HttpStatusCodes.INTERNAL_SERVER_ERROR;
 
-  const error: ErrorType = {
+  const error: Error = {
     message: err.message,
   };
 
