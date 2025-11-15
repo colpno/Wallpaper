@@ -1,11 +1,12 @@
 import type { ZodObjectShapeMap } from "@/types";
 
+import { HttpStatusPhrases } from "@repo/shared";
 import { Types } from "mongoose";
 
+import { createMessageObjectSchema } from "@/helpers";
 import z from "@/lib/zod";
 
-export const errorSchema = z.object({
-  message: z.string(),
+export const errorSchema = createMessageObjectSchema().extend({
   stack: z
     .string()
     .optional()
@@ -28,6 +29,8 @@ export const validationErrorSchema = z
   )
   .openapi("ValidationError");
 export type ValidationError = z.infer<typeof validationErrorSchema>;
+
+export const notFoundSchema = createMessageObjectSchema(HttpStatusPhrases.NOT_FOUND);
 
 export const objectIdSchema = z
   .union([z.string(), z.instanceof(Types.ObjectId)])
