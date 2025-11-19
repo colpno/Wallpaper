@@ -1,3 +1,4 @@
 import { config } from "@repo/eslint-config/react";
+import { defineConfig, globalIgnores } from "eslint/config";
 
-export default config;
+export default defineConfig([...config, globalIgnores(["dist"])]);
