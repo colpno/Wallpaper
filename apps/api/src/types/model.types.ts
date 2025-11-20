@@ -14,4 +14,9 @@ export type User = {
   avatarCloudinaryId?: string;
 } & DefaultModelProps;
 
+export type ExpiredMedia = {
+  publicId: string;
+} & DefaultModelProps;
+
 export type UserKeys = keyof User;
+export type ExpiredMediaKeys = keyof ExpiredMedia;

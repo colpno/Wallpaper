@@ -4,11 +4,12 @@ import { Router } from "express";
 import env from "@/env";
 import serveAPIDocument from "@/lib/openapi";
 
+import mediaRouter from "./media/media.index";
 import userRouter from "./user/user.index";
 
 const router = Router();
 
-const routes: Router[] = [userRouter];
+const routes: Router[] = [mediaRouter, userRouter];
 
 router.use("/favicon.ico", (_, res) => res.status(HttpStatusCodes.OK));
 
