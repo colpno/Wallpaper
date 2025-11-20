@@ -10,9 +10,6 @@
     "build": "tsc",
     "dev": "tsc --watch",
     "lint": "eslint src/",
-    "test": "vitest run",
-    "test:watch": "vitest --watch",
-    "test:coverage": "vitest --coverage",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
@@ -23,7 +20,6 @@
     "@repo/eslint-config": "*",
     "@repo/prettier-config": "*",
     "@repo/typescript-config": "*",
-    "@repo/vitest-config": "*",
     "@types/node": "^24.6.2",
     "eslint": "^9.33.0",
     "typescript": "^5.9.3"

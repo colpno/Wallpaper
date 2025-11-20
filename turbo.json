@@ -20,12 +20,12 @@
     },
     "test": {
       "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/vitest.config.ts"],
-      "dependsOn": ["@repo/vitest-config#build"],
-      "outputs": ["coverage.json"]
+      "dependsOn": ["@repo/vitest-config#build"]
     },
     "test:coverage": {
       "with": ["test"],
-      "dependsOn": ["@repo/vitest-config#view-report"]
+      "dependsOn": ["@repo/vitest-config#view-report"],
+      "outputs": ["coverage.json"]
     }
   }
 }
