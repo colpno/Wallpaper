@@ -1,4 +1,4 @@
-import type { NormalizeFilterOperators } from "@/types";
+import type { NormalizeFilterOperators } from "@/types/query.types";
 
 import { Types } from "@repo/shared";
 import { type Filter } from "mongoose";

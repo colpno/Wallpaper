@@ -1,6 +1,6 @@
 import createApp from "./app";
 import env from "./env";
-import { errorHandler } from "./middlewares";
+import errorHandler from "./middlewares/error-handler.middleware";
 import router from "./routes";
 import { connectDB } from "./services/mongo.service";
 

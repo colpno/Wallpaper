@@ -1,4 +1,4 @@
-import type { ZodObjectShapeMap } from "@/types";
+import type { ZodObjectShapeMap } from "@/types/common.types";
 
 import { Types } from "@repo/shared";
 

@@ -1,11 +1,12 @@
 import type z from "@/lib/zod";
-import type { TypedRouteConfig } from "@/types";
+import type { TypedRouteConfig } from "@/types/route-handler.types";
 
 import { Router } from "express";
 import request, { Test } from "supertest";
 
 import createApp from "@/app";
-import { openApiToExpressRoute } from "@/helpers";
+
+import openApiToExpressRoute from "./open-api-to-express-route";
 
 type Method = "get" | "post" | "put" | "patch" | "delete";
 

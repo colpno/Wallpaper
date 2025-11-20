@@ -1,4 +1,4 @@
-import type { TypedRouteConfig } from "@/types";
+import type { TypedRouteConfig } from "@/types/route-handler.types";
 
 import { registry } from "@/lib/openapi";
 

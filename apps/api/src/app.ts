@@ -5,7 +5,7 @@ import morgan from "morgan";
 import { parse } from "qs";
 
 import env from "./env";
-import { cors } from "./middlewares";
+import cors from "./middlewares/cors.middleware";
 
 export default function createApp() {
   const app = express();

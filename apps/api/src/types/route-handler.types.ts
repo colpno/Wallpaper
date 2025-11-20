@@ -59,7 +59,7 @@ type TypedResponse<TConfig extends TypedRouteConfig> = {
       ? TypedResponseMethod<TSchema>
       : Omit<Response, "status" | keyof TypedResponseMethod<unknown>>
     : Omit<Response, "status">;
-};
+} & Omit<Response, "status">;
 
 /**
  * A typed version of the Express RequestHandler that

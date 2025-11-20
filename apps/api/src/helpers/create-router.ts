@@ -1,14 +1,14 @@
-import type { RouteHandler, TypedRouteConfig } from "@/types";
+import type { RouteHandler, TypedRouteConfig } from "@/types/route-handler.types";
 
 import { HttpStatusCodes } from "@repo/shared";
 import { type RequestHandler, Router } from "express";
 import multer from "multer";
 
 import { type File } from "@/constants/schema.constants";
-import { openApiToExpressRoute } from "@/helpers";
 import z from "@/lib/zod";
 
 import createErrorObjectFromZod from "./create-error-object-from-zod";
+import openApiToExpressRoute from "./open-api-to-express-route";
 
 /**
  * Creates file handling and validation middlewares

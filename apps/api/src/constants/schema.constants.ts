@@ -1,9 +1,9 @@
-import type { ZodObjectShapeMap } from "@/types";
+import type { ZodObjectShapeMap } from "@/types/common.types";
 
 import { HttpStatusPhrases } from "@repo/shared";
 import { Types } from "mongoose";
 
-import { createMessageObjectSchema } from "@/helpers";
+import createMessageObjectSchema from "@/helpers/create-message-object-schema";
 import z from "@/lib/zod";
 
 export const errorSchema = createMessageObjectSchema().extend({
@@ -43,7 +43,9 @@ export const fileSchema = z
     fieldname: z.string(),
     originalname: z.string(),
     encoding: z.string(),
-    mimetype: z.enum(["image/jpeg", "image/png", "image/gif"]),
+    mimetype: z.enum(["image/jpeg", "image/png", "image/webp", "image/gif"]).openapi({
+      description: "Allowed MIME types: image/jpeg, image/png, image/webp, image/gif",
+    }),
     size: z.number().max(5 * 1024 * 1024), // 5MB
     buffer: z.instanceof(Buffer).openapi({ type: "string", format: "binary" }),
   } satisfies ZodObjectShapeMap<

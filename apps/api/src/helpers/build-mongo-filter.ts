@@ -1,4 +1,5 @@
-import type { KnownKeys, NormalizeFilterOperators } from "@/types";
+import type { KnownKeys } from "@/types/common.types";
+import type { NormalizeFilterOperators } from "@/types/query.types";
 import type { Filter, QuerySelector, RootQuerySelector } from "mongoose";
 
 import { Types } from "@repo/shared";
