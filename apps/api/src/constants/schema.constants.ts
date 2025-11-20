@@ -1,7 +1,8 @@
 import type { ZodObjectShapeMap } from "@/types/common.types";
+import type { User } from "@/types/model.types";
 
 import { HttpStatusPhrases } from "@repo/shared";
-import { Types } from "mongoose";
+import { type ObjectIdToString, Types } from "mongoose";
 
 import createMessageObjectSchema from "@/helpers/create-message-object-schema";
 import z from "@/lib/zod";
@@ -53,3 +54,18 @@ export const fileSchema = z
   >)
   .openapi({ type: "string", format: "binary" });
 export type File = z.infer<typeof fileSchema>;
+
+export const userSchema = z
+  .object({
+    _id: objectIdSchema,
+    __v: z.number(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+    email: z.email(),
+    username: z.string(),
+    password: z.string().min(6),
+    salt: z.string(),
+    avatarUrl: z.string().optional(),
+    avatarCloudinaryId: z.string().optional(),
+  } satisfies ZodObjectShapeMap<ObjectIdToString<User>>)
+  .openapi("User");
