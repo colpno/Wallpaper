@@ -1,5 +1,5 @@
 import type { ZodObjectShapeMap } from "@/types/common.types";
-import type { User } from "@/types/model.types";
+import type { Comment, Post, User } from "@/types/model.types";
 
 import { HttpStatusPhrases } from "@repo/shared";
 import { type ObjectIdToString, Types } from "mongoose";
@@ -55,6 +55,28 @@ export const fileSchema = z
   .openapi({ type: "string", format: "binary" });
 export type File = z.infer<typeof fileSchema>;
 
+export const paginationMetaSchema = z
+  .object({
+    totalItems: z
+      .number()
+      .int()
+      .nonnegative()
+      .openapi({ description: "Total number of items available" }),
+    itemCount: z
+      .number()
+      .int()
+      .nonnegative()
+      .openapi({ description: "Number of items returned in the current response" }),
+    itemsPerPage: z
+      .number()
+      .int()
+      .nonnegative()
+      .openapi({ description: "Number of items per page" }),
+    totalPages: z.number().int().nonnegative().openapi({ description: "Total number of pages" }),
+    currentPage: z.number().int().nonnegative().openapi({ description: "Current page number" }),
+  })
+  .openapi("PaginationMeta");
+
 export const userSchema = z
   .object({
     _id: objectIdSchema,
@@ -69,3 +91,36 @@ export const userSchema = z
     avatarCloudinaryId: z.string().optional(),
   } satisfies ZodObjectShapeMap<ObjectIdToString<User>>)
   .openapi("User");
+
+export const postSchema = z
+  .object({
+    _id: objectIdSchema,
+    __v: z.number(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+    removedAt: z.date().optional(),
+    postTitle: z.string(),
+    postOwner: objectIdSchema,
+    postDescription: z.string().optional(),
+    photoCloudinaryId: z.string().optional(),
+    photoUrl: z.string(),
+    photoWidth: z.number().int(),
+    photoHeight: z.number().int(),
+    photoAspectRatio: z.number(),
+    photoDescription: z.string(),
+    photoBlurHash: z.string(),
+    descriptionEmbeddings: z.array(z.number()),
+  } satisfies ZodObjectShapeMap<ObjectIdToString<Post>>)
+  .openapi("Post");
+
+export const commentSchema = z
+  .object({
+    _id: objectIdSchema,
+    __v: z.number(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+    owner: objectIdSchema,
+    postId: objectIdSchema,
+    text: z.string().optional(),
+  } satisfies ZodObjectShapeMap<ObjectIdToString<Comment>>)
+  .openapi("Comment");
