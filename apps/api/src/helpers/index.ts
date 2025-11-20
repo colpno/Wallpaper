@@ -5,6 +5,7 @@ export { default as createMessageObjectSchema } from "./create-message-object-sc
 export { default as createQuerySchema } from "./create-query-schema";
 export { default as createRouter } from "./create-router";
 export { default as createTestClient } from "./create-test-client";
+export { default as fileToBase64 } from "./file-to-base64";
 export { default as HttpError } from "./HttpError";
 export { default as jsonContent } from "./json-content";
 export { default as multipartContent } from "./multipart-content";
