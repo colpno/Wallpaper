@@ -1,4 +1,4 @@
-import type { ViteUserConfig } from "vitest/config.js";
+import type { ViteUserConfig } from "vitest/config";
 
 export const sharedConfig: ViteUserConfig = {
   test: {

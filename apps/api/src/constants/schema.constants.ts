@@ -43,20 +43,11 @@ export const fileSchema = z
     fieldname: z.string(),
     originalname: z.string(),
     encoding: z.string(),
-    mimetype: z.enum([
-      "image/jpeg",
-      "image/png",
-      "image/gif",
-      "image/bmp",
-      "video/mp4",
-      "video/mov",
-      "video/x-m4v",
-      "video/quicktime",
-    ]),
+    mimetype: z.enum(["image/jpeg", "image/png", "image/gif"]),
     size: z.number().max(5 * 1024 * 1024), // 5MB
     buffer: z.instanceof(Buffer).openapi({ type: "string", format: "binary" }),
   } satisfies ZodObjectShapeMap<
     Omit<Express.Multer.File, "destination" | "filename" | "path" | "stream">
   >)
   .openapi({ type: "string", format: "binary" });
-export type FileType = z.infer<typeof fileSchema>;
+export type File = z.infer<typeof fileSchema>;

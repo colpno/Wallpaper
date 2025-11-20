@@ -4,7 +4,7 @@ import { HttpStatusCodes } from "@repo/shared";
 import { type RequestHandler, Router } from "express";
 import multer from "multer";
 
-import { type FileType } from "@/constants/schema.constants";
+import { type File } from "@/constants/schema.constants";
 import { openApiToExpressRoute } from "@/helpers";
 import z from "@/lib/zod";
 
@@ -25,7 +25,7 @@ function fileHandling<TConfig extends TypedRouteConfig>(
 
   if (!bodyShape) return [];
 
-  const sampleImageFile: FileType = {
+  const sampleImageFile: File = {
     fieldname: "test",
     originalname: "test.jpg",
     encoding: "7bit",
