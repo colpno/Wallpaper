@@ -29,7 +29,7 @@ function DrawerOverlay({
     <DrawerPrimitive.Overlay
       data-slot="drawer-overlay"
       className={cn(
-        "ui:data-[state=open]:animate-in ui:data-[state=closed]:animate-out ui:data-[state=closed]:fade-out-0 ui:data-[state=open]:fade-in-0 ui:fixed ui:inset-0 ui:z-50 ui:bg-black/50",
+        "ui:fixed ui:inset-0 ui:z-50 ui:bg-black/50 ui:data-[state=closed]:animate-out ui:data-[state=closed]:fade-out-0 ui:data-[state=open]:animate-in ui:data-[state=open]:fade-in-0",
         className
       )}
       {...props}
@@ -48,7 +48,7 @@ function DrawerContent({
       <DrawerPrimitive.Content
         data-slot="drawer-content"
         className={cn(
-          "ui:group/drawer-content ui:bg-background ui:fixed ui:z-50 ui:flex ui:h-auto ui:flex-col",
+          "ui:group/drawer-content ui:fixed ui:z-50 ui:flex ui:h-auto ui:flex-col ui:bg-background",
           "ui:data-[vaul-drawer-direction=top]:inset-x-0 ui:data-[vaul-drawer-direction=top]:top-0 ui:data-[vaul-drawer-direction=top]:mb-24 ui:data-[vaul-drawer-direction=top]:max-h-[80vh] ui:data-[vaul-drawer-direction=top]:rounded-b-lg ui:data-[vaul-drawer-direction=top]:border-b",
           "ui:data-[vaul-drawer-direction=bottom]:inset-x-0 ui:data-[vaul-drawer-direction=bottom]:bottom-0 ui:data-[vaul-drawer-direction=bottom]:mt-24 ui:data-[vaul-drawer-direction=bottom]:max-h-[80vh] ui:data-[vaul-drawer-direction=bottom]:rounded-t-lg ui:data-[vaul-drawer-direction=bottom]:border-t",
           "ui:data-[vaul-drawer-direction=right]:inset-y-0 ui:data-[vaul-drawer-direction=right]:right-0 ui:data-[vaul-drawer-direction=right]:w-3/4 ui:data-[vaul-drawer-direction=right]:border-l ui:data-[vaul-drawer-direction=right]:sm:max-w-sm",
@@ -57,7 +57,7 @@ function DrawerContent({
         )}
         {...props}
       >
-        <div className="ui:bg-muted ui:mx-auto ui:mt-4 ui:hidden ui:h-2 ui:w-[100px] ui:shrink-0 ui:rounded-full ui:group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
+        <div className="ui:mx-auto ui:mt-4 ui:hidden ui:h-2 ui:w-[100px] ui:shrink-0 ui:rounded-full ui:bg-muted ui:group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
         {children}
       </DrawerPrimitive.Content>
     </DrawerPortal>
@@ -91,7 +91,7 @@ function DrawerTitle({ className, ...props }: React.ComponentProps<typeof Drawer
   return (
     <DrawerPrimitive.Title
       data-slot="drawer-title"
-      className={cn("ui:text-foreground ui:font-semibold", className)}
+      className={cn("ui:font-semibold ui:text-foreground", className)}
       {...props}
     />
   );
@@ -104,7 +104,7 @@ function DrawerDescription({
   return (
     <DrawerPrimitive.Description
       data-slot="drawer-description"
-      className={cn("ui:text-muted-foreground ui:text-sm", className)}
+      className={cn("ui:text-sm ui:text-muted-foreground", className)}
       {...props}
     />
   );

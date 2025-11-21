@@ -28,7 +28,7 @@ function SheetOverlay({
     <SheetPrimitive.Overlay
       data-slot="sheet-overlay"
       className={cn(
-        "ui:data-[state=open]:animate-in ui:data-[state=closed]:animate-out ui:data-[state=closed]:fade-out-0 ui:data-[state=open]:fade-in-0 ui:fixed ui:inset-0 ui:z-50 ui:bg-black/50",
+        "ui:fixed ui:inset-0 ui:z-50 ui:bg-black/50 ui:data-[state=closed]:animate-out ui:data-[state=closed]:fade-out-0 ui:data-[state=open]:animate-in ui:data-[state=open]:fade-in-0",
         className
       )}
       {...props}
@@ -50,21 +50,21 @@ function SheetContent({
       <SheetPrimitive.Content
         data-slot="sheet-content"
         className={cn(
-          "ui:bg-background ui:data-[state=open]:animate-in ui:data-[state=closed]:animate-out ui:fixed ui:z-50 ui:flex ui:flex-col ui:gap-4 ui:shadow-lg ui:transition ui:ease-in-out ui:data-[state=closed]:duration-300 ui:data-[state=open]:duration-500",
+          "ui:fixed ui:z-50 ui:flex ui:flex-col ui:gap-4 ui:bg-background ui:shadow-lg ui:transition ui:ease-in-out ui:data-[state=closed]:animate-out ui:data-[state=closed]:duration-300 ui:data-[state=open]:animate-in ui:data-[state=open]:duration-500",
           side === "right" &&
-            "ui:data-[state=closed]:slide-out-to-right ui:data-[state=open]:slide-in-from-right ui:inset-y-0 ui:right-0 ui:h-full ui:w-3/4 ui:border-l ui:sm:max-w-sm",
+            "ui:inset-y-0 ui:right-0 ui:h-full ui:w-3/4 ui:border-l ui:data-[state=closed]:slide-out-to-right ui:data-[state=open]:slide-in-from-right ui:sm:max-w-sm",
           side === "left" &&
-            "ui:data-[state=closed]:slide-out-to-left ui:data-[state=open]:slide-in-from-left ui:inset-y-0 ui:left-0 ui:h-full ui:w-3/4 ui:border-r ui:sm:max-w-sm",
+            "ui:inset-y-0 ui:left-0 ui:h-full ui:w-3/4 ui:border-r ui:data-[state=closed]:slide-out-to-left ui:data-[state=open]:slide-in-from-left ui:sm:max-w-sm",
           side === "top" &&
-            "ui:data-[state=closed]:slide-out-to-top ui:data-[state=open]:slide-in-from-top ui:inset-x-0 ui:top-0 ui:h-auto ui:border-b",
+            "ui:inset-x-0 ui:top-0 ui:h-auto ui:border-b ui:data-[state=closed]:slide-out-to-top ui:data-[state=open]:slide-in-from-top",
           side === "bottom" &&
-            "ui:data-[state=closed]:slide-out-to-bottom ui:data-[state=open]:slide-in-from-bottom ui:inset-x-0 ui:bottom-0 ui:h-auto ui:border-t",
+            "ui:inset-x-0 ui:bottom-0 ui:h-auto ui:border-t ui:data-[state=closed]:slide-out-to-bottom ui:data-[state=open]:slide-in-from-bottom",
           className
         )}
         {...props}
       >
         {children}
-        <SheetPrimitive.Close className="ui:ring-offset-background ui:focus:ring-ring ui:data-[state=open]:bg-secondary ui:absolute ui:top-4 ui:right-4 ui:rounded-xs ui:opacity-70 ui:transition-opacity ui:hover:opacity-100 ui:focus:ring-2 ui:focus:ring-offset-2 ui:focus:outline-hidden ui:disabled:pointer-events-none">
+        <SheetPrimitive.Close className="ui:absolute ui:top-4 ui:right-4 ui:rounded-xs ui:opacity-70 ui:ring-offset-background ui:transition-opacity ui:hover:opacity-100 ui:focus:ring-2 ui:focus:ring-ring ui:focus:ring-offset-2 ui:focus:outline-hidden ui:disabled:pointer-events-none ui:data-[state=open]:bg-secondary">
           <XIcon className="ui:size-4" />
           <span className="ui:sr-only">Close</span>
         </SheetPrimitive.Close>
@@ -97,7 +97,7 @@ function SheetTitle({ className, ...props }: React.ComponentProps<typeof SheetPr
   return (
     <SheetPrimitive.Title
       data-slot="sheet-title"
-      className={cn("ui:text-foreground ui:font-semibold", className)}
+      className={cn("ui:font-semibold ui:text-foreground", className)}
       {...props}
     />
   );
@@ -110,7 +110,7 @@ function SheetDescription({
   return (
     <SheetPrimitive.Description
       data-slot="sheet-description"
-      className={cn("ui:text-muted-foreground ui:text-sm", className)}
+      className={cn("ui:text-sm ui:text-muted-foreground", className)}
       {...props}
     />
   );

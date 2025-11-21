@@ -90,8 +90,8 @@ function NavigationMenuContent({
     <NavigationMenuPrimitive.Content
       data-slot="navigation-menu-content"
       className={cn(
-        "ui:data-[motion^=from-]:animate-in ui:data-[motion^=to-]:animate-out ui:data-[motion^=from-]:fade-in ui:data-[motion^=to-]:fade-out ui:data-[motion=from-end]:slide-in-from-right-52 ui:data-[motion=from-start]:slide-in-from-left-52 ui:data-[motion=to-end]:slide-out-to-right-52 ui:data-[motion=to-start]:slide-out-to-left-52 ui:top-0 ui:left-0 ui:w-full ui:p-2 ui:pr-2.5 ui:md:absolute ui:md:w-auto",
-        "ui:group-data-[viewport=false]/navigation-menu:bg-popover ui:group-data-[viewport=false]/navigation-menu:text-popover-foreground ui:group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in ui:group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out ui:group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 ui:group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95 ui:group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 ui:group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 ui:group-data-[viewport=false]/navigation-menu:top-full ui:group-data-[viewport=false]/navigation-menu:mt-1.5 ui:group-data-[viewport=false]/navigation-menu:overflow-hidden ui:group-data-[viewport=false]/navigation-menu:rounded-md ui:group-data-[viewport=false]/navigation-menu:border ui:group-data-[viewport=false]/navigation-menu:shadow ui:group-data-[viewport=false]/navigation-menu:duration-200 ui:**:data-[slot=navigation-menu-link]:focus:ring-0 ui:**:data-[slot=navigation-menu-link]:focus:outline-none",
+        "ui:top-0 ui:left-0 ui:w-full ui:p-2 ui:pr-2.5 ui:data-[motion=from-end]:slide-in-from-right-52 ui:data-[motion=from-start]:slide-in-from-left-52 ui:data-[motion=to-end]:slide-out-to-right-52 ui:data-[motion=to-start]:slide-out-to-left-52 ui:data-[motion^=from-]:animate-in ui:data-[motion^=from-]:fade-in ui:data-[motion^=to-]:animate-out ui:data-[motion^=to-]:fade-out ui:md:absolute ui:md:w-auto",
+        "ui:group-data-[viewport=false]/navigation-menu:top-full ui:group-data-[viewport=false]/navigation-menu:mt-1.5 ui:group-data-[viewport=false]/navigation-menu:overflow-hidden ui:group-data-[viewport=false]/navigation-menu:rounded-md ui:group-data-[viewport=false]/navigation-menu:border ui:group-data-[viewport=false]/navigation-menu:bg-popover ui:group-data-[viewport=false]/navigation-menu:text-popover-foreground ui:group-data-[viewport=false]/navigation-menu:shadow ui:group-data-[viewport=false]/navigation-menu:duration-200 ui:**:data-[slot=navigation-menu-link]:focus:ring-0 ui:**:data-[slot=navigation-menu-link]:focus:outline-none ui:group-data-[viewport=false]/navigation-menu:data-[state=closed]:animate-out ui:group-data-[viewport=false]/navigation-menu:data-[state=closed]:fade-out-0 ui:group-data-[viewport=false]/navigation-menu:data-[state=closed]:zoom-out-95 ui:group-data-[viewport=false]/navigation-menu:data-[state=open]:animate-in ui:group-data-[viewport=false]/navigation-menu:data-[state=open]:fade-in-0 ui:group-data-[viewport=false]/navigation-menu:data-[state=open]:zoom-in-95",
         className
       )}
       {...props}
@@ -112,7 +112,7 @@ function NavigationMenuViewport({
       <NavigationMenuPrimitive.Viewport
         data-slot="navigation-menu-viewport"
         className={cn(
-          "ui:origin-top-center ui:bg-popover ui:text-popover-foreground ui:data-[state=open]:animate-in ui:data-[state=closed]:animate-out ui:data-[state=closed]:zoom-out-95 ui:data-[state=open]:zoom-in-90 ui:relative ui:mt-1.5 ui:h-[var(--radix-navigation-menu-viewport-height)] ui:w-full ui:overflow-hidden ui:rounded-md ui:border ui:shadow ui:md:w-[var(--radix-navigation-menu-viewport-width)]",
+          "ui:origin-top-center ui:relative ui:mt-1.5 ui:h-[var(--radix-navigation-menu-viewport-height)] ui:w-full ui:overflow-hidden ui:rounded-md ui:border ui:bg-popover ui:text-popover-foreground ui:shadow ui:data-[state=closed]:animate-out ui:data-[state=closed]:zoom-out-95 ui:data-[state=open]:animate-in ui:data-[state=open]:zoom-in-90 ui:md:w-[var(--radix-navigation-menu-viewport-width)]",
           className
         )}
         {...props}
@@ -129,7 +129,7 @@ function NavigationMenuLink({
     <NavigationMenuPrimitive.Link
       data-slot="navigation-menu-link"
       className={cn(
-        "ui:data-[active=true]:focus:bg-accent ui:data-[active=true]:hover:bg-accent ui:data-[active=true]:bg-accent/50 ui:data-[active=true]:text-accent-foreground ui:hover:bg-accent ui:hover:text-accent-foreground ui:focus:bg-accent ui:focus:text-accent-foreground ui:focus-visible:ring-ring/50 ui:[&_svg:not([class*=text-])]:text-muted-foreground ui:flex ui:flex-col ui:gap-1 ui:rounded-sm ui:p-2 ui:text-sm ui:transition-all ui:outline-none ui:focus-visible:ring-[3px] ui:focus-visible:outline-1 ui:[&_svg:not([class*=size-])]:size-4",
+        "ui:flex ui:flex-col ui:gap-1 ui:rounded-sm ui:p-2 ui:text-sm ui:transition-all ui:outline-none ui:hover:bg-accent ui:hover:text-accent-foreground ui:focus:bg-accent ui:focus:text-accent-foreground ui:focus-visible:ring-[3px] ui:focus-visible:ring-ring/50 ui:focus-visible:outline-1 ui:data-[active=true]:bg-accent/50 ui:data-[active=true]:text-accent-foreground ui:data-[active=true]:hover:bg-accent ui:data-[active=true]:focus:bg-accent ui:[&_svg:not([class*=size-])]:size-4 ui:[&_svg:not([class*=text-])]:text-muted-foreground",
         className
       )}
       {...props}
@@ -145,12 +145,12 @@ function NavigationMenuIndicator({
     <NavigationMenuPrimitive.Indicator
       data-slot="navigation-menu-indicator"
       className={cn(
-        "ui:data-[state=visible]:animate-in ui:data-[state=hidden]:animate-out ui:data-[state=hidden]:fade-out ui:data-[state=visible]:fade-in ui:top-full ui:z-[1] ui:flex ui:h-1.5 ui:items-end ui:justify-center ui:overflow-hidden",
+        "ui:top-full ui:z-[1] ui:flex ui:h-1.5 ui:items-end ui:justify-center ui:overflow-hidden ui:data-[state=hidden]:animate-out ui:data-[state=hidden]:fade-out ui:data-[state=visible]:animate-in ui:data-[state=visible]:fade-in",
         className
       )}
       {...props}
     >
-      <div className="ui:bg-border ui:relative ui:top-[60%] ui:h-2 ui:w-2 ui:rotate-45 ui:rounded-tl-sm ui:shadow-md" />
+      <div className="ui:relative ui:top-[60%] ui:h-2 ui:w-2 ui:rotate-45 ui:rounded-tl-sm ui:bg-border ui:shadow-md" />
     </NavigationMenuPrimitive.Indicator>
   );
 }

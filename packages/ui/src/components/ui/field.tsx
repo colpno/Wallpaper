@@ -112,7 +112,7 @@ function FieldLabel({ className, ...props }: React.ComponentProps<typeof Label>)
       className={cn(
         "ui:group/field-label ui:peer/field-label ui:flex ui:w-fit ui:gap-2 ui:leading-snug ui:group-data-[disabled=true]/field:opacity-50",
         "ui:has-[>[data-slot=field]]:w-full ui:has-[>[data-slot=field]]:flex-col ui:has-[>[data-slot=field]]:rounded-md ui:has-[>[data-slot=field]]:border ui:[&>*]:data-[slot=field]:p-4",
-        "ui:has-data-[state=checked]:bg-primary/5 ui:has-data-[state=checked]:border-primary ui:dark:has-data-[state=checked]:bg-primary/10",
+        "ui:has-data-[state=checked]:border-primary ui:has-data-[state=checked]:bg-primary/5 ui:dark:has-data-[state=checked]:bg-primary/10",
         className
       )}
       {...props}
@@ -138,9 +138,9 @@ function FieldDescription({ className, ...props }: React.ComponentProps<"p">) {
     <p
       data-slot="field-description"
       className={cn(
-        "ui:text-muted-foreground ui:text-sm ui:leading-normal ui:font-normal ui:group-has-[[data-orientation=horizontal]]/field:text-balance",
+        "ui:text-sm ui:leading-normal ui:font-normal ui:text-muted-foreground ui:group-has-[[data-orientation=horizontal]]/field:text-balance",
         "ui:last:mt-0 ui:nth-last-2:-mt-1 ui:[[data-variant=legend]+&]:-mt-1.5",
-        "ui:[&>a:hover]:text-primary ui:[&>a]:underline ui:[&>a]:underline-offset-4",
+        "ui:[&>a]:underline ui:[&>a]:underline-offset-4 ui:[&>a:hover]:text-primary",
         className
       )}
       {...props}
@@ -168,7 +168,7 @@ function FieldSeparator({
       <Separator className="ui:absolute ui:inset-0 ui:top-1/2" />
       {children && (
         <span
-          className="ui:bg-background ui:text-muted-foreground ui:relative ui:mx-auto ui:block ui:w-fit ui:px-2"
+          className="ui:relative ui:mx-auto ui:block ui:w-fit ui:bg-background ui:px-2 ui:text-muted-foreground"
           data-slot="field-separator-content"
         >
           {children}
@@ -216,7 +216,7 @@ function FieldError({
     <div
       role="alert"
       data-slot="field-error"
-      className={cn("ui:text-destructive ui:text-sm ui:font-normal", className)}
+      className={cn("ui:text-sm ui:font-normal ui:text-destructive", className)}
       {...props}
     >
       {content}

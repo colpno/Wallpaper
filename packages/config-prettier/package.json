@@ -4,6 +4,9 @@
   "exports": {
     ".": "./index.js"
   },
+  "devDependencies": {
+    "prettier-plugin-tailwindcss": "^0.7.1"
+  },
   "type": "module",
   "private": true
 }

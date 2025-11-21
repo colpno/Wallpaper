@@ -35,7 +35,7 @@ function TableFooter({ className, ...props }: React.ComponentProps<"tfoot">) {
     <tfoot
       data-slot="table-footer"
       className={cn(
-        "ui:bg-muted/50 ui:border-t ui:font-medium ui:[&>tr]:last:border-b-0",
+        "ui:border-t ui:bg-muted/50 ui:font-medium ui:[&>tr]:last:border-b-0",
         className
       )}
       {...props}
@@ -48,7 +48,7 @@ function TableRow({ className, ...props }: React.ComponentProps<"tr">) {
     <tr
       data-slot="table-row"
       className={cn(
-        "ui:hover:bg-muted/50 ui:data-[state=selected]:bg-muted ui:border-b ui:transition-colors",
+        "ui:border-b ui:transition-colors ui:hover:bg-muted/50 ui:data-[state=selected]:bg-muted",
         className
       )}
       {...props}
@@ -61,7 +61,7 @@ function TableHead({ className, ...props }: React.ComponentProps<"th">) {
     <th
       data-slot="table-head"
       className={cn(
-        "ui:text-foreground ui:h-10 ui:px-2 ui:text-left ui:align-middle ui:font-medium ui:whitespace-nowrap ui:[&:has([role=checkbox])]:pr-0 ui:[&>[role=checkbox]]:translate-y-[2px]",
+        "ui:h-10 ui:px-2 ui:text-left ui:align-middle ui:font-medium ui:whitespace-nowrap ui:text-foreground ui:[&:has([role=checkbox])]:pr-0 ui:[&>[role=checkbox]]:translate-y-[2px]",
         className
       )}
       {...props}
@@ -86,7 +86,7 @@ function TableCaption({ className, ...props }: React.ComponentProps<"caption">) 
   return (
     <caption
       data-slot="table-caption"
-      className={cn("ui:text-muted-foreground ui:mt-4 ui:text-sm", className)}
+      className={cn("ui:mt-4 ui:text-sm ui:text-muted-foreground", className)}
       {...props}
     />
   );

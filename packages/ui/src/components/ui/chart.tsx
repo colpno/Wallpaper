@@ -53,7 +53,7 @@ function ChartContainer({
         data-slot="chart"
         data-chart={chartId}
         className={cn(
-          "ui:[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground ui:[&_.recharts-cartesian-grid_line[stroke=#ccc]]:stroke-border/50 ui:[&_.recharts-curve.recharts-tooltip-cursor]:stroke-border ui:[&_.recharts-polar-grid_[stroke=#ccc]]:stroke-border ui:[&_.recharts-radial-bar-background-sector]:fill-muted ui:[&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted ui:[&_.recharts-reference-line_[stroke=#ccc]]:stroke-border ui:flex ui:aspect-video ui:justify-center ui:text-xs ui:[&_.recharts-dot[stroke=#fff]]:stroke-transparent ui:[&_.recharts-layer]:outline-hidden ui:[&_.recharts-sector]:outline-hidden ui:[&_.recharts-sector[stroke=#fff]]:stroke-transparent ui:[&_.recharts-surface]:outline-hidden",
+          "ui:flex ui:aspect-video ui:justify-center ui:text-xs ui:[&_.recharts-cartesian-axis-tick_text]:fill-muted-foreground ui:[&_.recharts-cartesian-grid_line[stroke=#ccc]]:stroke-border/50 ui:[&_.recharts-curve.recharts-tooltip-cursor]:stroke-border ui:[&_.recharts-dot[stroke=#fff]]:stroke-transparent ui:[&_.recharts-layer]:outline-hidden ui:[&_.recharts-polar-grid_[stroke=#ccc]]:stroke-border ui:[&_.recharts-radial-bar-background-sector]:fill-muted ui:[&_.recharts-rectangle.recharts-tooltip-cursor]:fill-muted ui:[&_.recharts-reference-line_[stroke=#ccc]]:stroke-border ui:[&_.recharts-sector]:outline-hidden ui:[&_.recharts-sector[stroke=#fff]]:stroke-transparent ui:[&_.recharts-surface]:outline-hidden",
           className
         )}
         {...props}
@@ -155,7 +155,7 @@ function ChartTooltipContent({
   return (
     <div
       className={cn(
-        "ui:border-border/50 ui:bg-background ui:grid ui:min-w-[8rem] ui:items-start ui:gap-1.5 ui:rounded-lg ui:border ui:px-2.5 ui:py-1.5 ui:text-xs ui:shadow-xl",
+        "ui:grid ui:min-w-[8rem] ui:items-start ui:gap-1.5 ui:rounded-lg ui:border ui:border-border/50 ui:bg-background ui:px-2.5 ui:py-1.5 ui:text-xs ui:shadow-xl",
         className
       )}
     >
@@ -172,7 +172,7 @@ function ChartTooltipContent({
               <div
                 key={item.dataKey}
                 className={cn(
-                  "ui:[&>svg]:text-muted-foreground ui:flex ui:w-full ui:flex-wrap ui:items-stretch ui:gap-2 ui:[&>svg]:h-2.5 ui:[&>svg]:w-2.5",
+                  "ui:flex ui:w-full ui:flex-wrap ui:items-stretch ui:gap-2 ui:[&>svg]:h-2.5 ui:[&>svg]:w-2.5 ui:[&>svg]:text-muted-foreground",
                   indicator === "dot" && "ui:items-center"
                 )}
               >
@@ -217,7 +217,7 @@ function ChartTooltipContent({
                         </span>
                       </div>
                       {item.value && (
-                        <span className="ui:text-foreground ui:font-mono ui:font-medium ui:tabular-nums">
+                        <span className="ui:font-mono ui:font-medium ui:text-foreground ui:tabular-nums">
                           {item.value.toLocaleString()}
                         </span>
                       )}
@@ -269,7 +269,7 @@ function ChartLegendContent({
             <div
               key={item.value}
               className={cn(
-                "ui:[&>svg]:text-muted-foreground ui:flex ui:items-center ui:gap-1.5 ui:[&>svg]:h-3 ui:[&>svg]:w-3"
+                "ui:flex ui:items-center ui:gap-1.5 ui:[&>svg]:h-3 ui:[&>svg]:w-3 ui:[&>svg]:text-muted-foreground"
               )}
             >
               {itemConfig?.icon && !hideIcon ? (

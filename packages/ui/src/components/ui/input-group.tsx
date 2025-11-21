@@ -14,7 +14,7 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="input-group"
       role="group"
       className={cn(
-        "ui:group/input-group ui:border-input ui:dark:bg-input/30 ui:relative ui:flex ui:w-full ui:items-center ui:rounded-md ui:border ui:shadow-xs ui:transition-[color,box-shadow] ui:outline-none",
+        "ui:group/input-group ui:relative ui:flex ui:w-full ui:items-center ui:rounded-md ui:border ui:border-input ui:shadow-xs ui:transition-[color,box-shadow] ui:outline-none ui:dark:bg-input/30",
         "ui:h-9 ui:min-w-0 ui:has-[>textarea]:h-auto",
 
         // Variants based on alignment.
@@ -24,10 +24,10 @@ function InputGroup({ className, ...props }: React.ComponentProps<"div">) {
         "ui:has-[>[data-align=block-end]]:h-auto ui:has-[>[data-align=block-end]]:flex-col ui:has-[>[data-align=block-end]]:[&>input]:pt-3",
 
         // Focus state.
-        "ui:has-[[data-slot=input-group-control]:focus-visible]:border-ring ui:has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50 ui:has-[[data-slot=input-group-control]:focus-visible]:ring-[3px]",
+        "ui:has-[[data-slot=input-group-control]:focus-visible]:border-ring ui:has-[[data-slot=input-group-control]:focus-visible]:ring-[3px] ui:has-[[data-slot=input-group-control]:focus-visible]:ring-ring/50",
 
         // Error state.
-        "ui:has-[[data-slot][aria-invalid=true]]:ring-destructive/20 ui:has-[[data-slot][aria-invalid=true]]:border-destructive ui:dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40",
+        "ui:has-[[data-slot][aria-invalid=true]]:border-destructive ui:has-[[data-slot][aria-invalid=true]]:ring-destructive/20 ui:dark:has-[[data-slot][aria-invalid=true]]:ring-destructive/40",
 
         className
       )}
@@ -116,7 +116,7 @@ function InputGroupText({ className, ...props }: React.ComponentProps<"span">) {
   return (
     <span
       className={cn(
-        "ui:text-muted-foreground ui:flex ui:items-center ui:gap-2 ui:text-sm ui:[&_svg]:pointer-events-none ui:[&_svg:not([class*=size-])]:size-4",
+        "ui:flex ui:items-center ui:gap-2 ui:text-sm ui:text-muted-foreground ui:[&_svg]:pointer-events-none ui:[&_svg:not([class*=size-])]:size-4",
         className
       )}
       {...props}

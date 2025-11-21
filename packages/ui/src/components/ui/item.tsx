@@ -130,8 +130,8 @@ function ItemDescription({ className, ...props }: React.ComponentProps<"p">) {
     <p
       data-slot="item-description"
       className={cn(
-        "ui:text-muted-foreground ui:line-clamp-2 ui:text-sm ui:leading-normal ui:font-normal ui:text-balance",
-        "ui:[&>a:hover]:text-primary ui:[&>a]:underline ui:[&>a]:underline-offset-4",
+        "ui:line-clamp-2 ui:text-sm ui:leading-normal ui:font-normal ui:text-balance ui:text-muted-foreground",
+        "ui:[&>a]:underline ui:[&>a]:underline-offset-4 ui:[&>a:hover]:text-primary",
         className
       )}
       {...props}

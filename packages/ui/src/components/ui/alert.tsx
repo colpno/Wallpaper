@@ -52,7 +52,7 @@ function AlertDescription({ className, ...props }: React.ComponentProps<"div">) 
     <div
       data-slot="alert-description"
       className={cn(
-        "ui:text-muted-foreground ui:col-start-2 ui:grid ui:justify-items-start ui:gap-1 ui:text-sm ui:[&_p]:leading-relaxed",
+        "ui:col-start-2 ui:grid ui:justify-items-start ui:gap-1 ui:text-sm ui:text-muted-foreground ui:[&_p]:leading-relaxed",
         className
       )}
       {...props}

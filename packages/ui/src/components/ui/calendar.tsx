@@ -26,7 +26,7 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn(
-        "ui:bg-background ui:group/calendar ui:p-3 ui:[--cell-size:--spacing(8)] ui:[[data-slot=card-content]_&]:bg-transparent ui:[[data-slot=popover-content]_&]:bg-transparent",
+        "ui:group/calendar ui:bg-background ui:p-3 ui:[--cell-size:--spacing(8)] ui:[[data-slot=card-content]_&]:bg-transparent ui:[[data-slot=popover-content]_&]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         className
@@ -178,7 +178,7 @@ function CalendarDayButton({
       data-range-end={modifiers.range_end}
       data-range-middle={modifiers.range_middle}
       className={cn(
-        "ui:data-[selected-single=true]:bg-primary ui:data-[selected-single=true]:text-primary-foreground ui:data-[range-middle=true]:bg-accent ui:data-[range-middle=true]:text-accent-foreground ui:data-[range-start=true]:bg-primary ui:data-[range-start=true]:text-primary-foreground ui:data-[range-end=true]:bg-primary ui:data-[range-end=true]:text-primary-foreground ui:group-data-[focused=true]/day:border-ring ui:group-data-[focused=true]/day:ring-ring/50 ui:dark:hover:text-accent-foreground ui:flex ui:aspect-square ui:size-auto ui:w-full ui:min-w-(--cell-size) ui:flex-col ui:gap-1 ui:leading-none ui:font-normal ui:group-data-[focused=true]/day:relative ui:group-data-[focused=true]/day:z-10 ui:group-data-[focused=true]/day:ring-[3px] ui:data-[range-end=true]:rounded-md ui:data-[range-end=true]:rounded-r-md ui:data-[range-middle=true]:rounded-none ui:data-[range-start=true]:rounded-md ui:data-[range-start=true]:rounded-l-md ui:[&>span]:text-xs ui:[&>span]:opacity-70",
+        "ui:flex ui:aspect-square ui:size-auto ui:w-full ui:min-w-(--cell-size) ui:flex-col ui:gap-1 ui:leading-none ui:font-normal ui:group-data-[focused=true]/day:relative ui:group-data-[focused=true]/day:z-10 ui:group-data-[focused=true]/day:border-ring ui:group-data-[focused=true]/day:ring-[3px] ui:group-data-[focused=true]/day:ring-ring/50 ui:data-[range-end=true]:rounded-md ui:data-[range-end=true]:rounded-r-md ui:data-[range-end=true]:bg-primary ui:data-[range-end=true]:text-primary-foreground ui:data-[range-middle=true]:rounded-none ui:data-[range-middle=true]:bg-accent ui:data-[range-middle=true]:text-accent-foreground ui:data-[range-start=true]:rounded-md ui:data-[range-start=true]:rounded-l-md ui:data-[range-start=true]:bg-primary ui:data-[range-start=true]:text-primary-foreground ui:data-[selected-single=true]:bg-primary ui:data-[selected-single=true]:text-primary-foreground ui:dark:hover:text-accent-foreground ui:[&>span]:text-xs ui:[&>span]:opacity-70",
         defaultClassNames.day,
         className
       )}

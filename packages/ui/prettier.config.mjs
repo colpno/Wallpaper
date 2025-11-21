@@ -1,3 +1,7 @@
 import { config } from "@repo/prettier-config";
 
-export default config;
+/** @type {import('prettier').Config & import('prettier-plugin-tailwindcss').PluginOptions} */
+export default {
+  ...config,
+  tailwindStylesheet: "./src/styles.css",
+};

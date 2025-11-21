@@ -46,7 +46,7 @@ function InputOTPSlot({
       data-slot="input-otp-slot"
       data-active={isActive}
       className={cn(
-        "ui:data-[active=true]:border-ring ui:data-[active=true]:ring-ring/50 ui:data-[active=true]:aria-invalid:ring-destructive/20 ui:dark:data-[active=true]:aria-invalid:ring-destructive/40 ui:aria-invalid:border-destructive ui:data-[active=true]:aria-invalid:border-destructive ui:dark:bg-input/30 ui:border-input ui:relative ui:flex ui:h-9 ui:w-9 ui:items-center ui:justify-center ui:border-y ui:border-r ui:text-sm ui:shadow-xs ui:transition-all ui:outline-none ui:first:rounded-l-md ui:first:border-l ui:last:rounded-r-md ui:data-[active=true]:z-10 ui:data-[active=true]:ring-[3px]",
+        "ui:relative ui:flex ui:h-9 ui:w-9 ui:items-center ui:justify-center ui:border-y ui:border-r ui:border-input ui:text-sm ui:shadow-xs ui:transition-all ui:outline-none ui:first:rounded-l-md ui:first:border-l ui:last:rounded-r-md ui:aria-invalid:border-destructive ui:data-[active=true]:z-10 ui:data-[active=true]:border-ring ui:data-[active=true]:ring-[3px] ui:data-[active=true]:ring-ring/50 ui:data-[active=true]:aria-invalid:border-destructive ui:data-[active=true]:aria-invalid:ring-destructive/20 ui:dark:bg-input/30 ui:dark:data-[active=true]:aria-invalid:ring-destructive/40",
         className
       )}
       {...props}
@@ -54,7 +54,7 @@ function InputOTPSlot({
       {char}
       {hasFakeCaret && (
         <div className="ui:pointer-events-none ui:absolute ui:inset-0 ui:flex ui:items-center ui:justify-center">
-          <div className="ui:animate-caret-blink ui:bg-foreground ui:h-4 ui:w-px ui:duration-1000" />
+          <div className="ui:h-4 ui:w-px ui:animate-caret-blink ui:bg-foreground ui:duration-1000" />
         </div>
       )}
     </div>
