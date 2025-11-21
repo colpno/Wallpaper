@@ -1,14 +1,13 @@
 import type z from "@/lib/zod";
 import type { TypedRouteConfig } from "@/types/route-handler.types";
 
-import { Router } from "express";
+import type { RouteConfig } from "@asteasolutions/zod-to-openapi";
 import request, { Test } from "supertest";
 
 import createApp from "@/app";
+import env from "@/env";
 
 import openApiToExpressRoute from "./open-api-to-express-route";
-
-type Method = "get" | "post" | "put" | "patch" | "delete";
 
 type ExtractRouteRequest<TConfig extends TypedRouteConfig> = TConfig extends {
   request: infer R;
@@ -32,62 +31,52 @@ type ExtractRouteRequest<TConfig extends TypedRouteConfig> = TConfig extends {
         : object)
   : never;
 
-type TestClient = {
-  [M in Method]: <TConfig extends TypedRouteConfig>(
-    routeConfig: TConfig
-  ) => (
-    request?: TConfig extends { request: unknown } ? ExtractRouteRequest<TConfig> : never
-  ) => Test;
-};
+type TestClient<C extends RouteConfig> = (reqArgs?: ExtractRouteRequest<C>) => Test;
 
-function createTestApp(router: Router) {
-  const app = createApp();
-
-  app.use(router);
-
-  return app;
-}
+const agent = request(createApp());
 
 /**
  * Creates a test client for the provided Express router.
- * @param router An Express router instance.
  * @returns A test client for making requests to the API.
  */
-export default function createTestClient(router: Router): TestClient {
-  const app = createTestApp(router);
-  const agent = request(app);
-  const methods: Method[] = ["get", "post", "put", "delete", "patch"];
-
-  // Helper to normalize path from openapi definition to actual path
+export default function createTestClient<C extends RouteConfig>(routeConfig: C): TestClient<C> {
+  /** Helper to convert path from openapi definition to express path. */
   const resolvePath = (path: string, params?: Record<string, string>) => {
     if (!params) return path;
     return openApiToExpressRoute(path, (_, routeParamName) => params[routeParamName]);
   };
 
-  const client: Partial<TestClient> = {};
+  const client: TestClient<C> = (reqArgs) => {
+    if (!reqArgs) return agent[routeConfig.method](`${env.BASE_ENDPOINT}${routeConfig.path}`);
 
-  // Create HTTP methods with dynamic argument types based on `route`
-  for (const method of methods) {
-    client[method] = (routeConfig) => (reqArgs) => {
-      const typedReqArgs = reqArgs as unknown as
-        | Record<keyof NonNullable<(typeof routeConfig)["request"]>, Record<string, string>>
-        | undefined;
-      const { params, query, body } = typedReqArgs || {};
+    const path =
+      "params" in reqArgs
+        ? resolvePath(routeConfig.path, reqArgs.params as Record<string, string>)
+        : routeConfig.path;
+    const request = agent[routeConfig.method](`${env.BASE_ENDPOINT}${path}`);
 
-      const path = resolvePath(routeConfig.path, params);
+    if ("query" in reqArgs) {
+      request.query(reqArgs.query as Record<string, string>);
+    }
 
-      const request = agent[method](path);
+    if ("body" in reqArgs) {
+      request.send(reqArgs.body as Record<string, unknown>);
+    }
 
-      if (query) {
-        request.query(query);
+    if ("headers" in reqArgs) {
+      for (const [key, value] of Object.entries(reqArgs.headers as Record<string, string>)) {
+        request.set(key, value);
       }
-      if (body) {
-        request.send(body);
+    }
+
+    if ("cookies" in reqArgs) {
+      for (const [key, value] of Object.entries(reqArgs.cookies as Record<string, string>)) {
+        request.set("Cookie", `${key}=${value}`);
       }
+    }
 
-      return request;
-    };
-  }
+    return request;
+  };
 
-  return client as TestClient;
+  return client;
 }

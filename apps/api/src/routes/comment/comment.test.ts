@@ -11,7 +11,6 @@ import { addPost } from "@/lib/test/helpers";
 import { images } from "@/lib/test/variables";
 
 import UserModel from "../user/user.model";
-import commentRouter from "./comment.index";
 import * as routes from "./comment.routes";
 
 const users = [
@@ -28,12 +27,10 @@ const users = [
 ];
 let posts: Array<ObjectIdToString<Post>> = [];
 let comments: Array<ObjectIdToString<Comment>> = [];
-const client = createTestClient(commentRouter);
-
-const getComments = client[routes.getMany.method](routes.getMany);
-const addComment = client[routes.add.method](routes.add);
-const updateCommentById = client[routes.updateOneById.method](routes.updateOneById);
-const removeCommentById = client[routes.deleteOneById.method](routes.deleteOneById);
+const getComments = createTestClient(routes.getMany);
+const addComment = createTestClient(routes.add);
+const updateCommentById = createTestClient(routes.updateOneById);
+const removeCommentById = createTestClient(routes.deleteOneById);
 
 beforeEach(async () => {
   await UserModel.insertMany(users);

@@ -11,7 +11,6 @@ import { addPost, updatePostById } from "@/lib/test/helpers";
 import { images } from "@/lib/test/variables";
 
 import UserModel from "../user/user.model";
-import postRouter from "./post.index";
 import * as routes from "./post.routes";
 
 const users = [
@@ -27,12 +26,10 @@ const users = [
   }),
 ];
 let posts: ObjectIdToString<Post>[] = [];
-const client = createTestClient(postRouter);
-
-const getPostById = client[routes.getOneById.method](routes.getOneById);
-const getPosts = client[routes.getMany.method](routes.getMany);
-const removePostById = client[routes.removeOneById.method](routes.removeOneById);
-const removePosts = client[routes.removeMany.method](routes.removeMany);
+const getPostById = createTestClient(routes.getOneById);
+const getPosts = createTestClient(routes.getMany);
+const removePostById = createTestClient(routes.removeOneById);
+const removePosts = createTestClient(routes.removeMany);
 
 beforeEach(async () => {
   await UserModel.insertMany(users);

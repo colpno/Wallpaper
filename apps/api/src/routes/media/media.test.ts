@@ -5,7 +5,6 @@ import createTestClient from "@/helpers/create-test-client";
 import { deleteFiles } from "@/services/cloudinary.service";
 
 import ExpiredMediaModel from "./expired-media.model";
-import mediaRouter from "./media.index";
 import * as routes from "./media.routes";
 
 const numberOfWithin30Days = 1;
@@ -21,9 +20,7 @@ expiredMedias.slice(numberOfWithin30Days).forEach((m) => {
   m.updatedAt = pastDate;
   oldExpiredMedias.push(m);
 });
-const client = createTestClient(mediaRouter);
-
-const deleteExpiredMedias = client[routes.deleteExpiredMedias.method](routes.deleteExpiredMedias);
+const deleteExpiredMedias = createTestClient(routes.deleteExpiredMedias);
 
 beforeEach(async () => {
   await ExpiredMediaModel.insertMany(expiredMedias);

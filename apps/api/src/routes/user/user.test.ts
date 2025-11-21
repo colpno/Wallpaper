@@ -7,7 +7,6 @@ import { beforeEach, describe, expect, it } from "vitest";
 import createTestClient from "@/helpers/create-test-client";
 import { images } from "@/lib/test/variables";
 
-import userRouter from "./user.index";
 import UserModel from "./user.model";
 import * as routes from "./user.routes";
 
@@ -25,12 +24,10 @@ const users = [
     password: "password",
   }),
 ];
-const client = createTestClient(userRouter);
-
-const signin = client[routes.signin.method](routes.signin);
-const register = client[routes.register.method](routes.register);
-const updateUserById = client[routes.updateOneById.method](routes.updateOneById);
-const deleteUserById = client[routes.deleteOneById.method](routes.deleteOneById);
+const signin = createTestClient(routes.signin);
+const register = createTestClient(routes.register);
+const updateUserById = createTestClient(routes.updateOneById);
+const deleteUserById = createTestClient(routes.deleteOneById);
 
 beforeEach(async () => {
   await UserModel.insertMany(users);

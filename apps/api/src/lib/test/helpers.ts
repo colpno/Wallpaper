@@ -3,7 +3,6 @@ import type { RequestContentType, TypedRouteConfig } from "@/types/route-handler
 import type z from "zod";
 
 import createTestClient from "@/helpers/create-test-client";
-import postRouter from "@/routes/post/post.index";
 import * as postRoutes from "@/routes/post/post.routes";
 
 type ExtractRequestSchema<
@@ -30,7 +29,7 @@ type AddPostBody = InferSchema<typeof postRoutes.add, "body", "multipart/form-da
 
 export const addPost = (body?: Omit<AddPostBody, "photo"> & { photo: string }) => {
   const { photo, ...rest } = body || {};
-  const client = createTestClient(postRouter)[postRoutes.add.method](postRoutes.add)();
+  const client = createTestClient(postRoutes.add)();
   if (photo) {
     client.attach("photo" as keyof Pick<AddPostBody, "photo">, photo);
   }
@@ -53,10 +52,9 @@ export const updatePostById = (
   params?: UpdatePostByIdParams,
   body?: UpdatePostByIdBodyJson | UpdatePostByIdBodyMultipart
 ) => {
-  const client = createTestClient(postRouter);
   if (body && "photo" in body && body.photo) {
     const { photo, ...rest } = body;
-    return client[postRoutes.updateOneById.method](postRoutes.updateOneById)({
+    return createTestClient(postRoutes.updateOneById)({
       params,
     })
       .attach(
@@ -65,7 +63,7 @@ export const updatePostById = (
       )
       .field(rest);
   }
-  return client[postRoutes.updateOneById.method](postRoutes.updateOneById)({
+  return createTestClient(postRoutes.updateOneById)({
     params,
     body,
   });
