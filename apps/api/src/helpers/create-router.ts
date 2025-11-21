@@ -1,7 +1,7 @@
 import type { RouteHandler, TypedRouteConfig } from "@/types/route-handler.types";
 
 import { HttpStatusCodes } from "@repo/shared";
-import { type RequestHandler, Router } from "express";
+import { type Request, type RequestHandler, type Response, Router } from "express";
 import multer from "multer";
 
 import { type File } from "@/constants/schema.constants";
@@ -9,6 +9,17 @@ import z from "@/lib/zod";
 
 import createErrorObjectFromZod from "./create-error-object-from-zod";
 import openApiToExpressRoute from "./open-api-to-express-route";
+
+const overrideExpressApiObject = <T extends Response | Request>(
+  api: T,
+  method: keyof T,
+  value: unknown
+) =>
+  Object.defineProperty(api, method, {
+    ...Object.getOwnPropertyDescriptor(api, method),
+    value,
+    writable: true,
+  });
 
 /**
  * Creates file handling and validation middlewares
@@ -115,11 +126,11 @@ function requestValidator(routeConfig: TypedRouteConfig): RequestHandler {
         .json(errors.map(createErrorObjectFromZod));
     }
 
-    if (req.query) Object.assign(req.query, query?.data ?? {});
-    if (req.params) Object.assign(req.params, params?.data ?? {});
-    if (req.body) Object.assign(req.body, body?.data ?? {});
-    if (req.headers) Object.assign(req.headers, headers?.data ?? {});
-    if (req.cookies) Object.assign(req.cookies, cookies?.data ?? {});
+    if (req.query) overrideExpressApiObject(req, "query", query?.data ?? {});
+    if (req.params) overrideExpressApiObject(req, "params", params?.data ?? {});
+    if (req.body) overrideExpressApiObject(req, "body", body?.data ?? {});
+    if (req.headers) overrideExpressApiObject(req, "headers", headers?.data ?? {});
+    if (req.cookies) overrideExpressApiObject(req, "cookies", cookies?.data ?? {});
 
     next();
   };
