@@ -6,11 +6,10 @@ import { HttpStatusCodes } from "@repo/shared";
 import env from "@/env";
 import logger from "@/lib/logger";
 
-const errorHandler: ErrorRequestHandler = (err, _, res) => {
+const errorHandler: ErrorRequestHandler = (err, _req, res) => {
   logger.error(err);
 
   const statusCode = err.statusCode || HttpStatusCodes.INTERNAL_SERVER_ERROR;
-
   const error: Error = {
     message: err.message,
   };
