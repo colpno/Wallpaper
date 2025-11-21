@@ -177,7 +177,7 @@ export const undoRemoval: RouteHandler<routes.UndoRemovalRoute> = async (req, re
  * @description
  * Not available in testing environment.
  * Available only if MongoDB Community Edition version 8.2+,
- * which mongodb-memory-server does not support yet (mongodb-memory-server v10.2.1 = MongoDB v7.0.24).
+ * which mongodb-memory-server does not support yet (mongodb-memory-server 10.2.1 = MongoDB 7.0.24).
  * @see https://typegoose.github.io/mongodb-memory-server/docs/guides/mongodb-server-versions/#mongodb-memory-server-core-version-table
  * @see https://www.mongodb.com/company/blog/product-release-announcements/supercharge-self-managed-apps-search-vector-search-capabilities
  */
@@ -188,8 +188,14 @@ export const search: RouteHandler<routes.SearchRoute> = async (req, res, next) =
       .json({ message: "This feature is not available" });
   }
 
+  const { limit: limitQuery, ...queries } = req.query;
+  const { search } = req.body;
+  const limit = limitQuery || 50;
+  /** @see https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/#fields */
+  const numCandidates = limit * 10 <= 10000 ? limit * 10 : 10000;
+
   try {
-    const embeddings = await toEmbeddings(req.body.search);
+    const embeddings = await toEmbeddings(search);
 
     const results: Array<
       Omit<Post, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }
@@ -199,7 +205,8 @@ export const search: RouteHandler<routes.SearchRoute> = async (req, res, next) =
           index: "vector_index",
           path: "descriptionEmbeddings",
           queryVector: embeddings,
-          limit: req.query.limit || 50,
+          numCandidates,
+          limit,
         },
       },
       {
@@ -213,7 +220,7 @@ export const search: RouteHandler<routes.SearchRoute> = async (req, res, next) =
           photoCloudinaryId: 0,
         },
       },
-      ...buildPipeline(req.query),
+      ...buildPipeline(queries),
     ]);
 
     return res.status(HttpStatusCodes.OK).json(results);

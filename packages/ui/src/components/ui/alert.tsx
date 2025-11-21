@@ -1,7 +1,7 @@
-import { cva, type VariantProps } from "class-variance-authority"
-import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority";
+import * as React from "react";
 
-import { cn } from "@/lib/utils"
+import { cn } from "@/lib/utils";
 
 const alertVariants = cva(
   "ui:relative ui:w-full ui:rounded-lg ui:border ui:px-4 ui:py-3 ui:text-sm ui:grid ui:has-[>svg]:grid-cols-[calc(var(--spacing)*4)_1fr] ui:grid-cols-[0_1fr] ui:has-[>svg]:gap-x-3 ui:gap-y-0.5 ui:items-start ui:[&>svg]:size-4 ui:[&>svg]:translate-y-0.5 ui:[&>svg]:text-current",
@@ -17,7 +17,7 @@ const alertVariants = cva(
       variant: "default",
     },
   }
-)
+);
 
 function Alert({
   className,
@@ -31,7 +31,7 @@ function Alert({
       className={cn(alertVariants({ variant }), className)}
       {...props}
     />
-  )
+  );
 }
 
 function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
@@ -44,13 +44,10 @@ function AlertTitle({ className, ...props }: React.ComponentProps<"div">) {
       )}
       {...props}
     />
-  )
+  );
 }
 
-function AlertDescription({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+function AlertDescription({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="alert-description"
@@ -60,7 +57,7 @@ function AlertDescription({
       )}
       {...props}
     />
-  )
+  );
 }
 
-export { Alert, AlertDescription,AlertTitle }
+export { Alert, AlertDescription, AlertTitle };

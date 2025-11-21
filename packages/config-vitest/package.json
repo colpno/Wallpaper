@@ -17,6 +17,8 @@
     "view-report": "open-cli coverage/report/index.html"
   },
   "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/prettier-config": "*",
     "@vitest/coverage-istanbul": "^4.0.10",
     "@vitest/ui": "^4.0.10",
     "glob": "^11.0.3",
