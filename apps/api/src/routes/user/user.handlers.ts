@@ -1,9 +1,8 @@
 import type * as routes from "./user.routes";
 import type { File } from "@/constants/schema.constants";
-import type { User } from "@/types/model.types";
 import type { RouteHandler } from "@/types/route-handler.types";
 
-import { HttpStatusCodes } from "@repo/shared";
+import { HttpStatusCodes, Types } from "@repo/shared";
 
 import { hash } from "@/helpers/crypto";
 import HttpError from "@/helpers/HttpError";
@@ -53,7 +52,7 @@ export const updateOneById: RouteHandler<routes.UpdateUserByIdRoute> = async (re
       return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "User not found" });
     }
 
-    const updateData: Partial<User> = { ...req.body };
+    const updateData: Partial<Types.User> = { ...req.body };
 
     if ("avatar" in req.body && req.body.avatar) {
       const addedMedia = await uploadMedia(req.body.avatar as File);

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { ValidationError } from "@/constants/schema.constants";
-import type { Post, PostKeys, UserKeys } from "@/types/model.types";
 import type { ObjectIdToString } from "mongoose";
 
-import { HttpStatusCodes } from "@repo/shared";
+import { HttpStatusCodes, Types } from "@repo/shared";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import createTestClient from "@/helpers/create-test-client";
@@ -25,7 +24,7 @@ const users = [
     username: "testuser2",
   }),
 ];
-let posts: ObjectIdToString<Post>[] = [];
+let posts: ObjectIdToString<Types.Post>[] = [];
 const getPostById = createTestClient(routes.getOneById);
 const getPosts = createTestClient(routes.getMany);
 const removePostById = createTestClient(routes.removeOneById);
@@ -79,8 +78,8 @@ describe("Post routes", () => {
 
       expect(res.status).toBe(HttpStatusCodes.OK);
       expect(Object.keys(res.body).length).toBe(3); // including _id by default
-      expect(res.body).toHaveProperty("postTitle" as PostKeys);
-      expect(res.body).toHaveProperty("postOwner" as PostKeys);
+      expect(res.body).toHaveProperty("postTitle" as Types.PostKeys);
+      expect(res.body).toHaveProperty("postOwner" as Types.PostKeys);
     });
 
     it("returns a post with populated fields", async () => {
@@ -90,9 +89,9 @@ describe("Post routes", () => {
       });
 
       expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body).toHaveProperty("postOwner" as PostKeys);
+      expect(res.body).toHaveProperty("postOwner" as Types.PostKeys);
       expect(typeof res.body.postOwner).toBe("object");
-      expect(res.body.postOwner).toHaveProperty("email" as UserKeys);
+      expect(res.body.postOwner).toHaveProperty("email" as Types.UserKeys);
     });
 
     it("returns a validation error if missing required fields", async () => {
@@ -136,7 +135,10 @@ describe("Post routes", () => {
       expect(res.status).toBe(HttpStatusCodes.OK);
       expect(res.body.data).toBeInstanceOf(Array);
       expect(res.body.data.length).toBe(1);
-      expect(res.body.data[0]).toHaveProperty("postOwner" as PostKeys, users[0]._id.toString());
+      expect(res.body.data[0]).toHaveProperty(
+        "postOwner" as Types.PostKeys,
+        users[0]._id.toString()
+      );
     });
 
     it("returns a list of posts with stripped properties", async () => {
@@ -149,8 +151,8 @@ describe("Post routes", () => {
       expect(res.body.data.length).toBeGreaterThan(0);
       for (const img of res.body.data) {
         expect(Object.keys(img).length).toBe(3); // including _id by default
-        expect(img).toHaveProperty("postOwner" as PostKeys);
-        expect(img).toHaveProperty("postTitle" as PostKeys);
+        expect(img).toHaveProperty("postOwner" as Types.PostKeys);
+        expect(img).toHaveProperty("postTitle" as Types.PostKeys);
       }
     });
 
@@ -187,9 +189,9 @@ describe("Post routes", () => {
       expect(res.body.data).toBeInstanceOf(Array);
       expect(res.body.data.length).toBeGreaterThan(1);
       for (const post of res.body.data) {
-        expect(post).toHaveProperty("postOwner" as PostKeys);
+        expect(post).toHaveProperty("postOwner" as Types.PostKeys);
         expect(typeof post.postOwner).toBe("object");
-        expect(post.postOwner).toHaveProperty("email" as UserKeys);
+        expect(post.postOwner).toHaveProperty("email" as Types.UserKeys);
       }
     });
 
@@ -240,7 +242,7 @@ describe("Post routes", () => {
       expect(body).toHaveLength(1);
       expect(body?.[0].issues).toHaveLength(1);
       for (const issue of body?.[0].issues || []) {
-        expect(["postOwner"] as PostKeys[]).toContain(issue.path[0]);
+        expect(["postOwner"] as Types.PostKeys[]).toContain(issue.path[0]);
       }
     });
 
@@ -263,12 +265,12 @@ describe("Post routes", () => {
   describe(`${routes.updateOneById.method.toUpperCase()} ${routes.updateOneById.path}`, () => {
     it("returns a successful response", async () => {
       expect(posts.length).toBeGreaterThan(0);
-      expect(posts[0]).toHaveProperty("_id" as PostKeys);
+      expect(posts[0]).toHaveProperty("_id" as Types.PostKeys);
 
       const res = await updatePostById({ id: posts[0]._id }, { postTitle: "Updated Test Post" });
 
       expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body).toHaveProperty("postTitle" as PostKeys, "Updated Test Post");
+      expect(res.body).toHaveProperty("postTitle" as Types.PostKeys, "Updated Test Post");
       expect(res.body.postTitle !== posts[0].postTitle).toBe(true);
     });
 
@@ -293,7 +295,7 @@ describe("Post routes", () => {
       expect(body).toBeInstanceOf(Array);
       expect(body).toHaveLength(2);
       for (const item of body || []) {
-        expect(["id", "postTitle"] as PostKeys[]).toContain(item.issues[0].path[0]);
+        expect(["id", "postTitle"] as Types.PostKeys[]).toContain(item.issues[0].path[0]);
       }
     });
 
@@ -310,7 +312,7 @@ describe("Post routes", () => {
   describe(`${routes.removeOneById.method.toUpperCase()} ${routes.removeOneById.path}`, () => {
     it("returns a successful response", async () => {
       expect(posts.length).toBeGreaterThan(0);
-      expect(posts[0]).not.toHaveProperty("removedAt" as PostKeys);
+      expect(posts[0]).not.toHaveProperty("removedAt" as Types.PostKeys);
 
       const res = await removePostById({
         params: { id: posts[0]._id },
@@ -322,7 +324,7 @@ describe("Post routes", () => {
         params: { id: posts[0]._id },
       });
 
-      expect(getRes.body).toHaveProperty("removedAt" as PostKeys);
+      expect(getRes.body).toHaveProperty("removedAt" as Types.PostKeys);
     });
 
     it("returns a validation error if missing required fields", async () => {
@@ -356,8 +358,8 @@ describe("Post routes", () => {
   describe(`${routes.removeMany.method.toUpperCase()} ${routes.removeMany.path}`, () => {
     it("returns a successful response", async () => {
       expect(posts.length).toBeGreaterThan(0);
-      expect(posts[0]).not.toHaveProperty("removedAt" as PostKeys);
-      expect(posts[1]).not.toHaveProperty("removedAt" as PostKeys);
+      expect(posts[0]).not.toHaveProperty("removedAt" as Types.PostKeys);
+      expect(posts[1]).not.toHaveProperty("removedAt" as Types.PostKeys);
 
       const res = await removePosts({
         body: {
@@ -374,8 +376,8 @@ describe("Post routes", () => {
         params: { id: posts[1]._id },
       });
 
-      expect(getRes1.body).toHaveProperty("removedAt" as PostKeys);
-      expect(getRes2.body).toHaveProperty("removedAt" as PostKeys);
+      expect(getRes1.body).toHaveProperty("removedAt" as Types.PostKeys);
+      expect(getRes2.body).toHaveProperty("removedAt" as Types.PostKeys);
     });
 
     it("returns a validation error if missing required fields", async () => {

@@ -1,8 +1,7 @@
 import type { ZodObjectShapeMap } from "@/types/common.types";
-import type { Comment, DefaultModelProps } from "@/types/model.types";
 import type { ObjectIdToString } from "mongoose";
 
-import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
+import { HttpStatusCodes, HttpStatusPhrases, Types } from "@repo/shared";
 
 import {
   commentSchema,
@@ -18,9 +17,9 @@ import registerRoute from "@/helpers/register-route";
 import { registry } from "@/lib/openapi";
 import z, { atLeastOneFieldDefined } from "@/lib/zod";
 
-const tags = ["Comment"];
+const tags = ["Types.Comment"];
 const basePath = "/comments";
-const querySchema = createQuerySchema<ObjectIdToString<Comment>>((schemas) => ({
+const querySchema = createQuerySchema<ObjectIdToString<Types.Comment>>((schemas) => ({
   createdAt: schemas.date,
   updatedAt: schemas.date,
   owner: objectIdSchema,
@@ -66,7 +65,9 @@ export const add = registerRoute({
           owner: objectIdSchema,
           postId: objectIdSchema,
           text: z.string().optional(),
-        } satisfies ZodObjectShapeMap<Omit<ObjectIdToString<Comment>, keyof DefaultModelProps>>)
+        } satisfies ZodObjectShapeMap<
+          Omit<ObjectIdToString<Types.Comment>, keyof Types.DefaultModelProps>
+        >)
       )
     ),
   },
@@ -99,7 +100,7 @@ export const updateOneById = registerRoute({
         z
           .object({
             text: z.string(),
-          } satisfies ZodObjectShapeMap<Pick<Comment, "text">>)
+          } satisfies ZodObjectShapeMap<Pick<Types.Comment, "text">>)
           .partial()
           .refine(atLeastOneFieldDefined, {
             message: "At least one field must be provided for update",

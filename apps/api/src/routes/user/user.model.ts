@@ -1,12 +1,11 @@
-import type { User } from "@/types/model.types";
-
+import type { Types } from "@repo/shared";
 import { model, Schema } from "mongoose";
 
 import { generateSalt, hash } from "@/helpers/crypto";
 
 import PostModel from "../post/post.model";
 
-const schema = new Schema<User>(
+const schema = new Schema<Types.User>(
   {
     username: {
       type: String,
@@ -57,7 +56,7 @@ schema.pre(["updateOne", "findOneAndUpdate"], function (next) {
   next();
 });
 
-schema.post("findOneAndDelete", async function (doc?: User) {
+schema.post("findOneAndDelete", async function (doc?: Types.User) {
   if (!doc) return;
 
   await PostModel.deleteMany({ postOwner: doc._id });

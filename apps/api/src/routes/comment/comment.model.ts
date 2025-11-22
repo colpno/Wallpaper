@@ -1,8 +1,7 @@
-import type { Comment } from "@/types/model.types";
-
+import type { Types } from "@repo/shared";
 import { model, Schema } from "mongoose";
 
-const schema = new Schema<Comment>(
+const schema = new Schema<Types.Comment>(
   {
     owner: {
       type: Schema.Types.ObjectId,

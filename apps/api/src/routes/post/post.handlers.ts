@@ -1,8 +1,7 @@
 import type * as routes from "./post.routes";
-import type { Post } from "@/types/model.types";
 import type { RouteHandler } from "@/types/route-handler.types";
 
-import { HttpStatusCodes } from "@repo/shared";
+import { HttpStatusCodes, Types } from "@repo/shared";
 
 import { type File } from "@/constants/schema.constants";
 import env from "@/env";
@@ -87,7 +86,7 @@ export const updateOneById: RouteHandler<routes.UpdateOneByIdRoute> = async (req
       return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Post not found" });
     }
 
-    const updateData: Partial<Post> = { ...req.body };
+    const updateData: Partial<Types.Post> = { ...req.body };
 
     if ("photo" in req.body && req.body.photo) {
       const addedMedia = await uploadMedia(req.body.photo as File);
@@ -198,7 +197,7 @@ export const search: RouteHandler<routes.SearchRoute> = async (req, res, next) =
     const embeddings = await toEmbeddings(search);
 
     const results: Array<
-      Omit<Post, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }
+      Omit<Types.Post, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }
     > = await PostModel.aggregate([
       {
         $vectorSearch: {

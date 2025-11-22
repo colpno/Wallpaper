@@ -1,8 +1,7 @@
 import type { ZodObjectShapeMap } from "@/types/common.types";
-import type { Post } from "@/types/model.types";
 import type { ObjectIdToString } from "mongoose";
 
-import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
+import { HttpStatusCodes, HttpStatusPhrases, Types } from "@repo/shared";
 
 import {
   errorSchema,
@@ -23,7 +22,7 @@ import z, { atLeastOneFieldDefined } from "@/lib/zod";
 
 const tags = ["Post"];
 const basePath = "/posts";
-const querySchema = createQuerySchema<ObjectIdToString<Post>>((schemas) => ({
+const querySchema = createQuerySchema<ObjectIdToString<Types.Post>>((schemas) => ({
   createdAt: schemas.date,
   updatedAt: schemas.date,
   removedAt: schemas.date,
@@ -107,7 +106,7 @@ export const add = registerRoute({
           photo: fileSchema,
           photoBlurHash: z.string(),
         } satisfies ZodObjectShapeMap<
-          Partial<ObjectIdToString<Post>> & {
+          Partial<ObjectIdToString<Types.Post>> & {
             photo: File;
           }
         >)
@@ -130,7 +129,7 @@ const updateBody = z
     postDescription: z.string(),
     photo: fileSchema,
     photoBlurHash: z.string(),
-  } satisfies ZodObjectShapeMap<Partial<Post> & { photo: File }>)
+  } satisfies ZodObjectShapeMap<Partial<Types.Post> & { photo: File }>)
   .partial()
   .superRefine((data, ctx) => {
     if (data.photo && !data.photoBlurHash) {

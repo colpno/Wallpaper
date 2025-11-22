@@ -19,6 +19,7 @@
     "@repo/vitest-config": "*",
     "@types/node": "^24.6.2",
     "eslint": "^9.33.0",
+    "mongoose": "^8.19.0",
     "typescript": "^5.9.3"
   },
   "type": "module",

@@ -1,9 +1,8 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import type { ValidationError } from "@/constants/schema.constants";
-import type { Comment, CommentKeys, Post, PostKeys, UserKeys } from "@/types/model.types";
 import type { ObjectIdToString } from "mongoose";
 
-import { HttpStatusCodes } from "@repo/shared";
+import { HttpStatusCodes, Types } from "@repo/shared";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import createTestClient from "@/helpers/create-test-client";
@@ -25,8 +24,8 @@ const users = [
     password: "password",
   }),
 ];
-let posts: Array<ObjectIdToString<Post>> = [];
-let comments: Array<ObjectIdToString<Comment>> = [];
+let posts: Array<ObjectIdToString<Types.Post>> = [];
+let comments: Array<ObjectIdToString<Types.Comment>> = [];
 const getComments = createTestClient(routes.getMany);
 const addComment = createTestClient(routes.add);
 const updateCommentById = createTestClient(routes.updateOneById);
@@ -96,7 +95,10 @@ describe("Comment routes", () => {
       expect(res.status).toBe(HttpStatusCodes.OK);
       expect(res.body.data).toBeInstanceOf(Array);
       expect(res.body.data.length).toBe(1);
-      expect(res.body.data[0]).toHaveProperty("owner" as CommentKeys, users[0]._id.toString());
+      expect(res.body.data[0]).toHaveProperty(
+        "owner" as Types.CommentKeys,
+        users[0]._id.toString()
+      );
     });
 
     it("returns a list of comments with stripped properties", async () => {
@@ -109,8 +111,8 @@ describe("Comment routes", () => {
       expect(res.body.data.length).toBeGreaterThan(0);
       for (const cmt of res.body.data) {
         expect(Object.keys(cmt).length).toBe(3); // including _id by default
-        expect(cmt).toHaveProperty("text" as CommentKeys);
-        expect(cmt).toHaveProperty("owner" as CommentKeys);
+        expect(cmt).toHaveProperty("text" as Types.CommentKeys);
+        expect(cmt).toHaveProperty("owner" as Types.CommentKeys);
       }
     });
 
@@ -147,12 +149,12 @@ describe("Comment routes", () => {
       expect(res.body.data).toBeInstanceOf(Array);
       expect(res.body.data.length).toBeGreaterThan(1);
       for (const post of res.body.data) {
-        expect(post).toHaveProperty("owner" as CommentKeys);
+        expect(post).toHaveProperty("owner" as Types.CommentKeys);
         expect(typeof post.owner).toBe("object");
-        expect(post.owner).toHaveProperty("_id" as UserKeys);
-        expect(post).toHaveProperty("postId" as CommentKeys);
+        expect(post.owner).toHaveProperty("_id" as Types.UserKeys);
+        expect(post).toHaveProperty("postId" as Types.CommentKeys);
         expect(typeof post.postId).toBe("object");
-        expect(post.postId).toHaveProperty("_id" as PostKeys);
+        expect(post.postId).toHaveProperty("_id" as Types.PostKeys);
       }
     });
 
@@ -201,7 +203,7 @@ describe("Comment routes", () => {
       expect(body).toHaveLength(1);
       expect(body?.[0].issues).toHaveLength(2);
       for (const issue of body?.[0].issues || []) {
-        expect(["owner", "postId"] as CommentKeys[]).toContain(issue.path[0]);
+        expect(["owner", "postId"] as Types.CommentKeys[]).toContain(issue.path[0]);
       }
     });
 
@@ -224,7 +226,7 @@ describe("Comment routes", () => {
   describe(`${routes.updateOneById.method.toUpperCase()} ${routes.updateOneById.path}`, () => {
     it("returns a successful response", async () => {
       expect(comments.length).toBeGreaterThan(0);
-      expect(comments[0]).toHaveProperty("_id" as CommentKeys);
+      expect(comments[0]).toHaveProperty("_id" as Types.CommentKeys);
 
       const res = await updateCommentById({
         params: { id: comments[0]._id },
@@ -234,7 +236,7 @@ describe("Comment routes", () => {
       });
 
       expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body).toHaveProperty("text" as CommentKeys);
+      expect(res.body).toHaveProperty("text" as Types.CommentKeys);
       expect(res.body.text !== comments[0].text).toBe(true);
     });
 
@@ -259,7 +261,7 @@ describe("Comment routes", () => {
       expect(body).toBeInstanceOf(Array);
       expect(body).toHaveLength(2);
       for (const path of paths || []) {
-        expect(["id", "text"] as CommentKeys[]).toContain(path);
+        expect(["id", "text"] as Types.CommentKeys[]).toContain(path);
       }
     });
 
@@ -276,7 +278,7 @@ describe("Comment routes", () => {
   describe(`${routes.deleteOneById.method.toUpperCase()} ${routes.deleteOneById.path}`, () => {
     it("returns a successful response", async () => {
       expect(comments.length).toBeGreaterThan(0);
-      expect(comments[0]).not.toHaveProperty("removedAt" as CommentKeys);
+      expect(comments[0]).not.toHaveProperty("removedAt" as Types.CommentKeys);
 
       const res = await removeCommentById({
         params: { id: comments[0]._id },

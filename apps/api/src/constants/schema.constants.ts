@@ -1,8 +1,8 @@
 import type { ZodObjectShapeMap } from "@/types/common.types";
-import type { Comment, Post, User } from "@/types/model.types";
 
+import type { Types } from "@repo/shared";
 import { HttpStatusPhrases } from "@repo/shared";
-import { type ObjectIdToString, Types } from "mongoose";
+import { type ObjectIdToString, Types as MongooseTypes } from "mongoose";
 
 import createMessageObjectSchema from "@/helpers/create-message-object-schema";
 import z from "@/lib/zod";
@@ -34,8 +34,8 @@ export type ValidationError = z.infer<typeof validationErrorSchema>;
 export const notFoundSchema = createMessageObjectSchema(HttpStatusPhrases.NOT_FOUND);
 
 export const objectIdSchema = z
-  .union([z.string(), z.instanceof(Types.ObjectId)])
-  .refine((val) => Types.ObjectId.isValid(val), { message: "Invalid ObjectId" })
+  .union([z.string(), z.instanceof(MongooseTypes.ObjectId)])
+  .refine((val) => MongooseTypes.ObjectId.isValid(val), { message: "Invalid ObjectId" })
   .transform((val) => val.toString())
   .openapi({ type: "string", format: "string" });
 
@@ -89,8 +89,8 @@ export const userSchema = z
     salt: z.string(),
     avatarUrl: z.string().optional(),
     avatarCloudinaryId: z.string().optional(),
-  } satisfies ZodObjectShapeMap<ObjectIdToString<User>>)
-  .openapi("User");
+  } satisfies ZodObjectShapeMap<ObjectIdToString<Types.User>>)
+  .openapi("Types.User");
 
 export const postSchema = z
   .object({
@@ -110,8 +110,8 @@ export const postSchema = z
     photoDescription: z.string(),
     photoBlurHash: z.string(),
     descriptionEmbeddings: z.array(z.number()),
-  } satisfies ZodObjectShapeMap<ObjectIdToString<Post>>)
-  .openapi("Post");
+  } satisfies ZodObjectShapeMap<ObjectIdToString<Types.Post>>)
+  .openapi("Types.Post");
 
 export const commentSchema = z
   .object({
@@ -122,5 +122,5 @@ export const commentSchema = z
     owner: objectIdSchema,
     postId: objectIdSchema,
     text: z.string().optional(),
-  } satisfies ZodObjectShapeMap<ObjectIdToString<Comment>>)
-  .openapi("Comment");
+  } satisfies ZodObjectShapeMap<ObjectIdToString<Types.Comment>>)
+  .openapi("Types.Comment");

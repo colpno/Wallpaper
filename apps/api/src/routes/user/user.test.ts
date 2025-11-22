@@ -1,7 +1,6 @@
 import type { ValidationError } from "@/constants/schema.constants";
-import type { User } from "@/types/model.types";
 
-import { HttpStatusCodes } from "@repo/shared";
+import { HttpStatusCodes, Types } from "@repo/shared";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import createTestClient from "@/helpers/create-test-client";
@@ -10,7 +9,7 @@ import { images } from "@/lib/test/variables";
 import UserModel from "./user.model";
 import * as routes from "./user.routes";
 
-type UserKeys = keyof User;
+type UserKeys = keyof Types.User;
 
 const users = [
   new UserModel({

@@ -1,7 +1,6 @@
 import type { ZodObjectShapeMap } from "@/types/common.types";
-import type { User } from "@/types/model.types";
 
-import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
+import { HttpStatusCodes, HttpStatusPhrases, Types } from "@repo/shared";
 
 import {
   errorSchema,
@@ -33,7 +32,7 @@ export const signin = registerRoute({
         z.object({
           email: z.email(),
           password: z.string().min(6),
-        } satisfies ZodObjectShapeMap<Pick<User, "email" | "password">>)
+        } satisfies ZodObjectShapeMap<Pick<Types.User, "email" | "password">>)
       )
     ),
   },
@@ -61,7 +60,7 @@ export const register = registerRoute({
           email: z.email(),
           password: z.string().min(6),
           username: z.string().min(3).max(30),
-        } satisfies ZodObjectShapeMap<Pick<User, "email" | "password" | "username">>)
+        } satisfies ZodObjectShapeMap<Pick<Types.User, "email" | "password" | "username">>)
       )
     ),
   },
@@ -82,7 +81,7 @@ const updateBody = z
     username: z.string().min(3).max(30),
     avatar: fileSchema,
   } satisfies ZodObjectShapeMap<
-    Pick<User, "email" | "password" | "username"> & {
+    Pick<Types.User, "email" | "password" | "username"> & {
       avatar: File;
     }
   >)
