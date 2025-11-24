@@ -18,8 +18,9 @@
     "search.exclude": {
       "**/dist": true,
     },
+    "tailwindCSS.classFunctions": ["cva"],
   },
   "extensions": {
-    "recommendations": ["dbaeumer.vscode-eslint"],
+    "recommendations": ["dbaeumer.vscode-eslint", "bradlc.vscode-tailwindcss"],
   },
 }

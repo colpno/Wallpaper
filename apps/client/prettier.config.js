@@ -4,4 +4,5 @@ import { config } from "@repo/prettier-config";
 export default {
   ...config,
   tailwindStylesheet: "./src/index.css",
+  tailwindFunctions: ["cva"],
 };
