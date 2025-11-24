@@ -5,7 +5,7 @@ import * as React from "react";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "ui:inline-flex ui:items-center ui:justify-center ui:gap-2 ui:whitespace-nowrap ui:rounded-md ui:text-sm ui:font-medium ui:transition-all ui:disabled:pointer-events-none ui:disabled:opacity-50 ui:[&_svg]:pointer-events-none ui:[&_svg:not([class*=size-])]:size-4 ui:shrink-0 ui:[&_svg]:shrink-0 ui:outline-none ui:focus-visible:border-ring ui:focus-visible:ring-ring/50 ui:focus-visible:ring-[3px] ui:aria-invalid:ring-destructive/20 ui:dark:aria-invalid:ring-destructive/40 ui:aria-invalid:border-destructive",
+  "ui:inline-flex ui:items-center ui:justify-center ui:gap-2 ui:whitespace-nowrap ui:rounded-md ui:font-medium ui:transition-all ui:disabled:pointer-events-none ui:disabled:opacity-50 ui:[&_svg]:pointer-events-none ui:[&_svg:not([class*=size-])]:size-4 ui:shrink-0 ui:[&_svg]:shrink-0 ui:outline-none ui:focus-visible:border-ring ui:focus-visible:ring-ring/50 ui:focus-visible:ring-[3px] ui:aria-invalid:ring-destructive/20 ui:dark:aria-invalid:ring-destructive/40 ui:aria-invalid:border-destructive ui:cursor-pointer",
   {
     variants: {
       variant: {
@@ -19,12 +19,12 @@ const buttonVariants = cva(
         link: "ui:text-primary ui:underline-offset-4 ui:hover:underline",
       },
       size: {
-        default: "ui:h-9 ui:px-4 ui:py-2 ui:has-[>svg]:px-3",
-        sm: "ui:h-8 ui:rounded-md ui:gap-1.5 ui:px-3 ui:has-[>svg]:px-2.5",
-        lg: "ui:h-10 ui:rounded-md ui:px-6 ui:has-[>svg]:px-4",
-        icon: "ui:size-9",
-        "icon-sm": "ui:size-8",
-        "icon-lg": "ui:size-10",
+        default: "ui:rounded-2xl ui:px-4 ui:py-3 ui:has-[>svg]:px-3",
+        sm: "ui:rounded-lg ui:px-2 ui:py-1 ui:has-[>svg]:px-2.5",
+        lg: "ui:rounded-4xl ui:px-6 ui:has-[>svg]:px-4",
+        icon: "ui:size-9 ui:rounded-2xl",
+        "icon-sm": "ui:size-6.5 ui:rounded-[0.5rem]",
+        "icon-lg": "ui:size-10 ui:rounded-4xl",
       },
     },
     defaultVariants: {

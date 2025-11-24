@@ -1,4 +1,3 @@
-/* eslint-disable react/prop-types */
 "use client";
 
 import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
@@ -26,7 +25,7 @@ function Calendar({
     <DayPicker
       showOutsideDays={showOutsideDays}
       className={cn(
-        "ui:group/calendar ui:bg-background ui:p-3 ui:[--cell-size:--spacing(8)] ui:[[data-slot=card-content]_&]:bg-transparent ui:[[data-slot=popover-content]_&]:bg-transparent",
+        "ui:group/calendar ui:bg-background ui:p-3 ui:[--cell-size:--spacing(8)] ui:in-data-[slot=card-content]:bg-transparent ui:in-data-[slot=popover-content]:bg-transparent",
         String.raw`rtl:**:[.rdp-button\_next>svg]:rotate-180`,
         String.raw`rtl:**:[.rdp-button\_previous>svg]:rotate-180`,
         className
@@ -118,9 +117,11 @@ function Calendar({
         ...classNames,
       }}
       components={{
+        // eslint-disable-next-line react/prop-types
         Root: ({ className, rootRef, ...props }) => {
           return <div data-slot="calendar" ref={rootRef} className={cn(className)} {...props} />;
         },
+        // eslint-disable-next-line react/prop-types
         Chevron: ({ className, orientation, ...props }) => {
           if (orientation === "left") {
             return <ChevronLeftIcon className={cn("ui:size-4", className)} {...props} />;
