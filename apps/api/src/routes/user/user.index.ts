@@ -1,7 +1,7 @@
-import createRouter from "@/helpers/create-router";
+import createRouter from "@/helpers/create-router.js";
 
-import * as handlers from "./user.handlers";
-import * as routes from "./user.routes";
+import * as handlers from "./user.handlers.js";
+import * as routes from "./user.routes.js";
 
 const { router: userRouter } = createRouter()
   .route(routes.signin, handlers.signin)

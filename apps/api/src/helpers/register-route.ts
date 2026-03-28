@@ -1,6 +1,6 @@
-import type { TypedRouteConfig } from "@/types/route-handler.types";
+import type { TypedRouteConfig } from "@/types/route-handler.js";
 
-import { registry } from "@/lib/openapi";
+import { registry } from "@/lib/openapi.js";
 
 /**
  * Registers an OpenAPI route configuration to OpenAPI documentation.

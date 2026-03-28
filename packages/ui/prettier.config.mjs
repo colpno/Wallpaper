@@ -1,7 +1,8 @@
-import { config } from "@repo/prettier-config";
+import { config } from "@repo/prettier-config/ui";
 
-/** @type {import('prettier').Config & import('prettier-plugin-tailwindcss').PluginOptions} */
+/** @type {typeof config} */
 export default {
   ...config,
   tailwindStylesheet: "./src/styles.css",
+  tailwindFunctions: ["cva", "cn"],
 };

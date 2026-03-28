@@ -1,8 +1,11 @@
 {
-  "extends": "@repo/typescript-config",
+  "extends": "@repo/typescript-config/base",
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist"
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true,
+    "outDir": "dist",
+    "types": ["node", "vitest"]
   },
   "include": ["src"]
 }

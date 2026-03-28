@@ -2,24 +2,22 @@
   "name": "wallpaper",
   "private": true,
   "scripts": {
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "clean": "turbo run clean",
-    "lint": "turbo run lint",
     "test": "turbo run test",
     "test:watch": "vitest --watch",
     "test:coverage": "turbo run test:coverage",
     "check-types": "turbo run check-types",
-    "gen-workspace": "turbo gen workspace"
+    "prepare": "husky"
   },
   "devDependencies": {
+    "eslint": "^9.33.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.2",
     "prettier": "^3.6.0",
     "turbo": "^2.6.1",
+    "typescript": "^5.9.3",
     "vitest": "^4.0.10"
-  },
-  "engines": {
-    "node": ">=18"
   },
   "packageManager": "npm@11.5.1",
   "workspaces": [

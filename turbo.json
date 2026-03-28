@@ -12,9 +12,6 @@
       "dependsOn": ["^build"],
       "outputs": ["build/**", ".vercel/**", "dist/**"]
     },
-    "lint": {
-      "dependsOn": ["^build", "^lint"]
-    },
     "check-types": {
       "dependsOn": ["^build", "^check-types"]
     },

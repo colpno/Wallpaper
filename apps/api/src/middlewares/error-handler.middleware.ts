@@ -1,10 +1,10 @@
-import type { Error } from "@/constants/schema.constants";
+import type { Error } from "@/constants/schemas.js";
 import type { ErrorRequestHandler } from "express";
 
 import { HttpStatusCodes } from "@repo/shared";
 
-import env from "@/env";
-import logger from "@/lib/logger";
+import env from "@/configs/env.js";
+import logger from "@/lib/logger.js";
 
 const errorHandler: ErrorRequestHandler = (err, _req, res) => {
   logger.error(err);

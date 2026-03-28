@@ -1,8 +1,8 @@
 import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
 
-import { notFoundSchema } from "@/constants/schema.constants";
-import jsonContent from "@/helpers/json-content";
-import registerRoute from "@/helpers/register-route";
+import { notFoundSchema } from "@/constants/schemas.js";
+import jsonContent from "@/helpers/json-content.js";
+import registerRoute from "@/helpers/register-route.js";
 
 const tags = ["Media"];
 const basePath = "/medias";

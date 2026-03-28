@@ -2,8 +2,8 @@ import { OpenApiGeneratorV31, OpenAPIRegistry } from "@asteasolutions/zod-to-ope
 import { apiReference } from "@scalar/express-api-reference";
 import { type Express, Router } from "express";
 
-import packageJson from "@/../package.json";
-import env from "@/env";
+import packageJson from "@/../package.json" with { type: "json" };
+import env from "@/configs/env.js";
 
 export const registry = new OpenAPIRegistry();
 

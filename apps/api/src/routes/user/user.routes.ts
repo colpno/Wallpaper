@@ -1,6 +1,7 @@
-import type { ZodObjectShapeMap } from "@/types/common.types";
+import type { ZodObjectShapeMap } from "@/types/common.js";
 
-import { HttpStatusCodes, HttpStatusPhrases, Types } from "@repo/shared";
+import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
+import type { User } from "@repo/types";
 
 import {
   errorSchema,
@@ -10,11 +11,11 @@ import {
   objectIdSchema,
   userSchema,
   validationErrorSchema,
-} from "@/constants/schema.constants";
-import jsonContent from "@/helpers/json-content";
-import registerRoute from "@/helpers/register-route";
-import { registry } from "@/lib/openapi";
-import z, { atLeastOneFieldDefined } from "@/lib/zod";
+} from "@/constants/schemas.js";
+import jsonContent from "@/helpers/json-content.js";
+import registerRoute from "@/helpers/register-route.js";
+import { registry } from "@/lib/openapi.js";
+import z, { atLeastOneFieldDefined } from "@/lib/zod.js";
 
 const tags = ["User"];
 const basePath = "/users";
@@ -32,7 +33,7 @@ export const signin = registerRoute({
         z.object({
           email: z.email(),
           password: z.string().min(6),
-        } satisfies ZodObjectShapeMap<Pick<Types.User, "email" | "password">>)
+        } satisfies ZodObjectShapeMap<Pick<User, "email" | "password">>)
       )
     ),
   },
@@ -60,7 +61,7 @@ export const register = registerRoute({
           email: z.email(),
           password: z.string().min(6),
           username: z.string().min(3).max(30),
-        } satisfies ZodObjectShapeMap<Pick<Types.User, "email" | "password" | "username">>)
+        } satisfies ZodObjectShapeMap<Pick<User, "email" | "password" | "username">>)
       )
     ),
   },
@@ -81,7 +82,7 @@ const updateBody = z
     username: z.string().min(3).max(30),
     avatar: fileSchema,
   } satisfies ZodObjectShapeMap<
-    Pick<Types.User, "email" | "password" | "username"> & {
+    Pick<User, "email" | "password" | "username"> & {
       avatar: File;
     }
   >)

@@ -1,7 +1,7 @@
-import type { ValidationError } from "@/constants/schema.constants";
-import type z from "@/lib/zod";
+import type { ValidationError } from "@/constants/schemas.js";
+import type z from "@/lib/zod.js";
 
-import logger from "@/lib/logger";
+import logger from "@/lib/logger.js";
 
 /**
  * Create a structured error object from a ZodError instance.

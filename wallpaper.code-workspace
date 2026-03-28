@@ -1,0 +1,40 @@
+{
+  "folders": [
+    { "path": "." },
+    { "path": "apps/api" },
+    { "path": "apps/client" },
+    { "path": "packages/ui" },
+    { "path": "packages/types" },
+    { "path": "packages/shared" },
+    { "path": "packages/logger" },
+    { "path": "packages/config-eslint" },
+    { "path": "packages/config-prettier" },
+    { "path": "packages/config-typescript" },
+    { "path": "packages/config-vitest" },
+    { "path": "packages/config-tailwind" },
+  ],
+  "settings": {
+    "files.exclude": {
+      "**/.turbo/**": true,
+      "**/node_modules/**": true,
+    },
+    "search.exclude": {
+      "**/dist/**": true,
+      "**/logs/**": true,
+    },
+
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit",
+    },
+    "editor.tabSize": 2,
+    "editor.insertSpaces": true,
+    "editor.detectIndentation": false,
+
+    "tailwindCSS.classFunctions": ["cva", "cn"],
+  },
+  "extensions": {
+    "recommendations": ["dbaeumer.vscode-eslint", "bradlc.vscode-tailwindcss"],
+  },
+}

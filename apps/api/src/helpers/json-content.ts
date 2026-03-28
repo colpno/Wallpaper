@@ -1,7 +1,7 @@
 import type { ResponseConfig, ZodMediaTypeObject } from "@asteasolutions/zod-to-openapi";
-import type { ReferenceObject, SchemaObject } from "@asteasolutions/zod-to-openapi/dist/types";
+import type { ReferenceObject, SchemaObject } from "@asteasolutions/zod-to-openapi/dist/types.js";
 
-import z from "@/lib/zod";
+import z from "@/lib/zod.js";
 
 type Schema = z.ZodType | SchemaObject | ReferenceObject;
 

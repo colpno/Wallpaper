@@ -1,7 +1,8 @@
-import type { ZodObjectShapeMap } from "@/types/common.types";
+import type { ZodObjectShapeMap } from "@/types/common.js";
 import type { ObjectIdToString } from "mongoose";
 
-import { HttpStatusCodes, HttpStatusPhrases, Types } from "@repo/shared";
+import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
+import type { Post } from "@repo/types";
 
 import {
   errorSchema,
@@ -10,29 +11,18 @@ import {
   notFoundSchema,
   objectIdSchema,
   paginationMetaSchema,
-  postSchema,
   validationErrorSchema,
-} from "@/constants/schema.constants";
-import createQuerySchema from "@/helpers/create-query-schema";
-import jsonContent from "@/helpers/json-content";
-import multipartContent from "@/helpers/multipart-content";
-import registerRoute from "@/helpers/register-route";
-import { registry } from "@/lib/openapi";
-import z, { atLeastOneFieldDefined } from "@/lib/zod";
+} from "@/constants/schemas.js";
+import jsonContent from "@/helpers/json-content.js";
+import multipartContent from "@/helpers/multipart-content.js";
+import registerRoute from "@/helpers/register-route.js";
+import { registry } from "@/lib/openapi.js";
+import z, { atLeastOneFieldDefined } from "@/lib/zod.js";
+
+import { postSchema, queryFilterSchema } from "./post.schemas.js";
 
 const tags = ["Post"];
 const basePath = "/posts";
-const querySchema = createQuerySchema<ObjectIdToString<Types.Post>>((schemas) => ({
-  createdAt: schemas.date,
-  updatedAt: schemas.date,
-  removedAt: schemas.date,
-  postTitle: schemas.string,
-  postDescription: schemas.string,
-  postOwner: objectIdSchema,
-  photoWidth: schemas.number,
-  photoHeight: schemas.number,
-  photoAspectRatio: schemas.number,
-}));
 
 export const getOneById = registerRoute({
   tags,
@@ -49,7 +39,7 @@ export const getOneById = registerRoute({
     ),
     query: registry.register(
       "GetPostByIdQuery",
-      querySchema.pick({
+      queryFilterSchema.pick({
         select: true,
         embed: true,
       })
@@ -72,7 +62,7 @@ export const getMany = registerRoute({
   summary: "Get multiple posts",
   description: "Retrieve multiple posts.",
   request: {
-    query: registry.register("GetPostsQuery", querySchema),
+    query: registry.register("GetPostsQuery", queryFilterSchema),
   },
   responses: {
     [HttpStatusCodes.OK]: jsonContent(
@@ -106,7 +96,7 @@ export const add = registerRoute({
           photo: fileSchema,
           photoBlurHash: z.string(),
         } satisfies ZodObjectShapeMap<
-          Partial<ObjectIdToString<Types.Post>> & {
+          Partial<ObjectIdToString<Post>> & {
             photo: File;
           }
         >)
@@ -129,7 +119,7 @@ const updateBody = z
     postDescription: z.string(),
     photo: fileSchema,
     photoBlurHash: z.string(),
-  } satisfies ZodObjectShapeMap<Partial<Types.Post> & { photo: File }>)
+  } satisfies ZodObjectShapeMap<Partial<Post> & { photo: File }>)
   .partial()
   .superRefine((data, ctx) => {
     if (data.photo && !data.photoBlurHash) {
@@ -258,7 +248,7 @@ export const search = registerRoute({
   summary: "Search for similar posts",
   description: "Search for similar posts using an image or text.",
   request: {
-    query: registry.register("PostSearchQuery", querySchema),
+    query: registry.register("PostSearchQuery", queryFilterSchema),
     body: jsonContent(
       registry.register(
         "PostSearchBody",

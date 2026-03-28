@@ -1,7 +1,7 @@
-import type { Types } from "@repo/shared";
+import type { ExpiredMedia } from "@repo/types";
 import { model, Schema } from "mongoose";
 
-const schema = new Schema<Types.ExpiredMedia>(
+const schema = new Schema<ExpiredMedia>(
   {
     publicId: {
       type: String,

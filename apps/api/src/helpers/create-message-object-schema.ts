@@ -1,4 +1,4 @@
-import z from "@/lib/zod";
+import z from "@/lib/zod.js";
 
 /**
  * Creates a Zod schema for message only.

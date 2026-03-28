@@ -1,6 +1,6 @@
 import { createLogger } from "@repo/logger";
 
-import env from "../env";
+import env from "@/configs/env.js";
 
 const logger = createLogger({
   enabled: env.ENVIRONMENT !== "test",

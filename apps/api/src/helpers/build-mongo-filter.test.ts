@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import buildMongoFilter from "./build-mongo-filter";
+import buildMongoFilter from "./build-mongo-filter.js";
 
 describe("buildMongoFilter", () => {
   it("should convert to $regex", async () => {
@@ -153,63 +153,5 @@ describe("buildMongoFilter", () => {
     expect(result2?.data?.$size).toHaveProperty("$gt", 2);
     expect(result2?.data?.$size).toHaveProperty("$lte", 2);
     expect(result2?.data?.$size).toHaveProperty("$lt", 2);
-  });
-
-  it("should convert to $not", async () => {
-    const result = buildMongoFilter({
-      data: {
-        not: { gt: 30 },
-      },
-    });
-
-    expect(result.data).toBeDefined();
-    expect(result.data).toHaveProperty("$not");
-    expect(result.data!.$not).toBeDefined();
-    expect(result.data!.$not).toHaveProperty("$gt", 30);
-  });
-
-  it("should convert to $and", async () => {
-    const result = buildMongoFilter({
-      and: [{ data: 30 }, { data: { lt: 20 } }],
-    });
-
-    expect(result).toHaveProperty("$and");
-    expect(result.$and).toBeInstanceOf(Array);
-    expect(result.$and).toHaveLength(2);
-    for (const item of result.$and!) {
-      expect(item).toHaveProperty("data");
-    }
-    expect(result.$and![0].data).toBe(30);
-    expect(result.$and![1].data).toHaveProperty("$lt", 20);
-  });
-
-  it("should convert to $or", async () => {
-    const result = buildMongoFilter({
-      or: [{ data: 30 }, { data: { lt: 20 } }],
-    });
-
-    expect(result).toHaveProperty("$or");
-    expect(result.$or).toBeInstanceOf(Array);
-    expect(result.$or).toHaveLength(2);
-    for (const item of result.$or!) {
-      expect(item).toHaveProperty("data");
-    }
-    expect(result.$or![0].data).toBe(30);
-    expect(result.$or![1].data).toHaveProperty("$lt", 20);
-  });
-
-  it("should convert to $nor", async () => {
-    const result = buildMongoFilter({
-      nor: [{ data: 30 }, { data: { lt: 20 } }],
-    });
-
-    expect(result).toHaveProperty("$nor");
-    expect(result.$nor).toBeInstanceOf(Array);
-    expect(result.$nor).toHaveLength(2);
-    for (const item of result.$nor!) {
-      expect(item).toHaveProperty("data");
-    }
-    expect(result.$nor![0].data).toBe(30);
-    expect(result.$nor![1].data).toHaveProperty("$lt", 20);
   });
 });

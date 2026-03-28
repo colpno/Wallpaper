@@ -1,7 +1,7 @@
 import type { ResponseConfig } from "@asteasolutions/zod-to-openapi";
-import type { ReferenceObject, SchemaObject } from "@asteasolutions/zod-to-openapi/dist/types";
+import type { ReferenceObject, SchemaObject } from "@asteasolutions/zod-to-openapi/dist/types.js";
 
-import z from "@/lib/zod";
+import z from "@/lib/zod.js";
 
 type Schema = z.ZodType | SchemaObject | ReferenceObject;
 
@@ -17,7 +17,6 @@ type MultipartContentReturnWithDescription<T extends Schema> = MultipartContentR
   Pick<ResponseConfig, "description">;
 
 export default function multipartContent<T extends Schema>(schema: T): MultipartContentReturn<T>;
-
 export default function multipartContent<T extends Schema>(
   schema: T,
   description: string

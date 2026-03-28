@@ -1,25 +1,30 @@
-import type * as routes from "./post.routes";
-import type { RouteHandler } from "@/types/route-handler.types";
+import type * as routes from "./post.routes.js";
+import type { RouteHandler } from "@/types/route-handler.js";
 
-import { HttpStatusCodes, Types } from "@repo/shared";
+import { HttpStatusCodes } from "@repo/shared";
+import type { Post, PostDB } from "@repo/types";
 
-import { type File } from "@/constants/schema.constants";
-import env from "@/env";
-import buildPipeline from "@/helpers/build-pipeline";
-import HttpError from "@/helpers/HttpError";
-import queryWithOptions from "@/helpers/query-with-options";
-import logger from "@/lib/logger";
-import { describeImage, toEmbeddings } from "@/services/embedding.service";
+import env from "@/configs/env.js";
+import { type File } from "@/constants/schemas.js";
+import buildQueryWithOptions, { buildQuerySettings } from "@/helpers/buildQueryWithOptions.js";
+import HttpError from "@/helpers/HttpError.js";
+import PipelineBuilder from "@/helpers/PipelineBuilder.js";
+import logger from "@/lib/logger.js";
+import { describeImage, toEmbeddings } from "@/services/embedding.service.js";
 
-import { eraseMedia, uploadMedia } from "../media/media.handlers";
-import PostModel from "./post.model";
+import { eraseMedia, uploadMedia } from "../media/media.handlers.js";
+import PostModel from "./post.model.js";
+
+const pipelineBuilder = new PipelineBuilder();
 
 export const getOneById: RouteHandler<routes.GetOneByIdRoute> = async (req, res, next) => {
   try {
-    const post = await queryWithOptions(PostModel, "findOne", {
-      ...req.query,
-      _id: req.params.id,
-    });
+    const { options } = buildQuerySettings(req.query);
+
+    const post = await buildQueryWithOptions(
+      PostModel.findById(req.params.id),
+      options
+    ).lean<PostDB>();
 
     if (!post) {
       return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Post not found" });
@@ -33,7 +38,11 @@ export const getOneById: RouteHandler<routes.GetOneByIdRoute> = async (req, res,
 
 export const getMany: RouteHandler<routes.GetManyRoute> = async (req, res, next) => {
   try {
-    const posts = await queryWithOptions(PostModel, "find", req.query);
+    const { options, queryFilters } = buildQuerySettings(req.query);
+
+    const posts = await buildQueryWithOptions(PostModel.find(queryFilters), options).lean<
+      PostDB[]
+    >();
     const totalItems = await PostModel.estimatedDocumentCount();
 
     return res.status(HttpStatusCodes.OK).json({
@@ -69,7 +78,7 @@ export const add: RouteHandler<routes.AddRoute> = async (req, res, next) => {
       descriptionEmbeddings: await toEmbeddings(aiDescription),
     });
 
-    return res.status(HttpStatusCodes.CREATED).json(newPost);
+    return res.status(HttpStatusCodes.CREATED).json(newPost.toObject<PostDB>());
   } catch (error) {
     next(error);
   }
@@ -86,7 +95,7 @@ export const updateOneById: RouteHandler<routes.UpdateOneByIdRoute> = async (req
       return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Post not found" });
     }
 
-    const updateData: Partial<Types.Post> = { ...req.body };
+    const updateData: Partial<Post> = { ...req.body };
 
     if ("photo" in req.body && req.body.photo) {
       const addedMedia = await uploadMedia(req.body.photo as File);
@@ -95,7 +104,9 @@ export const updateOneById: RouteHandler<routes.UpdateOneByIdRoute> = async (req
       if (post.photoCloudinaryId) await eraseMedia(post.photoCloudinaryId);
     }
 
-    const updatedPost = await PostModel.findByIdAndUpdate(id, updateData, { new: true });
+    const updatedPost = await PostModel.findByIdAndUpdate(id, updateData, {
+      new: true,
+    }).lean<PostDB>();
 
     if (!updatedPost) {
       logger.error(
@@ -197,7 +208,7 @@ export const search: RouteHandler<routes.SearchRoute> = async (req, res, next) =
     const embeddings = await toEmbeddings(search);
 
     const results: Array<
-      Omit<Types.Post, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }
+      Omit<PostDB, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }
     > = await PostModel.aggregate([
       {
         $vectorSearch: {
@@ -219,7 +230,7 @@ export const search: RouteHandler<routes.SearchRoute> = async (req, res, next) =
           photoCloudinaryId: 0,
         },
       },
-      ...buildPipeline(queries),
+      ...pipelineBuilder.build(queries),
     ]);
 
     return res.status(HttpStatusCodes.OK).json(results);

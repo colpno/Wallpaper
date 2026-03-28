@@ -1,25 +1,15 @@
 {
   "extends": ["//"],
   "tasks": {
+    "dev": {
+      "with": ["@repo/shared#dev", "@repo/ui#dev"]
+    },
     "build": {
       "outputs": ["dist/**"],
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        ".env.production.local",
-        ".env.local",
-        ".env.production",
-        ".env"
-      ]
+      "inputs": ["$TURBO_DEFAULT$", ".env*"]
     },
-    "dev": {
-      "inputs": [
-        "$TURBO_DEFAULT$",
-        ".env.development.local",
-        ".env.local",
-        ".env.development",
-        ".env"
-      ]
-    },
-    "test": {}
+    "test": {
+      "outputs": []
+    }
   }
 }

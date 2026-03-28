@@ -1,27 +1,25 @@
 {
   "name": "@repo/shared",
   "version": "0.0.0",
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "exports": {
-    ".": "./dist/index.js"
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
   },
   "scripts": {
     "build": "tsc",
     "dev": "tsc --watch",
-    "lint": "eslint src/",
     "check-types": "tsc --noEmit"
   },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/prettier-config": "*",
-    "@repo/typescript-config": "*",
-    "@repo/vitest-config": "*",
-    "@types/node": "^24.6.2",
-    "eslint": "^9.33.0",
-    "mongoose": "^8.19.0",
-    "typescript": "^5.9.3"
+    "@repo/types": "*",
+    "@repo/typescript-config": "*"
   },
-  "type": "module",
   "private": true
 }

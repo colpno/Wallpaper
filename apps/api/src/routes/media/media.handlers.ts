@@ -1,14 +1,14 @@
-import type * as routes from "./media.routes";
-import type { RouteHandler } from "@/types/route-handler.types";
+import type * as routes from "./media.routes.js";
+import type { RouteHandler } from "@/types/route-handler.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 
-import { type File } from "@/constants/schema.constants";
-import env from "@/env";
-import fileToBase64 from "@/helpers/file-to-base64";
-import * as cloudinary from "@/services/cloudinary.service";
+import env from "@/configs/env.js";
+import { type File } from "@/constants/schemas.js";
+import fileToBase64 from "@/helpers/file-to-base64.js";
+import * as cloudinary from "@/services/cloudinary.service.js";
 
-import ExpiredMediaModel from "./expired-media.model";
+import ExpiredMediaModel from "./expired-media.model.js";
 
 type CloudinaryDeleteFilesResponse = {
   deleted: Record<string, "deleted">;

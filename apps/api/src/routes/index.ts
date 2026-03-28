@@ -1,24 +1,23 @@
 import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
 import { Router } from "express";
 
-import env from "@/env";
-import serveAPIDocument from "@/lib/openapi";
+import env from "@/configs/env.js";
+import serveAPIDocument from "@/lib/openapi.js";
 
-import commentRouter from "./comment/comment.index";
-import mediaRouter from "./media/media.index";
-import postRouter from "./post/post.index";
-import userRouter from "./user/user.index";
+import mediaRouter from "./media/media.index.js";
+import postRouter from "./post/post.index.js";
+import userRouter from "./user/user.index.js";
 
 const router = Router();
 
-const routes: Router[] = [mediaRouter, userRouter, postRouter, commentRouter];
+const routes: Router[] = [mediaRouter, userRouter, postRouter];
 
 router.use("/favicon.ico", (_, res) => res.status(HttpStatusCodes.OK));
 
 serveAPIDocument(router, "/docs");
 
 for (const route of routes) {
-  router.use(env.BASE_ENDPOINT, route);
+  router.use(env.ENVIRONMENT !== "test" ? env.BASE_ENDPOINT : "", route);
 }
 
 router.use((_, res) =>

@@ -1,6 +1,6 @@
 import limiter, { type Options } from "express-rate-limit";
 
-import env from "@/env";
+import env from "@/configs/env.js";
 
 type Config = Omit<Options, "windowMs" | "limit"> & {
   /**

@@ -1,12 +1,10 @@
 {
-  "extends": "@repo/typescript-config",
+  "extends": "@repo/typescript-config/base",
   "compilerOptions": {
-    "resolveJsonModule": true,
-    "moduleResolution": "node",
     "outDir": "dist",
-    "baseUrl": "./src",
+    "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["src/*"]
     }
   },
   "include": ["src/**/*"]

@@ -22,7 +22,7 @@ This project replicates some of Pinterest’s core features such as:
 
 ---
 
-## 🚀 Features
+## ✨ Features
 
 - User-friendly image upload with cropping
 - Image search functionality
@@ -49,15 +49,17 @@ This project replicates some of Pinterest’s core features such as:
 
 ## 📂 Project Structure
 
-- `api`: an [Express](https://expressjs.com/) server
-- `client`: a [ReactJS](https://react.dev/) single page app
-- `@repo/ui`: [Shadcn](https://ui.shadcn.com/) UI library
-- `@repo/logger`: [Winston](https://github.com/winstonjs/winston) logger
-- `@repo/shared`: Shared things used across the monorepo
-- `@repo/eslint-config`: [ESLint](https://eslint.org/) configurations used throughout the monorepo
-- `@repo/prettier-config`: [Prettier](https://prettier.io/) configurations used throughout the monorepo
-- `@repo/typescript-config`: tsconfig.json's used throughout the monorepo
-- `@repo/vitest-config`: [Vitest](https://vitest.dev/) configurations used throughout the monorepo
+- `api`: **Express** API server
+- `client`: **React** app
+- `@repo/ui`: **Shadcn UI** components
+- `@repo/types`: Shared **Typescript** types
+- `@repo/shared`: Shared runtime **Typescript** code
+- `@repo/logger`: Logger configurations
+- `@repo/eslint-config`: **ESLint** configurations
+- `@repo/prettier-config`: **Prettier** configurations
+- `@repo/typescript-config`: **Typescript** configurations
+- `@repo/vitest-config`: **Vitest** configurations
+- `@repo/tailwind-config`: **Tailwind** configurations
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -65,7 +67,7 @@ This project replicates some of Pinterest’s core features such as:
 
 ## 📦 Requisitions
 
-- npm
+- npm >= 11.6.1
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -73,37 +75,43 @@ This project replicates some of Pinterest’s core features such as:
 
 ## ⚙️ Setup & Installation
 
-1. **Clone the repo**
+1. Clone the repo
 
 ```bash
 git clone https://github.com/colpno/Wallpaper.git
-```
-
-2. **Install dependencies**
-
-```bash
 cd Wallpaper
-npm install
 ```
 
-3. **Set up environment variables**
+2. Set up environment variables
 
 ```bash
 cp apps/api/.env.example apps/api/.env
 cp apps/client/.env.example apps/client/.env
 ```
 
-4. **Start developing**
+3. Install dependencies
 
 ```bash
-npm run dev
+npm install
 ```
 
-> **Optional**. Setup MongoDB using Docker Compose:
+> **Optional**: Setup MongoDB using Docker Compose:
 >
 > ```sh
 > docker compose up -d
 > ```
+
+<p align="right">(<a href="#readme-top">back to top</a>)</p>
+
+---
+
+## 🚀 Usage
+
+4. Start developing
+
+```bash
+npm run dev
+```
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

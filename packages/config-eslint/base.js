@@ -1,13 +1,13 @@
 import js from "@eslint/js";
 import tsPlugin from "@typescript-eslint/eslint-plugin";
+import { globalIgnores } from "eslint/config";
 import eslintConfigPrettier from "eslint-config-prettier";
 import onlyWarn from "eslint-plugin-only-warn";
 import simpleImportSort from "eslint-plugin-simple-import-sort";
 import turboPlugin from "eslint-plugin-turbo";
 import tseslint from "typescript-eslint";
-
 /**
- * A shared ESLint configuration for the repository.
+ * A base ESLint configuration for the repository.
  *
  * @type {import("eslint").Linter.Config[]}
  */
@@ -55,4 +55,5 @@ export const config = [
       "@typescript-eslint": tsPlugin,
     },
   },
+  globalIgnores(["**/dist/"]),
 ];

@@ -1,11 +1,11 @@
-import type { Types } from "@repo/shared";
+import type { User, UserDB } from "@repo/types";
 import { model, Schema } from "mongoose";
 
-import { generateSalt, hash } from "@/helpers/crypto";
+import { generateSalt, hash } from "@/helpers/crypto.js";
 
-import PostModel from "../post/post.model";
+import PostModel from "../post/post.model.js";
 
-const schema = new Schema<Types.User>(
+const schema = new Schema<User>(
   {
     username: {
       type: String,
@@ -43,9 +43,9 @@ schema.pre("validate", async function (next) {
 schema.pre(["updateOne", "findOneAndUpdate"], function (next) {
   const update = this.getUpdate();
 
-  if (update && "password" in update && update.password) {
+  if (update && "password" in update && update["password"]) {
     const newSalt = generateSalt();
-    const hashedPassword = hash(update.password, newSalt).hashedValue;
+    const hashedPassword = hash(update["password"], newSalt).hashedValue;
     this.setUpdate({
       ...update,
       salt: newSalt,
@@ -56,7 +56,7 @@ schema.pre(["updateOne", "findOneAndUpdate"], function (next) {
   next();
 });
 
-schema.post("findOneAndDelete", async function (doc?: Types.User) {
+schema.post("findOneAndDelete", async function (doc?: UserDB) {
   if (!doc) return;
 
   await PostModel.deleteMany({ postOwner: doc._id });

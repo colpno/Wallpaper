@@ -1,15 +1,16 @@
-import type { ValidationError } from "@/constants/schema.constants";
+import type { ValidationError } from "@/constants/schemas.js";
 
-import { HttpStatusCodes, Types } from "@repo/shared";
+import { HttpStatusCodes } from "@repo/shared";
+import type { User } from "@repo/types";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import createTestClient from "@/helpers/create-test-client";
-import { images } from "@/lib/test/variables";
+import createTestClient from "@/helpers/create-test-client.js";
+import { images } from "@/test/variables.js";
 
-import UserModel from "./user.model";
-import * as routes from "./user.routes";
+import UserModel from "./user.model.js";
+import * as routes from "./user.routes.js";
 
-type UserKeys = keyof Types.User;
+type UserKeys = keyof User;
 
 const users = [
   new UserModel({
@@ -35,7 +36,10 @@ beforeEach(async () => {
 describe("User routes", () => {
   describe(`${routes.signin.method.toUpperCase()} ${routes.signin.path}`, () => {
     it("returns a successful response", async () => {
-      const res = await signin({ body: { email: "test@example.com", password: "password" } });
+      const res = await signin().send({
+        email: "test@example.com",
+        password: "password",
+      });
 
       expect(res.status).toBe(HttpStatusCodes.OK);
       expect(res.body).toBeDefined();
@@ -48,19 +52,17 @@ describe("User routes", () => {
     });
 
     it("returns an unauthorized error if payload is invalid", async () => {
-      const res = await signin({
-        body: {
-          email: "invalid",
-          password: "a",
-        },
+      const res = await signin().send({
+        email: "invalid",
+        password: "a",
       });
       const body = res.body as ValidationError | undefined;
 
       expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
       expect(body).toBeInstanceOf(Array);
       expect(body).toHaveLength(1);
-      expect(body?.[0].issues).toHaveLength(2);
-      for (const issue of body?.[0].issues || []) {
+      expect(body?.[0]!.issues).toHaveLength(2);
+      for (const issue of body?.[0]!.issues || []) {
         expect(["email", "password"] as UserKeys[]).toContain(issue.path[0]);
       }
     });
@@ -74,28 +76,28 @@ describe("User routes", () => {
     });
 
     it("returns a conflict error if email is already in use", async () => {
-      const res = await register({
-        body: { username: "testuser1", email: "test@example.com", password: "password" },
+      const res = await register().send({
+        username: "testuser1",
+        email: "test@example.com",
+        password: "password",
       });
 
       expect(res.status).toBe(HttpStatusCodes.CONFLICT);
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const res = await register({
-        body: {
-          username: "testuser1",
-          email: "test",
-          password: "a",
-        },
+      const res = await register().send({
+        username: "testuser1",
+        email: "test",
+        password: "a",
       });
       const body = res.body as ValidationError | undefined;
 
       expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
       expect(body).toBeInstanceOf(Array);
       expect(body).toHaveLength(1);
-      expect(body?.[0].issues).toHaveLength(2);
-      for (const issue of body?.[0].issues || []) {
+      expect(body?.[0]!.issues).toHaveLength(2);
+      for (const issue of body?.[0]!.issues || []) {
         expect(["email", "password"] as UserKeys[]).toContain(issue.path[0]);
       }
     });
@@ -103,15 +105,13 @@ describe("User routes", () => {
 
   describe(`${routes.updateOneById.method.toUpperCase()} ${routes.updateOneById.path}`, () => {
     it("returns a successful response", async () => {
-      const res = await updateUserById({
-        params: { id: users[0]._id.toString() },
-      })
-        .attach("avatar", images[0])
-        .field({ email: "updated@example.com" });
+      const res = await updateUserById({ id: users[0]!._id.toString() })
+        .field({ email: "updated@example.com" })
+        .attach("avatar", images[0]!);
 
       expect(res.status).toBe(HttpStatusCodes.OK);
       expect(res.body).toHaveProperty("email" as UserKeys);
-      expect(res.body.email !== users[0].email).toBe(true);
+      expect(res.body.email !== users[0]!.email).toBe(true);
       expect(res.body).toHaveProperty("avatarUrl" as UserKeys);
     });
 
@@ -122,12 +122,9 @@ describe("User routes", () => {
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const res = await updateUserById({
-        params: { id: "invalid" },
-        body: {
-          email: "test",
-          password: "a",
-        },
+      const res = await updateUserById({ id: "invalid" }).send({
+        email: "test",
+        password: "a",
       });
       const body = res.body as ValidationError | undefined;
       const paths = body?.flatMap((b) => b.issues.flatMap((issue) => issue.path));
@@ -141,9 +138,9 @@ describe("User routes", () => {
     });
 
     it("returns a not found error if id does not belong to any", async () => {
-      const res = await updateUserById({
-        params: { id: "68d817527719e9421cb63734" },
-      }).field({ email: "test@example.com" });
+      const res = await updateUserById({ id: "68d817527719e9421cb63734" }).send({
+        email: "test@example.com",
+      });
 
       expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
     });
@@ -156,14 +153,13 @@ describe("User routes", () => {
       expect(users[0]).toHaveProperty("email" as UserKeys);
       expect(users[0]).toHaveProperty("password" as UserKeys);
 
-      const res = await deleteUserById({
-        params: { id: users[0]._id.toString() },
-      });
+      const res = await deleteUserById({ id: users[0]!._id.toString() });
 
       expect(res.status).toBe(HttpStatusCodes.NO_CONTENT);
 
-      const signinRes = await signin({
-        body: { email: users[0].email, password: users[0].password },
+      const signinRes = await signin().send({
+        email: users[0]!.email,
+        password: users[0]!.password,
       });
 
       expect(signinRes.status).toBe(HttpStatusCodes.UNAUTHORIZED);
@@ -176,22 +172,18 @@ describe("User routes", () => {
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const res = await deleteUserById({
-        params: { id: "invalid" },
-      });
+      const res = await deleteUserById({ id: "invalid" });
       const body = res.body as ValidationError | undefined;
 
       expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
       expect(body).toBeInstanceOf(Array);
       expect(body).toHaveLength(1);
-      expect(body?.[0].issues).toHaveLength(1);
-      expect(body?.[0].issues[0].path[0]).toBe("id");
+      expect(body?.[0]!.issues).toHaveLength(1);
+      expect(body?.[0]!.issues[0]!.path[0]).toBe("id");
     });
 
     it("returns a not found error if id does not belong to any", async () => {
-      const res = await deleteUserById({
-        params: { id: "68d817527719e9421cb63734" },
-      });
+      const res = await deleteUserById({ id: "68d817527719e9421cb63734" });
 
       expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
     });

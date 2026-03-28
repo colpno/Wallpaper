@@ -1,7 +1,7 @@
-import createRouter from "@/helpers/create-router";
+import createRouter from "@/helpers/create-router.js";
 
-import * as handlers from "./post.handlers";
-import * as routes from "./post.routes";
+import * as handlers from "./post.handlers.js";
+import * as routes from "./post.routes.js";
 
 const { router: postRouter } = createRouter()
   .route(routes.getOneById, handlers.getOneById)

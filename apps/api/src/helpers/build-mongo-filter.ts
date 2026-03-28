@@ -1,11 +1,11 @@
-import type { KnownKeys } from "@/types/common.types";
-import type { NormalizeFilterOperators } from "@/types/query.types";
-import type { Filter, QuerySelector, RootQuerySelector } from "mongoose";
+import type { KnownKeys } from "@/types/common.js";
+import type { NormalizeFilterOperators } from "@/types/query.js";
+import type { QuerySelector, RootQuerySelector } from "mongoose";
 
-import { Types } from "@repo/shared";
+import type { QueryFilterOperators } from "@repo/types";
 
 const operatorMap: Record<
-  Types.QueryFilterOperators,
+  QueryFilterOperators,
   keyof QuerySelector<unknown> | keyof KnownKeys<RootQuerySelector<unknown>>
 > = {
   eq: "$eq",
@@ -21,10 +21,6 @@ const operatorMap: Record<
   options: "$options",
   size: "$size",
   exists: "$exists",
-  and: "$and",
-  or: "$or",
-  nor: "$nor",
-  not: "$not",
 };
 
 /**
@@ -44,7 +40,7 @@ function parseCondition<T>(input: T): NormalizeFilterOperators<T> {
       continue;
     }
 
-    const mongoOp = operatorMap[key as Types.QueryFilterOperators];
+    const mongoOp = operatorMap[key as QueryFilterOperators];
 
     output[mongoOp] = parseCondition(value);
   }
@@ -71,7 +67,7 @@ function parseCondition<T>(input: T): NormalizeFilterOperators<T> {
  * // }
  */
 export default function buildMongoFilter<TQuery extends object>(query: TQuery) {
-  const filter: Filter<NormalizeFilterOperators<TQuery>> = {};
+  const filter = {} as NormalizeFilterOperators<TQuery>;
 
   for (const [k, v] of Object.entries(query)) {
     Object.assign(filter, parseCondition({ [k]: v }));

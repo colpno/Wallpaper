@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 
-import openApiToExpressRoute from "./open-api-to-express-route";
+import openApiToExpressRoute from "./open-api-to-express-route.js";
 
 test("openApiToExpressRoute", () => {
   const result = openApiToExpressRoute("/users/{userId}/posts/{postId}");

@@ -1,15 +1,17 @@
-import path from "path";
+import { baseConfig } from "@repo/vitest-config";
+import { resolve } from "path";
 import { defineConfig } from "vitest/config";
 
 export default defineConfig({
+  ...baseConfig,
   test: {
-    exclude: ["**/node_modules/**", "**/dist/**"],
-    setupFiles: ["./src/lib/test/setup.ts"],
-    maxWorkers: process.env.CI ? 1 : undefined,
+    ...baseConfig.test,
+    setupFiles: ["./src/test/setup.ts"],
+    maxWorkers: 3,
   },
   resolve: {
     alias: {
-      "@": path.resolve(__dirname, "./src"),
+      "@": resolve(__dirname, "./src"),
     },
   },
 });

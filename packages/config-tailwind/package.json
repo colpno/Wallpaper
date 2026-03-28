@@ -3,6 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "exports": {
-    "./themes.css": "./src/themes.css"
+    "./themes.css": "./themes.css"
+  },
+  "devDependencies": {
+    "@repo/prettier-config": "*"
   }
 }

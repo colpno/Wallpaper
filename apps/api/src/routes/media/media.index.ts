@@ -1,7 +1,7 @@
-import createRouter from "@/helpers/create-router";
+import createRouter from "@/helpers/create-router.js";
 
-import * as handlers from "./media.handlers";
-import * as routes from "./media.routes";
+import * as handlers from "./media.handlers.js";
+import * as routes from "./media.routes.js";
 
 const { router: mediaRouter } = createRouter().route(
   routes.deleteExpiredMedias,

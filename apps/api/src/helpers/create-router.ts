@@ -1,14 +1,15 @@
-import type { RouteHandler, TypedRouteConfig } from "@/types/route-handler.types";
+import type { RouteHandler, TypedRouteConfig } from "@/types/route-handler.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 import { type Request, type RequestHandler, type Response, Router } from "express";
 import multer from "multer";
 
-import { type File } from "@/constants/schema.constants";
-import z from "@/lib/zod";
+import { type File } from "@/constants/schemas.js";
+import z from "@/lib/zod.js";
 
-import createErrorObjectFromZod from "./create-error-object-from-zod";
-import openApiToExpressRoute from "./open-api-to-express-route";
+import createErrorObjectFromZod from "./create-error-object-from-zod.js";
+import { Error500 } from "./HttpError.js";
+import openApiToExpressRoute from "./open-api-to-express-route.js";
 
 const overrideExpressApiObject = <T extends Response | Request>(
   api: T,
@@ -61,7 +62,13 @@ function fileHandling<TConfig extends TypedRouteConfig>(
       req.files && !Array.isArray(req.files)
         ? Object.entries(req.files).reduce(
             (acc, [key, value]) => {
-              acc[key] = bodyShape[key].safeParse([sampleImageFile]).success ? value : value[0];
+              if (key in bodyShape) {
+                acc[key] = bodyShape[key]!.safeParse([sampleImageFile]).success ? value : value[0]!;
+              } else {
+                throw new Error500(
+                  `Error occurs while transforming req.files to match the body schema: ${key} does not exist in ${JSON.stringify(bodyShape)}`
+                );
+              }
               return acc;
             },
             {} as Record<string, Express.Multer.File | Express.Multer.File[]>

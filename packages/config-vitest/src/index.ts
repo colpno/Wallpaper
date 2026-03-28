@@ -13,11 +13,10 @@ export const sharedConfig: ViteUserConfig = {
           },
         ],
       ],
-      enabled: true,
     },
   },
 };
 
 // Re-export specific configs for backwards compatibility
-export { baseConfig } from "./configs/base-config.js";
-export { uiConfig } from "./configs/ui-config.js";
+export { baseConfig } from "./configs/base.js";
+export { uiConfig } from "./configs/ui.js";

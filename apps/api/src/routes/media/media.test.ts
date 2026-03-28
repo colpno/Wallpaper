@@ -1,32 +1,31 @@
 import { HttpStatusCodes } from "@repo/shared";
+import type { ExpiredMediaDB } from "@repo/types";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import createTestClient from "@/helpers/create-test-client";
-import { deleteFiles } from "@/services/cloudinary.service";
+import createTestClient from "@/helpers/create-test-client.js";
+import { deleteFiles } from "@/services/cloudinary.service.js";
+import { seedDatabase, type SeededDB } from "@/test/samples.js";
 
-import ExpiredMediaModel from "./expired-media.model";
-import * as routes from "./media.routes";
+import ExpiredMediaModel from "./expired-media.model.js";
+import * as routes from "./media.routes.js";
 
-const numberOfWithin30Days = 1;
-const expiredMedias = [
-  new ExpiredMediaModel({ publicId: "expired_media_1" }),
-  new ExpiredMediaModel({ publicId: "expired_media_2" }),
-  new ExpiredMediaModel({ publicId: "expired_media_3" }),
-];
-const oldExpiredMedias: typeof expiredMedias = [];
-expiredMedias.slice(numberOfWithin30Days).forEach((m) => {
-  const pastDate = new Date(Date.now() - 35 * 24 * 60 * 60 * 1000 /* 35 days */);
-  m.createdAt = pastDate;
-  m.updatedAt = pastDate;
-  oldExpiredMedias.push(m);
-});
+let db: SeededDB;
+let oldExpiredMedias: ExpiredMediaDB[];
+
 const deleteExpiredMedias = createTestClient(routes.deleteExpiredMedias);
 
-beforeEach(async () => {
-  await ExpiredMediaModel.insertMany(expiredMedias);
-});
-
 describe("Media routes", () => {
+  beforeEach(async () => {
+    db = await seedDatabase();
+
+    const now = new Date();
+    oldExpiredMedias = await ExpiredMediaModel.find({
+      createdAt: {
+        $lte: new Date(now.setMonth(now.getMonth() - 1)),
+      },
+    }).lean<ExpiredMediaDB[]>();
+  });
+
   describe(`${routes.deleteExpiredMedias.method.toUpperCase()} ${routes.deleteExpiredMedias.path}`, () => {
     it("deletes expired medias older than 30 days", async () => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -38,11 +37,11 @@ describe("Media routes", () => {
 
       expect(deleteRes.status).toBe(HttpStatusCodes.NO_CONTENT);
 
-      const remainingExpiredMedias = await ExpiredMediaModel.find();
+      const remainingExpiredMedias = await ExpiredMediaModel.find().lean<ExpiredMediaDB[]>();
 
-      expect(remainingExpiredMedias.length).toBe(numberOfWithin30Days);
+      expect(remainingExpiredMedias.length).toBe(db.expiredMedias.length - oldExpiredMedias.length);
       for (const media of remainingExpiredMedias) {
-        expect(media.createdAt.getTime()).toBeGreaterThan(
+        expect(new Date(media.createdAt).getTime()).toBeGreaterThan(
           new Date(Date.now() - 30 * 24 * 60 * 60 * 1000 /* 30 days */).getTime()
         );
       }

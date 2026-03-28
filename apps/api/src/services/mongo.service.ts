@@ -1,36 +1,21 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 
-import env from "@/env";
+import env from "@/configs/env.js";
 
-const memoryDB = await MongoMemoryServer.create();
+const memoryDB = env.ENVIRONMENT === "test" ? await MongoMemoryServer.create() : undefined;
 
 export async function connectDB() {
-  if (env.ENVIRONMENT === "test") {
+  if (memoryDB) {
     const uri = memoryDB.getUri();
-
-    await mongoose.connect(uri);
-
-    return;
+    return await mongoose.connect(uri);
   }
 
-  if (!env.MONGODB_URI) {
-    console.error("MONGODB_URI is not defined");
-    process.exit(1);
-  }
-
-  try {
-    await mongoose.connect(env.MONGODB_URI);
-
-    console.log("Connected to database");
-  } catch (error) {
-    console.error("Failed to connect to database", error);
-    process.exit(1);
-  }
+  return await mongoose.connect(env.MONGODB_URI);
 }
 
 export async function disconnectDB() {
-  if (env.ENVIRONMENT === "test") {
+  if (memoryDB) {
     await mongoose.connection.dropDatabase();
     await mongoose.connection.close();
     await memoryDB.stop();
@@ -48,6 +33,6 @@ export async function clearCollections() {
 
   for (const key in collections) {
     const collection = collections[key];
-    await collection.deleteMany();
+    await collection?.deleteMany();
   }
 }
