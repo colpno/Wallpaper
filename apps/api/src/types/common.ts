@@ -7,7 +7,7 @@ export type NonOptionalKeys<T> = { [k in keyof T]-?: undefined extends T[k] ? ne
 export type ZodObjectShapeMap<T> = {
   [K in NonOptionalKeys<T>]: z.ZodType<T[K]>;
 } & {
-  [K in Exclude<keyof T, NonOptionalKeys<T>>]?: z.ZodType<T[K]>;
+  [K in Exclude<keyof T, NonOptionalKeys<T>>]?: z.ZodOptional<z.ZodType<Exclude<T[K], undefined>>>;
 };
 
 export type KnownKeys<T> = {
@@ -16,3 +16,10 @@ export type KnownKeys<T> = {
 
 export type PostKeys = keyof Post;
 export type UserKeys = keyof User;
+
+export type RequestSchemas<K extends string> = Record<
+  K,
+  Partial<
+    Record<"params" | "query" | "body", z.ZodType> & Record<"responses", Record<number, z.ZodType>>
+  >
+>;

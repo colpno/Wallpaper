@@ -1,290 +1,246 @@
-import type { ZodObjectShapeMap } from "@/types/common.js";
-import type { ObjectIdToString } from "mongoose";
-
 import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
-import type { Post } from "@repo/types";
 
-import {
-  errorSchema,
-  type File,
-  fileSchema,
-  notFoundSchema,
-  objectIdSchema,
-  paginationMetaSchema,
-  validationErrorSchema,
-} from "@/constants/schemas.js";
-import jsonContent from "@/helpers/json-content.js";
-import multipartContent from "@/helpers/multipart-content.js";
-import registerRoute from "@/helpers/register-route.js";
-import { registry } from "@/lib/openapi.js";
-import z, { atLeastOneFieldDefined } from "@/lib/zod.js";
+import multer from "@/middlewares/multer.js";
+import jsonContent from "@/utils/json-content.js";
+import multipartContent from "@/utils/multipart-content.js";
+import Router from "@/utils/Router.js";
+import { fileSchema } from "@/utils/schemas.js";
 
-import { postSchema, queryFilterSchema } from "./post.schemas.js";
+import * as handlers from "./post.handlers.js";
+import { requestSchemas } from "./post.schemas.js";
 
 const tags = ["Post"];
 const basePath = "/posts";
+const router = new Router();
 
-export const getOneById = registerRoute({
-  tags,
-  method: "get",
-  path: `${basePath}/{id}`,
-  summary: "Get a post by ID",
-  description: "Retrieve a post by its ID.",
-  request: {
-    params: registry.register(
-      "GetPostByIdParams",
-      z.object({
-        id: objectIdSchema,
-      })
-    ),
-    query: registry.register(
-      "GetPostByIdQuery",
-      queryFilterSchema.pick({
-        select: true,
-        embed: true,
-      })
-    ),
-  },
-  responses: {
-    [HttpStatusCodes.OK]: jsonContent(
-      registry.register("GetPostByIdResponse", postSchema),
-      "Successful Response"
-    ),
-    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, HttpStatusPhrases.NOT_FOUND),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(validationErrorSchema, "Validation Error"),
-  },
-});
+export const { router: postRouter } = router;
 
-export const getMany = registerRoute({
+export const getMany = router.register({
   tags,
   method: "get",
   path: basePath,
   summary: "Get multiple posts",
   description: "Retrieve multiple posts.",
   request: {
-    query: registry.register("GetPostsQuery", queryFilterSchema),
+    query: requestSchemas.getMany.query,
   },
   responses: {
     [HttpStatusCodes.OK]: jsonContent(
-      registry.register(
-        "GetPostsResponse",
-        z.object({
-          data: z.array(postSchema),
-          meta: paginationMetaSchema,
-        })
-      ),
+      requestSchemas.getMany.responses[HttpStatusCodes.OK],
       "Successful Response"
     ),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(validationErrorSchema, "Validation Error"),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.getMany.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.getMany.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
   },
-});
+} as const);
 
-export const add = registerRoute({
+export const getOneById = router.register({
+  tags,
+  method: "get",
+  path: `${basePath}/{id}`,
+  summary: "Get a post by ID",
+  description: "Retrieve a post by its ID.",
+  request: {
+    params: requestSchemas.getOneById.params,
+    query: requestSchemas.getOneById.query,
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      requestSchemas.getOneById.responses[HttpStatusCodes.OK],
+      "Successful Response"
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.getOneById.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.getOneById.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
+  },
+} as const);
+
+export const addOne = router.register({
   tags,
   method: "post",
   path: basePath,
   summary: "Add a post",
   description: "Create a new post.",
   request: {
-    body: multipartContent(
-      registry.register(
-        "AddPostBody",
-        z.object({
-          postTitle: z.string(),
-          postDescription: z.string().optional(),
-          postOwner: objectIdSchema,
-          photo: fileSchema,
-          photoBlurHash: z.string(),
-        } satisfies ZodObjectShapeMap<
-          Partial<ObjectIdToString<Post>> & {
-            photo: File;
-          }
-        >)
-      )
-    ),
+    body: multipartContent(requestSchemas.addOne.body),
   },
   responses: {
     [HttpStatusCodes.CREATED]: jsonContent(
-      registry.register("AddPostResponse", postSchema),
+      requestSchemas.addOne.responses[HttpStatusCodes.CREATED],
       "Successful Response"
     ),
-    [HttpStatusCodes.BAD_REQUEST]: jsonContent(errorSchema, "Bad Request"),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(validationErrorSchema, "Validation Error"),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      requestSchemas.addOne.responses[HttpStatusCodes.BAD_REQUEST],
+      "Bad Request"
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.addOne.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
   },
-});
+} as const);
 
-const updateBody = z
-  .object({
-    postTitle: z.string(),
-    postDescription: z.string(),
-    photo: fileSchema,
-    photoBlurHash: z.string(),
-  } satisfies ZodObjectShapeMap<Partial<Post> & { photo: File }>)
-  .partial()
-  .superRefine((data, ctx) => {
-    if (data.photo && !data.photoBlurHash) {
-      ctx.addIssue({
-        code: "custom",
-        path: ["photoBlurHash"],
-        message: "photoBlurHash is required when photo is provided",
-      });
-    }
-  })
-  .refine(atLeastOneFieldDefined, {
-    message: "At least one field must be provided for update",
-  });
-export const updateOneById = registerRoute({
+export const updateOneById = router.register({
   tags,
-  method: "put",
+  method: "patch",
   path: `${basePath}/{id}`,
   summary: "Update a post by ID",
   description: "Update an existing post using its unique ID.",
   request: {
-    params: registry.register(
-      "UpdatePostByIdParams",
-      z.object({
-        id: objectIdSchema,
-      })
-    ),
+    params: requestSchemas.updateOneById.params,
     body: {
       content: {
         "multipart/form-data": {
-          schema: registry.register("UpdatePostByIdBody", updateBody),
+          schema: requestSchemas.updateOneById.body,
         },
         "application/json": {
-          schema: registry.register("UpdatePostByIdBody", updateBody.omit({ photo: true })),
+          schema: requestSchemas.updateOneById.body,
         },
       },
     },
   },
   responses: {
     [HttpStatusCodes.OK]: jsonContent(
-      registry.register("UpdatePostByIdResponse", postSchema),
+      requestSchemas.updateOneById.responses[HttpStatusCodes.OK],
       "Successful Response"
     ),
-    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, HttpStatusPhrases.NOT_FOUND),
-    [HttpStatusCodes.BAD_REQUEST]: jsonContent(errorSchema, "Bad Request"),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(validationErrorSchema, "Validation Error"),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.updateOneById.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      requestSchemas.updateOneById.responses[HttpStatusCodes.BAD_REQUEST],
+      "Bad Request"
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.updateOneById.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
   },
-});
+} as const);
 
-export const removeOneById = registerRoute({
+export const removeOneById = router.register({
   tags,
   method: "delete",
   path: `${basePath}/{id}`,
   summary: "Softly remove a post by ID",
   description: "Softly remove a single post using its unique ID.",
   request: {
-    params: registry.register(
-      "RemovePostByIdParams",
-      z.object({
-        id: objectIdSchema,
-      })
-    ),
+    params: requestSchemas.removeOneById.params,
   },
   responses: {
     [HttpStatusCodes.NO_CONTENT]: {
       description: "No Content",
     },
-    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, HttpStatusPhrases.NOT_FOUND),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(validationErrorSchema, "Validation Error"),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.removeOneById.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.removeOneById.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
   },
-});
+} as const);
 
-export const removeMany = registerRoute({
+export const removeMany = router.register({
   tags,
   method: "delete",
   path: basePath,
   summary: "Remove multiple posts",
   description: "Remove multiple posts using its unique IDs.",
   request: {
-    body: jsonContent(
-      registry.register(
-        "RemovePostsParams",
-        z.object({
-          ids: z.array(objectIdSchema).min(1),
-        })
-      )
-    ),
+    body: jsonContent(requestSchemas.removeMany.body),
   },
   responses: {
     [HttpStatusCodes.NO_CONTENT]: {
       description: "No Content",
     },
-    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, HttpStatusPhrases.NOT_FOUND),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(validationErrorSchema, "Validation Error"),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.removeMany.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.removeMany.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
   },
-});
+} as const);
 
-export const undoRemoval = registerRoute({
+export const undoRemoval = router.register({
   tags,
-  method: "put",
+  method: "patch",
   path: `${basePath}/undo-removal`,
   summary: "Undo removal of multiple posts",
   description: "Undo removal of multiple posts.",
   request: {
-    body: jsonContent(
-      registry.register(
-        "UndoRemovalPostsParams",
-        z.object({
-          ids: z.array(objectIdSchema).min(1),
-        })
-      )
-    ),
+    body: jsonContent(requestSchemas.undoRemoval.body),
   },
   responses: {
     [HttpStatusCodes.NO_CONTENT]: {
       description: "No Content",
     },
-    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, HttpStatusPhrases.NOT_FOUND),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(validationErrorSchema, "Validation Error"),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.undoRemoval.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.undoRemoval.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
   },
-});
+} as const);
 
-export const search = registerRoute({
+export const search = router.register({
   tags,
   method: "post",
   path: `${basePath}/search`,
   summary: "Search for similar posts",
   description: "Search for similar posts using an image or text.",
   request: {
-    query: registry.register("PostSearchQuery", queryFilterSchema),
-    body: jsonContent(
-      registry.register(
-        "PostSearchBody",
-        z.object({
-          search: z.string(),
-        })
-      )
-    ),
+    query: requestSchemas.search.query,
+    body: jsonContent(requestSchemas.search.body),
   },
   responses: {
     [HttpStatusCodes.OK]: jsonContent(
-      registry.register(
-        "PostSearchResponse",
-        z.array(
-          postSchema
-            .omit({
-              descriptionEmbeddings: true,
-              photoCloudinaryId: true,
-            })
-            .extend({
-              score: z.number(),
-            })
-        )
-      ),
+      requestSchemas.search.responses[HttpStatusCodes.OK],
       "Successful Response"
     ),
-    [HttpStatusCodes.SERVICE_UNAVAILABLE]: jsonContent(errorSchema, "Service Unavailable (local)"),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(validationErrorSchema, "Validation Error"),
+    [HttpStatusCodes.SERVICE_UNAVAILABLE]: jsonContent(
+      requestSchemas.search.responses[HttpStatusCodes.SERVICE_UNAVAILABLE],
+      "Service Unavailable (local)"
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.search.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
   },
-});
+} as const);
 
-export type GetOneByIdRoute = typeof getOneById;
-export type GetManyRoute = typeof getMany;
-export type AddRoute = typeof add;
-export type UpdateOneByIdRoute = typeof updateOneById;
-export type RemoveOneByIdRoute = typeof removeOneById;
-export type RemoveManyRoute = typeof removeMany;
-export type UndoRemovalRoute = typeof undoRemoval;
-export type SearchRoute = typeof search;
+router
+  .addHandler(getOneById, [handlers.getOneById])
+  .addHandler(getMany, [handlers.getMany])
+  .addHandler(addOne, ({ validator }) => [
+    multer("single", "photo")(fileSchema),
+    validator,
+    handlers.addOne,
+  ])
+  .addHandler(updateOneById, ({ validator }) => [
+    multer("single", "photo")(fileSchema),
+    validator,
+    handlers.updateOneById,
+  ])
+  .addHandler(removeOneById, [handlers.removeOneById])
+  .addHandler(removeMany, [handlers.removeMany])
+  .addHandler(search, [handlers.search]);

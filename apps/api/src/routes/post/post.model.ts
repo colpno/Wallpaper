@@ -3,9 +3,7 @@ import { model, Schema, type Types, type UpdateQuery } from "mongoose";
 
 import ExpiredMediaModel from "../media/expired-media.model.js";
 
-type SchemaType = Post<Types.ObjectId>;
-
-const schema = new Schema<SchemaType>(
+const schema = new Schema<Post<Types.ObjectId>>(
   {
     removedAt: {
       type: Date,
@@ -22,6 +20,10 @@ const schema = new Schema<SchemaType>(
     },
     postDescription: String,
     photoCloudinaryId: String,
+    photoBlurHash: {
+      type: String,
+      required: true,
+    },
     photoUrl: {
       type: String,
       required: true,
@@ -39,10 +41,6 @@ const schema = new Schema<SchemaType>(
       required: true,
     },
     photoDescription: {
-      type: String,
-      required: true,
-    },
-    photoBlurHash: {
       type: String,
       required: true,
     },

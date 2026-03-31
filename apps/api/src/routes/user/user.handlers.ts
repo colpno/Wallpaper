@@ -1,50 +1,19 @@
-import type * as routes from "./user.routes.js";
-import type { File } from "@/constants/schemas.js";
-import type { RouteHandler } from "@/types/route-handler.js";
+import type { DeleteOneById, UpdateOneById } from "./user.types.js";
+import type { File } from "@/utils/schemas.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 import type { User, UserDB } from "@repo/types";
 
-import { hash } from "@/helpers/crypto.js";
-import HttpError from "@/helpers/HttpError.js";
 import logger from "@/lib/logger.js";
+import HttpError from "@/utils/HttpError.js";
 
 import { eraseMedia, uploadMedia } from "../media/media.handlers.js";
 import UserModel from "./user.model.js";
 
-export const signin: RouteHandler<routes.SigninRoute> = async (req, res, next) => {
-  try {
-    const user = await UserModel.findOne({ email: req.body.email }).lean<UserDB>();
-
-    if (user && user.password === hash(req.body.password, user.salt).hashedValue) {
-      return res.status(HttpStatusCodes.OK).json(user);
-    }
-
-    return res.status(HttpStatusCodes.UNAUTHORIZED).json({ message: "Invalid credentials" });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const register: RouteHandler<routes.RegisterRoute> = async (req, res, next) => {
-  try {
-    const user = await UserModel.findOne({ email: req.body.email });
-
-    if (user) {
-      return res.status(HttpStatusCodes.CONFLICT).json({ message: "User already exists" });
-    }
-
-    const newUser = await UserModel.create(req.body);
-
-    return res.status(HttpStatusCodes.CREATED).json(newUser.toObject<UserDB>());
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const updateOneById: RouteHandler<routes.UpdateUserByIdRoute> = async (req, res, next) => {
+export const updateOneById: UpdateOneById["handler"] = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const avatar = req.file;
 
     const user = await UserModel.findById(id);
 
@@ -55,8 +24,8 @@ export const updateOneById: RouteHandler<routes.UpdateUserByIdRoute> = async (re
 
     const updateData: Partial<User> = { ...req.body };
 
-    if ("avatar" in req.body && req.body.avatar) {
-      const addedMedia = await uploadMedia(req.body.avatar as File);
+    if (avatar) {
+      const addedMedia = await uploadMedia(avatar as File);
       updateData.avatarUrl = addedMedia.secure_url;
 
       if (user.avatarUrl) await eraseMedia(user.avatarUrl);
@@ -79,7 +48,7 @@ export const updateOneById: RouteHandler<routes.UpdateUserByIdRoute> = async (re
   }
 };
 
-export const deleteOneById: RouteHandler<routes.DeleteUserByIdRoute> = async (req, res, next) => {
+export const deleteOneById: DeleteOneById["handler"] = async (req, res, next) => {
   try {
     const user = await UserModel.findByIdAndDelete(req.params.id);
 

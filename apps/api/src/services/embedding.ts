@@ -1,7 +1,7 @@
 import { pipeline } from "@xenova/transformers";
 import { Ollama } from "ollama";
 
-import fileToBase64 from "@/helpers/file-to-base64.js";
+import fileToBase64 from "@/utils/file-to-base64.js";
 
 type File = Parameters<typeof fileToBase64>[0];
 

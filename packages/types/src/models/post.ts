@@ -13,6 +13,7 @@ export type Post<O extends User | UserDB | string | ObjectId = string> = {
   postOwner: O;
   postDescription?: string;
   photoCloudinaryId?: string;
+  photoBlurHash: string;
   photoUrl: string;
   photoWidth: number;
   photoHeight: number;
@@ -20,7 +21,6 @@ export type Post<O extends User | UserDB | string | ObjectId = string> = {
   photoAspectRatio: number;
   /** AI generated. */
   photoDescription: string;
-  photoBlurHash: string;
   descriptionEmbeddings: number[];
 };
 

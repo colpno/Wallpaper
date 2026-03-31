@@ -1,4 +1,4 @@
-import limiter, { type Options } from "express-rate-limit";
+import handler, { type Options } from "express-rate-limit";
 
 import env from "@/configs/env.js";
 
@@ -21,8 +21,8 @@ type Config = Omit<Options, "windowMs" | "limit"> & {
   limit?: number;
 };
 
-const rateLimiter = (config?: Config) =>
-  limiter({
+const rateLimiter = (config?: Partial<Config>) =>
+  handler({
     ...config,
     windowMs: config?.windowMs ?? env.RATE_LIMIT_TIME,
     limit: config?.limit ?? env.RATE_LIMIT_MAX,

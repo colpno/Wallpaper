@@ -1,21 +1,16 @@
 import type { FlattenObject, FlattenObjectKeys, KnownKeys, UnwrapArray } from "./helpers.js";
-import type {
-  PopulateOptions,
-  QueryOptions,
-  SortOrder as MongooseSortOrder,
-  Types,
-} from "mongoose";
+import type { PopulateOptions, QueryOptions, SortOrder as BaseSortOrder, Types } from "mongoose";
 
-export type FilterOperatorsObject<T> = {
+export type FilterOperators<T> = {
   eq?: T;
   ne?: T;
   gt?: T;
   gte?: T;
   lt?: T;
   lte?: T;
-  all?: UnwrapArray<T>[];
-  in?: UnwrapArray<T>[];
-  nin?: UnwrapArray<T>[];
+  all?: T[];
+  in?: T[];
+  nin?: T[];
   exists?: boolean;
   regex?: string;
   options?: "i" | "m" | "x" | "s" | "u";
@@ -31,22 +26,21 @@ export type FilterOperatorsObject<T> = {
       };
 };
 
-export type QueryFilterOperators = keyof FilterOperatorsObject<unknown>;
-
-export type FilterCondition<T> = T | FilterOperatorsObject<T>;
-export type Filter<T> = {
+export type FilterCondition<T> = T | FilterOperators<T>;
+export type Filter<T extends Record<string, unknown>> = {
   [K in keyof T]: K extends `${string}_id`
     ? FilterCondition<string | Types.ObjectId>
     : FilterCondition<T[K]>;
 };
 
-export type SelectValue = boolean | 0 | 1;
-export type Select<T extends string | number | symbol = string> = Partial<Record<T, SelectValue>>;
-
-export type SortOrder = Extract<MongooseSortOrder, "asc" | "desc">;
-export type Sort<T extends string | number | symbol = string> =
-  | Partial<Record<T, SortOrder>>
+export type SortOrder = BaseSortOrder;
+export type Sort<T extends string> =
+  | string
+  | Partial<Record<T, SortOrder | { $meta: unknown }>>
   | [T, SortOrder][];
+
+export type SelectValue = boolean | 0 | 1;
+export type Select<T extends string> = string | { [K in T]?: SelectValue };
 
 export type EmbedOptions<O> = Omit<
   PopulateOptions,
@@ -77,32 +71,32 @@ export type EmbedOptions<O> = Omit<
 
 /**
  * Query filter type that for MongoDB queries.
- * @template Data - The data type to query.
- * @template Pro - Flattened keys of `Data` included in projection.
- * @template S - Flattened keys of `Data` included in sort.
- * @template Pop - Flattened keys of `Data` included in populate.
+ * @template TData - The data type to query.
+ * @template TSelectable - Flattened keys of `Data` included in projection.
+ * @template TSortable - Flattened keys of `Data` included in sort.
+ * @template TEmbeddable - Flattened keys of `Data` included in populate.
  */
 export type QueryFilter<
-  Data,
-  Pro extends string | undefined = undefined,
-  S extends string | undefined = undefined,
-  Pop extends string | undefined = undefined,
+  TData,
+  TSelectable extends string | undefined = undefined,
+  TSortable extends string | undefined = undefined,
+  TEmbeddable extends string | undefined = undefined,
 > = Partial<
   {
     limit: number;
     page: number;
-    select: Select<Pro extends string ? Pro : FlattenObjectKeys<Data>>;
-    sort: Sort<S extends string ? S : FlattenObjectKeys<Data>>;
-    embed: Pop extends string
+    select: Select<[TSelectable] extends [string] ? TSelectable : FlattenObjectKeys<TData>>;
+    sort: Sort<TSortable extends string ? TSortable : FlattenObjectKeys<TData>>;
+    embed: TEmbeddable extends string
       ?
-          | Pop
-          | Pop[]
-          | EmbedOptions<Pick<FlattenObject<Data>, Pop & keyof FlattenObject<Data>>>
-          | EmbedOptions<Pick<FlattenObject<Data>, Pop & keyof FlattenObject<Data>>>[]
+          | TEmbeddable
+          | TEmbeddable[]
+          | EmbedOptions<Pick<FlattenObject<TData>, TEmbeddable & keyof FlattenObject<TData>>>
+          | EmbedOptions<Pick<FlattenObject<TData>, TEmbeddable & keyof FlattenObject<TData>>>[]
       :
-          | FlattenObjectKeys<Data>
-          | FlattenObjectKeys<Data>[]
-          | EmbedOptions<FlattenObject<Data>>
-          | EmbedOptions<FlattenObject<Data>>[];
-  } & Filter<FlattenObject<Data>>
+          | FlattenObjectKeys<TData>
+          | FlattenObjectKeys<TData>[]
+          | EmbedOptions<FlattenObject<TData>>
+          | EmbedOptions<FlattenObject<TData>>[];
+  } & Filter<FlattenObject<TData>>
 >;

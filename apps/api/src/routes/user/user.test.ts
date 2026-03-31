@@ -1,117 +1,35 @@
-import type { ValidationError } from "@/constants/schemas.js";
+import type { UserKeys } from "@/types/common.js";
+import type { ValidationError } from "@/utils/schemas.js";
 
 import { HttpStatusCodes } from "@repo/shared";
-import type { User } from "@repo/types";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import createTestClient from "@/helpers/create-test-client.js";
-import { images } from "@/test/variables.js";
+import { seedDatabase, type SeededDB } from "@/test/samples.js";
+import { testImages } from "@/test/variables.js";
+import createTestClient from "@/utils/create-test-client.js";
 
-import UserModel from "./user.model.js";
+import { signin as signinRouteConfig } from "../auth/auth.routes.js";
 import * as routes from "./user.routes.js";
 
-type UserKeys = keyof User;
-
-const users = [
-  new UserModel({
-    username: "testuser1",
-    email: "test@example.com",
-    password: "password",
-  }),
-  new UserModel({
-    username: "testuser2",
-    email: "test2@example.com",
-    password: "password",
-  }),
-];
-const signin = createTestClient(routes.signin);
-const register = createTestClient(routes.register);
+let db: SeededDB;
 const updateUserById = createTestClient(routes.updateOneById);
 const deleteUserById = createTestClient(routes.deleteOneById);
-
-beforeEach(async () => {
-  await UserModel.insertMany(users);
-});
+const signin = createTestClient(signinRouteConfig);
 
 describe("User routes", () => {
-  describe(`${routes.signin.method.toUpperCase()} ${routes.signin.path}`, () => {
-    it("returns a successful response", async () => {
-      const res = await signin().send({
-        email: "test@example.com",
-        password: "password",
-      });
-
-      expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body).toBeDefined();
-    });
-
-    it("returns a validation error if missing required fields", async () => {
-      const res = await signin();
-
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-    });
-
-    it("returns an unauthorized error if payload is invalid", async () => {
-      const res = await signin().send({
-        email: "invalid",
-        password: "a",
-      });
-      const body = res.body as ValidationError | undefined;
-
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-      expect(body).toBeInstanceOf(Array);
-      expect(body).toHaveLength(1);
-      expect(body?.[0]!.issues).toHaveLength(2);
-      for (const issue of body?.[0]!.issues || []) {
-        expect(["email", "password"] as UserKeys[]).toContain(issue.path[0]);
-      }
-    });
-  });
-
-  describe(`${routes.register.method.toUpperCase()} ${routes.register.path}`, () => {
-    it("returns a validation error if missing required fields", async () => {
-      const res = await register();
-
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-    });
-
-    it("returns a conflict error if email is already in use", async () => {
-      const res = await register().send({
-        username: "testuser1",
-        email: "test@example.com",
-        password: "password",
-      });
-
-      expect(res.status).toBe(HttpStatusCodes.CONFLICT);
-    });
-
-    it("returns a validation error if payload is invalid", async () => {
-      const res = await register().send({
-        username: "testuser1",
-        email: "test",
-        password: "a",
-      });
-      const body = res.body as ValidationError | undefined;
-
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-      expect(body).toBeInstanceOf(Array);
-      expect(body).toHaveLength(1);
-      expect(body?.[0]!.issues).toHaveLength(2);
-      for (const issue of body?.[0]!.issues || []) {
-        expect(["email", "password"] as UserKeys[]).toContain(issue.path[0]);
-      }
-    });
+  beforeEach(async () => {
+    db = await seedDatabase();
   });
 
   describe(`${routes.updateOneById.method.toUpperCase()} ${routes.updateOneById.path}`, () => {
     it("returns a successful response", async () => {
-      const res = await updateUserById({ id: users[0]!._id.toString() })
+      const res = await updateUserById({ id: db.users[0]!._id.toString() })
         .field({ email: "updated@example.com" })
-        .attach("avatar", images[0]!);
+        .attach("avatar", testImages[0]!);
 
       expect(res.status).toBe(HttpStatusCodes.OK);
       expect(res.body).toHaveProperty("email" as UserKeys);
-      expect(res.body.email !== users[0]!.email).toBe(true);
+      expect(res.body.email !== db.users[0]!.email).toBe(true);
       expect(res.body).toHaveProperty("avatarUrl" as UserKeys);
     });
 
@@ -148,21 +66,16 @@ describe("User routes", () => {
 
   describe(`${routes.deleteOneById.method.toUpperCase()} ${routes.deleteOneById.path}`, () => {
     it("returns a successful response", async () => {
-      expect(users.length).toBeGreaterThan(0);
-      expect(users[0]).toHaveProperty("_id" as UserKeys);
-      expect(users[0]).toHaveProperty("email" as UserKeys);
-      expect(users[0]).toHaveProperty("password" as UserKeys);
-
-      const res = await deleteUserById({ id: users[0]!._id.toString() });
+      const res = await deleteUserById({ id: db.users[0]!._id.toString() });
 
       expect(res.status).toBe(HttpStatusCodes.NO_CONTENT);
 
       const signinRes = await signin().send({
-        email: users[0]!.email,
-        password: users[0]!.password,
+        email: db.users[0]!.email,
+        password: db.users[0]!.password,
       });
 
-      expect(signinRes.status).toBe(HttpStatusCodes.UNAUTHORIZED);
+      expect(signinRes.status).toBe(HttpStatusCodes.NOT_FOUND);
     });
 
     it("returns a validation error if missing required fields", async () => {

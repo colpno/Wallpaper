@@ -22,7 +22,7 @@ describe("PipelineBuilder", () => {
     const { photoHeight } = db.posts[0]!;
 
     const pipeline = pipelineBuilder.build<PostDB>({
-      photoHeight: { gte: photoHeight },
+      photoHeight: { $gte: photoHeight },
     });
 
     const results = await PostModel.aggregate<PostDB>(pipeline);
@@ -92,7 +92,7 @@ describe("PipelineBuilder", () => {
     expect(result[0]).toHaveProperty(
       "meta",
       expect.objectContaining({
-        perPage: limit,
+        itemsPerPage: limit,
       } satisfies Partial<PaginationPayload<unknown[]>["meta"]>)
     );
     expect(result[0]!.data.length).toBe(limit);
@@ -112,7 +112,7 @@ describe("PipelineBuilder", () => {
     expect(result[0]).toHaveProperty(
       "meta",
       expect.objectContaining({
-        perPage: limit,
+        itemsPerPage: limit,
       } satisfies Partial<PaginationPayload<unknown[]>["meta"]>)
     );
     expect(result[0]!.data.length).toBe(limit);

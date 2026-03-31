@@ -1,6 +1,6 @@
 import fs from "fs/promises";
-import path from "path";
 import { glob } from "glob";
+import path from "path";
 
 async function collectCoverageFiles() {
   try {
@@ -42,7 +42,7 @@ async function collectCoverageFiles() {
             const destinationFile = path.join(destinationDir, `${directoryName}.json`);
 
             await fs.copyFile(coverageFilePath, destinationFile);
-          } catch (err) {
+          } catch {
             // File doesn't exist in this directory, skip
           }
         }

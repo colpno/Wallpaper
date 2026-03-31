@@ -100,6 +100,8 @@ npm install
 > ```sh
 > docker compose up -d
 > ```
+>
+> Local connection string: mongodb://localhost:27017/
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

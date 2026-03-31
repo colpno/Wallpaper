@@ -7,18 +7,20 @@ import ExpiredMediaModel from "@/routes/media/expired-media.model.js";
 import PostModel from "@/routes/post/post.model.js";
 import UserModel from "@/routes/user/user.model.js";
 
+import { testUserPassword } from "./variables.js";
+
 faker.seed(123);
 
 export const createPost = (): Readonly<Required<Omit<Post, "postOwner" | "removedAt">>> => ({
   postTitle: faker.lorem.words({ min: 2, max: 5 }),
   postDescription: faker.commerce.productDescription(),
   photoCloudinaryId: faker.string.alphanumeric({ length: 20, casing: "lower" }),
+  photoBlurHash: faker.string.alphanumeric({ length: 28 }),
   photoUrl: faker.image.url(),
   photoWidth: faker.number.int({ min: 200, max: 1000 }),
   photoHeight: faker.number.int({ min: 200, max: 1000 }),
   photoAspectRatio: faker.number.float({ min: 0, max: 0.9, fractionDigits: 2 }),
   photoDescription: faker.food.description(),
-  photoBlurHash: faker.string.alphanumeric(6),
   descriptionEmbeddings: faker.helpers.multiple(
     () => faker.number.float({ min: 0, max: 0.9, fractionDigits: 4 }),
     {
@@ -30,7 +32,7 @@ export const createPost = (): Readonly<Required<Omit<Post, "postOwner" | "remove
 export const createUser = (): Readonly<Required<User>> => ({
   username: faker.string.alphanumeric({ length: 6 }),
   email: faker.internet.email(),
-  password: faker.string.alphanumeric({ length: 12 }),
+  password: testUserPassword,
   salt: faker.string.alphanumeric({ length: 3 }),
   avatarUrl: faker.image.url(),
   avatarCloudinaryId: faker.string.alphanumeric({ length: 20, casing: "lower" }),

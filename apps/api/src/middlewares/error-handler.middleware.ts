@@ -1,4 +1,4 @@
-import type { Error } from "@/constants/schemas.js";
+import type { Error } from "@/utils/schemas.js";
 import type { ErrorRequestHandler } from "express";
 
 import { HttpStatusCodes } from "@repo/shared";
@@ -6,7 +6,8 @@ import { HttpStatusCodes } from "@repo/shared";
 import env from "@/configs/env.js";
 import logger from "@/lib/logger.js";
 
-const errorHandler: ErrorRequestHandler = (err, _req, res) => {
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   logger.error(err);
 
   const statusCode = err.statusCode || HttpStatusCodes.INTERNAL_SERVER_ERROR;

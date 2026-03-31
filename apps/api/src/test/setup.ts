@@ -1,17 +1,17 @@
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
 import env from "@/configs/env.js";
-import { clearCollections, connectDB, disconnectDB } from "@/services/mongo.service.js";
+import { clearCollections, connectDB, disconnectDB } from "@/lib/database.js";
 
-import cloudinaryMocks from "./mocks/cloudinary.mock.js";
-import embeddingMocks from "./mocks/embedding.mock.js";
+import cloudinaryMocks from "./mocks/cloudinary.js";
+import embeddingMocks from "./mocks/embedding.js";
 
 if (env.ENVIRONMENT !== "test") {
   throw new Error("ENVIRONMENT must be 'test'");
 }
 
-vi.mock("@/services/cloudinary.service.ts", () => cloudinaryMocks);
-vi.mock("@/services/embedding.service.ts", () => embeddingMocks);
+vi.mock("@/services/cloudinary.ts", () => cloudinaryMocks);
+vi.mock("@/services/embedding.ts", () => embeddingMocks);
 
 beforeAll(async () => {
   await connectDB();

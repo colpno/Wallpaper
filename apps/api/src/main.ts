@@ -1,8 +1,8 @@
 import express from "express";
 
 import env from "./configs/env.js";
-import configureApp from "./helpers/configure-app.js";
-import { connectDB } from "./services/mongo.service.js";
+import { connectDB } from "./lib/database.js";
+import configureApp from "./utils/configure-app.js";
 
 const app = express();
 

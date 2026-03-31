@@ -1,153 +1,84 @@
-import type { ZodObjectShapeMap } from "@/types/common.js";
+import type { UserKeys } from "@/types/common.js";
 
 import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
-import type { User } from "@repo/types";
 
-import {
-  errorSchema,
-  type File,
-  fileSchema,
-  notFoundSchema,
-  objectIdSchema,
-  userSchema,
-  validationErrorSchema,
-} from "@/constants/schemas.js";
-import jsonContent from "@/helpers/json-content.js";
-import registerRoute from "@/helpers/register-route.js";
-import { registry } from "@/lib/openapi.js";
-import z, { atLeastOneFieldDefined } from "@/lib/zod.js";
+import multer from "@/middlewares/multer.js";
+import jsonContent from "@/utils/json-content.js";
+import Router from "@/utils/Router.js";
+import { fileSchema } from "@/utils/schemas.js";
+
+import * as handlers from "./user.handlers.js";
+import { requestSchemas } from "./user.schemas.js";
 
 const tags = ["User"];
 const basePath = "/users";
+const router = new Router();
 
-export const signin = registerRoute({
-  tags,
-  method: "post",
-  path: `${basePath}/signin`,
-  summary: "Signin User",
-  description: "Signin a user with provided credentials.",
-  request: {
-    body: jsonContent(
-      registry.register(
-        "SigninBody",
-        z.object({
-          email: z.email(),
-          password: z.string().min(6),
-        } satisfies ZodObjectShapeMap<Pick<User, "email" | "password">>)
-      )
-    ),
-  },
-  responses: {
-    [HttpStatusCodes.OK]: jsonContent(
-      registry.register("SigninResponse", userSchema),
-      "Successful Response"
-    ),
-    [HttpStatusCodes.UNAUTHORIZED]: jsonContent(errorSchema, "Unauthorized"),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(validationErrorSchema, "Validation Error"),
-  },
-});
+export const { router: userRouter } = router;
 
-export const register = registerRoute({
+export const updateOneById = router.register({
   tags,
-  method: "post",
-  path: `${basePath}/register`,
-  summary: "Register User",
-  description: "Create a new user.",
-  request: {
-    body: jsonContent(
-      registry.register(
-        "RegisterBody",
-        z.object({
-          email: z.email(),
-          password: z.string().min(6),
-          username: z.string().min(3).max(30),
-        } satisfies ZodObjectShapeMap<Pick<User, "email" | "password" | "username">>)
-      )
-    ),
-  },
-  responses: {
-    [HttpStatusCodes.CREATED]: jsonContent(
-      registry.register("RegisterResponse", userSchema),
-      "Successful Response"
-    ),
-    [HttpStatusCodes.CONFLICT]: jsonContent(errorSchema, "User already exists"),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(validationErrorSchema, "Validation Error"),
-  },
-});
-
-const updateBody = z
-  .object({
-    email: z.email(),
-    password: z.string().min(6),
-    username: z.string().min(3).max(30),
-    avatar: fileSchema,
-  } satisfies ZodObjectShapeMap<
-    Pick<User, "email" | "password" | "username"> & {
-      avatar: File;
-    }
-  >)
-  .partial()
-  .refine(atLeastOneFieldDefined, {
-    message: "At least one field must be provided for update",
-  });
-export const updateOneById = registerRoute({
-  tags,
-  method: "put",
+  method: "patch",
   path: `${basePath}/{id}`,
   summary: "Update an user by ID",
   description: "Update an existing user using their unique ID.",
   request: {
-    params: registry.register(
-      "UpdateUserByIdParams",
-      z.object({
-        id: objectIdSchema,
-      })
-    ),
+    params: requestSchemas.updateOneById.params,
     body: {
       content: {
         "multipart/form-data": {
-          schema: registry.register("UpdateUserByIdBody", updateBody),
+          schema: requestSchemas.updateOneById.body,
         },
         "application/json": {
-          schema: updateBody.omit({ avatar: true }),
+          schema: requestSchemas.updateOneById.body,
         },
       },
     },
   },
   responses: {
     [HttpStatusCodes.OK]: jsonContent(
-      registry.register("UpdateUserByIdResponse", userSchema),
+      requestSchemas.updateOneById.responses[HttpStatusCodes.OK],
       "Successful Response"
     ),
-    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, HttpStatusPhrases.NOT_FOUND),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(validationErrorSchema, "Validation Error"),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.updateOneById.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.updateOneById.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
   },
 });
 
-export const deleteOneById = registerRoute({
+export const deleteOneById = router.register({
   tags,
   method: "delete",
   path: `${basePath}/{id}`,
   summary: "Delete an user by ID",
   description: "Delete a single user using their unique ID.",
   request: {
-    params: registry.register(
-      "DeleteUserByIdParams",
-      z.object({
-        id: objectIdSchema,
-      })
-    ),
+    params: requestSchemas.deleteOneById.params,
   },
   responses: {
     [HttpStatusCodes.NO_CONTENT]: {
       description: "No Content",
     },
-    [HttpStatusCodes.NOT_FOUND]: jsonContent(notFoundSchema, HttpStatusPhrases.NOT_FOUND),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(validationErrorSchema, "Validation Error"),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.deleteOneById.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.deleteOneById.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
   },
 });
 
-export type SigninRoute = typeof signin;
-export type RegisterRoute = typeof register;
-export type UpdateUserByIdRoute = typeof updateOneById;
-export type DeleteUserByIdRoute = typeof deleteOneById;
+router
+  .addHandler(updateOneById, ({ validator }) => [
+    multer("single", "avatar" as UserKeys)(fileSchema),
+    validator,
+    handlers.updateOneById,
+  ])
+  .addHandler(deleteOneById, [handlers.deleteOneById]);

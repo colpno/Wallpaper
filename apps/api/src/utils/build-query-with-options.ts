@@ -1,12 +1,14 @@
 import type { QueryFilter } from "@repo/types";
 import { Query } from "mongoose";
 
+type Command = "limit" | "page" | "select" | "sort" | "embed";
+
 type BuildQuerySettingsReturn<T extends Record<string, unknown>> = {
-  queryFilters: Omit<QueryFilter<T>, "limit" | "page" | "select" | "sort" | "embed">;
-  options: Partial<QueryFilter<T>>;
+  queryFilters: Omit<QueryFilter<T>, Command>;
+  options: Pick<QueryFilter<T>, Command>;
 };
 
-export function buildQuerySettings<T extends Record<string, unknown>>(
+export function organizeQueryInput<T extends Record<string, unknown>>(
   args?: QueryFilter<T>
 ): BuildQuerySettingsReturn<T> {
   if (!args) {

@@ -1,25 +1,61 @@
-import type * as routes from "./post.routes.js";
-import type { RouteHandler } from "@/types/route-handler.js";
+import type {
+  AddOne,
+  GetMany,
+  GetOneById,
+  RemoveMany,
+  RemoveOneById,
+  Search,
+  UndoRemoval,
+  UpdateOneById,
+} from "./post.types.js";
+import type { File } from "@/utils/schemas.js";
 
 import { HttpStatusCodes } from "@repo/shared";
-import type { Post, PostDB } from "@repo/types";
+import type { PaginationPayload, Post, PostDB } from "@repo/types";
 
 import env from "@/configs/env.js";
-import { type File } from "@/constants/schemas.js";
-import buildQueryWithOptions, { buildQuerySettings } from "@/helpers/buildQueryWithOptions.js";
-import HttpError from "@/helpers/HttpError.js";
-import PipelineBuilder from "@/helpers/PipelineBuilder.js";
 import logger from "@/lib/logger.js";
-import { describeImage, toEmbeddings } from "@/services/embedding.service.js";
+import { describeImage, toEmbeddings } from "@/services/embedding.js";
+import buildQueryWithOptions, { organizeQueryInput } from "@/utils/build-query-with-options.js";
+import HttpError from "@/utils/HttpError.js";
+import PipelineBuilder from "@/utils/PipelineBuilder.js";
 
 import { eraseMedia, uploadMedia } from "../media/media.handlers.js";
 import PostModel from "./post.model.js";
 
 const pipelineBuilder = new PipelineBuilder();
 
-export const getOneById: RouteHandler<routes.GetOneByIdRoute> = async (req, res, next) => {
+export const getMany: GetMany["handler"] = async (req, res, next) => {
   try {
-    const { options } = buildQuerySettings(req.query);
+    if (req.query.limit) {
+      const pipeline = pipelineBuilder.build(req.query);
+
+      const result = await PostModel.aggregate<PaginationPayload<PostDB[]>>(pipeline);
+
+      if (!result[0]) {
+        return res.status(HttpStatusCodes.NOT_FOUND).json({
+          message: "Can not find any post that meets criteria",
+        });
+      }
+
+      return res.status(HttpStatusCodes.OK).json(result[0]);
+    }
+
+    const { options, queryFilters } = organizeQueryInput(req.query);
+
+    const posts = await buildQueryWithOptions(PostModel.find(queryFilters), options).lean<
+      PostDB[]
+    >();
+
+    return res.status(HttpStatusCodes.OK).json(posts);
+  } catch (error) {
+    return next(error);
+  }
+};
+
+export const getOneById: GetOneById["handler"] = async (req, res, next) => {
+  try {
+    const { options } = organizeQueryInput(req.query);
 
     const post = await buildQueryWithOptions(
       PostModel.findById(req.params.id),
@@ -32,43 +68,19 @@ export const getOneById: RouteHandler<routes.GetOneByIdRoute> = async (req, res,
 
     return res.status(HttpStatusCodes.OK).json(post);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
-export const getMany: RouteHandler<routes.GetManyRoute> = async (req, res, next) => {
+export const addOne: AddOne["handler"] = async (req, res, next) => {
   try {
-    const { options, queryFilters } = buildQuerySettings(req.query);
-
-    const posts = await buildQueryWithOptions(PostModel.find(queryFilters), options).lean<
-      PostDB[]
-    >();
-    const totalItems = await PostModel.estimatedDocumentCount();
-
-    return res.status(HttpStatusCodes.OK).json({
-      data: posts,
-      meta: {
-        totalItems,
-        itemCount: posts.length,
-        itemsPerPage: req.query.limit || posts.length,
-        totalPages: Math.ceil(totalItems / (req.query.limit || posts.length || 1)),
-        currentPage: req.query.page || 1,
-      },
-    });
-  } catch (error) {
-    next(error);
-  }
-};
-
-export const add: RouteHandler<routes.AddRoute> = async (req, res, next) => {
-  try {
-    const { photo, ...rest } = req.body;
+    const photo = req.file as File;
 
     const media = await uploadMedia(photo);
     const aiDescription = await describeImage(photo);
 
     const newPost = await PostModel.create({
-      ...rest,
+      ...req.body,
       photoCloudinaryId: media.public_id,
       photoUrl: media.secure_url,
       photoWidth: media.width,
@@ -80,13 +92,14 @@ export const add: RouteHandler<routes.AddRoute> = async (req, res, next) => {
 
     return res.status(HttpStatusCodes.CREATED).json(newPost.toObject<PostDB>());
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
-export const updateOneById: RouteHandler<routes.UpdateOneByIdRoute> = async (req, res, next) => {
+export const updateOneById: UpdateOneById["handler"] = async (req, res, next) => {
   try {
     const { id } = req.params;
+    const photo = req.file;
 
     const post = await PostModel.findById(id);
 
@@ -97,8 +110,8 @@ export const updateOneById: RouteHandler<routes.UpdateOneByIdRoute> = async (req
 
     const updateData: Partial<Post> = { ...req.body };
 
-    if ("photo" in req.body && req.body.photo) {
-      const addedMedia = await uploadMedia(req.body.photo as File);
+    if (photo) {
+      const addedMedia = await uploadMedia(photo as File);
       updateData.photoCloudinaryId = addedMedia.public_id;
 
       if (post.photoCloudinaryId) await eraseMedia(post.photoCloudinaryId);
@@ -117,11 +130,11 @@ export const updateOneById: RouteHandler<routes.UpdateOneByIdRoute> = async (req
 
     return res.status(HttpStatusCodes.OK).json(updatedPost);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
-export const removeOneById: RouteHandler<routes.RemoveOneByIdRoute> = async (req, res, next) => {
+export const removeOneById: RemoveOneById["handler"] = async (req, res, next) => {
   try {
     const { id } = req.params;
 
@@ -134,11 +147,11 @@ export const removeOneById: RouteHandler<routes.RemoveOneByIdRoute> = async (req
 
     return res.status(HttpStatusCodes.NO_CONTENT).end();
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
-export const removeMany: RouteHandler<routes.RemoveManyRoute> = async (req, res, next) => {
+export const removeMany: RemoveMany["handler"] = async (req, res, next) => {
   try {
     const { ids } = req.body;
 
@@ -153,11 +166,11 @@ export const removeMany: RouteHandler<routes.RemoveManyRoute> = async (req, res,
 
     return res.status(HttpStatusCodes.NO_CONTENT).end();
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
-export const undoRemoval: RouteHandler<routes.UndoRemovalRoute> = async (req, res, next) => {
+export const undoRemoval: UndoRemoval["handler"] = async (req, res, next) => {
   try {
     const { ids } = req.body;
 
@@ -178,7 +191,7 @@ export const undoRemoval: RouteHandler<routes.UndoRemovalRoute> = async (req, re
 
     return res.status(HttpStatusCodes.NO_CONTENT).end();
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };
 
@@ -191,16 +204,15 @@ export const undoRemoval: RouteHandler<routes.UndoRemovalRoute> = async (req, re
  * @see https://typegoose.github.io/mongodb-memory-server/docs/guides/mongodb-server-versions/#mongodb-memory-server-core-version-table
  * @see https://www.mongodb.com/company/blog/product-release-announcements/supercharge-self-managed-apps-search-vector-search-capabilities
  */
-export const search: RouteHandler<routes.SearchRoute> = async (req, res, next) => {
-  if (!env.MONGODB_URI) {
+export const search: Search["handler"] = async (req, res, next) => {
+  if (!env.MONGODB_URI && env.ENVIRONMENT === "test") {
     return res
       .status(HttpStatusCodes.SERVICE_UNAVAILABLE)
       .json({ message: "This feature is not available" });
   }
 
-  const { limit: limitQuery, ...queries } = req.query;
+  const { limit = 50, ...queries } = req.query;
   const { search } = req.body;
-  const limit = limitQuery || 50;
   /** @see https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/#fields */
   const numCandidates = limit * 10 <= 10000 ? limit * 10 : 10000;
 
@@ -235,6 +247,6 @@ export const search: RouteHandler<routes.SearchRoute> = async (req, res, next) =
 
     return res.status(HttpStatusCodes.OK).json(results);
   } catch (error) {
-    next(error);
+    return next(error);
   }
 };

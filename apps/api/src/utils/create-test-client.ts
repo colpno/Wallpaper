@@ -1,23 +1,38 @@
-import type { File } from "@/constants/schemas.js";
 import type z from "@/lib/zod.js";
+import type { RouteConfig } from "@/types/route-handler.js";
 import type { Types } from "mongoose";
 
-import type { RouteConfig } from "@asteasolutions/zod-to-openapi";
+import type { FilterOperators } from "@repo/types";
 import express from "express";
 import request from "supertest";
 
-import configureApp from "@/helpers/configure-app.js";
+import configureApp from "@/utils/configure-app.js";
 
 import { Error500 } from "./HttpError.js";
-import openApiToExpressRoute from "./open-api-to-express-route.js";
+import openApiToExpressPath from "./open-api-to-express-path.js";
 
-type ObjectIdReplacer<Type> = Type extends Types.ObjectId
+type ObjectIdReplacer<T> = T extends Types.ObjectId
   ? string
-  : Type extends Record<string, unknown>
-    ? { [K in keyof Type]: ObjectIdReplacer<Type[K]> }
-    : Type extends Array<infer U>
+  : T extends Record<string, unknown>
+    ? { [K in keyof T]: ObjectIdReplacer<T[K]> }
+    : T extends Array<infer U>
       ? Array<ObjectIdReplacer<U>>
-      : Type;
+      : T;
+
+type FilterOperatorReplacer<T> = T extends `$${infer U}`
+  ? U extends keyof FilterOperators<unknown>
+    ? U
+    : T
+  : T;
+
+type NormalizeFilterOperators<T> =
+  T extends Array<infer U>
+    ? Array<NormalizeFilterOperators<U>>
+    : T extends Record<string, unknown>
+      ? {
+          [K in keyof T as FilterOperatorReplacer<K>]: NormalizeFilterOperators<T[K]>;
+        }
+      : T;
 
 type ExtractRequestInputFromRouteConfig<
   TConfig extends RouteConfig,
@@ -52,7 +67,7 @@ const createApp = () => {
 const resolvePath = (path: string, params?: Record<string, string>): string => {
   if (!params) return path;
 
-  return openApiToExpressRoute(path, (_, routeParamName) => {
+  return openApiToExpressPath(path, (_, routeParamName) => {
     if (!(routeParamName in params)) {
       throw new Error500(
         `Error occurs while converting path from openapi definition to express path: ${routeParamName} does not exist in ${JSON.stringify(params)}`
@@ -71,39 +86,24 @@ const agent = request(createApp());
  */
 export default function createTestClient<
   TConfig extends RouteConfig,
-  TParams = ExtractRequestInputFromRouteConfig<TConfig, "params">,
-  TQuery = ExtractRequestInputFromRouteConfig<TConfig, "query">,
+  TParams extends Record<string, string> | never = ExtractRequestInputFromRouteConfig<
+    TConfig,
+    "params"
+  >,
+  TQuery extends Record<string, unknown> = ExtractRequestInputFromRouteConfig<TConfig, "query">,
   TBody = ExtractRequestInputFromRouteConfig<TConfig, "body">,
 >(config: TConfig) {
   return (params?: TParams extends never ? never : Record<keyof TParams, string>) => {
     const resolvedPath = resolvePath(config.path, params);
     const client = agent[config.method](resolvedPath);
 
-    type SendBody = ObjectIdReplacer<
-      TBody extends Record<string, unknown>
-        ? {
-            [K in keyof TBody as Extract<TBody[K], File> extends never ? K : never]: TBody[K];
-          }
-        : TBody
-    >;
+    type Query = NormalizeFilterOperators<TQuery>;
+    type Body = ObjectIdReplacer<TBody>;
 
-    type AttachField =
-      TBody extends Record<string, unknown>
-        ? {
-            [K in keyof TBody]: Extract<TBody[K], File> extends never ? never : K;
-          }[keyof TBody]
-        : never;
-
-    type AttachRest = Parameters<typeof client.attach> extends [unknown, ...infer Rest] ? Rest : [];
-
-    type TestClient = Omit<typeof client, "send" | "query" | "attach" | "field"> & {
-      query: (query?: TQuery) => TestClient;
-      send: (body?: SendBody) => TestClient;
-      attach: (
-        field: AttachField extends undefined ? string : AttachField,
-        ...rest: AttachRest
-      ) => TestClient;
-      field: (body?: SendBody) => TestClient;
+    type TestClient = Omit<typeof client, "query" | "send" | "field"> & {
+      query: (query?: Query) => TestClient;
+      send: (body?: Body) => TestClient;
+      field: (body?: Body) => TestClient;
     };
 
     return client as TestClient;

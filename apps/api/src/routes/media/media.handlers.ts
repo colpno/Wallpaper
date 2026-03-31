@@ -1,12 +1,11 @@
-import type * as routes from "./media.routes.js";
-import type { RouteHandler } from "@/types/route-handler.js";
+import type { DeleteExpiredMedias } from "./media.types.js";
+import type { File } from "@/utils/schemas.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 
 import env from "@/configs/env.js";
-import { type File } from "@/constants/schemas.js";
-import fileToBase64 from "@/helpers/file-to-base64.js";
-import * as cloudinary from "@/services/cloudinary.service.js";
+import * as cloudinary from "@/services/cloudinary.js";
+import fileToBase64 from "@/utils/file-to-base64.js";
 
 import ExpiredMediaModel from "./expired-media.model.js";
 
@@ -26,11 +25,7 @@ export const uploadMedia = async (file: File) => {
 
 export const eraseMedia = cloudinary.deleteFile;
 
-export const deleteExpiredMedias: RouteHandler<routes.DeleteExpiredMediasRoute> = async (
-  _,
-  res,
-  next
-) => {
+export const deleteExpiredMedias: DeleteExpiredMedias["handler"] = async (_, res, next) => {
   try {
     const expiredMedias = await ExpiredMediaModel.find(
       {

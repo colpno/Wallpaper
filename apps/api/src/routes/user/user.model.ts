@@ -1,8 +1,7 @@
 import type { User, UserDB } from "@repo/types";
 import { model, Schema } from "mongoose";
 
-import { generateSalt, hash } from "@/helpers/crypto.js";
-
+import { generateSalt, hash } from "../auth/auth.services.js";
 import PostModel from "../post/post.model.js";
 
 const schema = new Schema<User>(

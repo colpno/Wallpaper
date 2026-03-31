@@ -1,4 +1,4 @@
-import type { Post, User } from "@repo/types";
+import type { PostDB, UserDB } from "@repo/types";
 import { Button } from "@repo/ui/components";
 import { useCallback } from "react";
 import { BsThreeDots } from "react-icons/bs";
@@ -9,7 +9,7 @@ import Heading from "@/components/ui/Heading";
 import { headerHeight } from "@/constants/components";
 import useMasonryInfinite from "@/hooks/useMasonryInfinite";
 
-const item: Post<User> = {
+const item: PostDB<UserDB> = {
   postTitle:
     "Lorem ipsum dolor sit amet consectetur adipisicing elit. Illo impedit placeat doloribus officiis accusamus ipsa vero repellat, cupiditate reprehenderit laboriosam minus asperiores architecto illum ea adipisci sequi quo non earum?",
   postDescription:
@@ -18,20 +18,19 @@ const item: Post<User> = {
     __v: 0,
     _id: "64b7f4f2f1c2a3b4c5d6e7f8",
     username: "naturelover",
-    displayName: "Nature Lover",
     email: "naturelover@example.com",
     password: "hashedpassword",
     salt: "randomsalt",
     createdAt: "2024-07-18T12:34:56Z",
     updatedAt: "2024-07-18T12:34:56Z",
-  } as User,
+  },
   photoCloudinaryId: "sunset123",
+  photoBlurHash: "djwmwfiw98124uonhfdsola",
   photoUrl: "https://example.com/sunset.jpg",
   photoWidth: 1920,
   photoHeight: 1080,
   photoAspectRatio: 1.78,
   photoDescription: "lorem",
-  photoBlurHash: "LEHV6nWB2yk8pyo0adR*.7kCMdnj",
   descriptionEmbeddings: [0.1, 0.2, 0.3],
   _id: "64b7f4f2f1c2a3b4c5d6e7f8",
   __v: 0,

@@ -33,6 +33,8 @@
     "editor.detectIndentation": false,
 
     "tailwindCSS.classFunctions": ["cva", "cn"],
+    // "prettify-ts.maxDepth": 2,
+    // "prettify-ts.maxUnionMembers": 50,
   },
   "extensions": {
     "recommendations": ["dbaeumer.vscode-eslint", "bradlc.vscode-tailwindcss"],

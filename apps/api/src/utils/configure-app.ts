@@ -2,13 +2,12 @@ import bodyParser from "body-parser";
 import express from "express";
 import { parse } from "qs";
 
+import env from "@/configs/env.js";
+import cors from "@/middlewares/cors.middleware.js";
+import errorHandler from "@/middlewares/error-handler.middleware.js";
 import { morgan } from "@/middlewares/morgan.js";
-
-import env from "../configs/env.js";
-import cors from "../middlewares/cors.middleware.js";
-import errorHandler from "../middlewares/error-handler.middleware.js";
-import rateLimiter from "../middlewares/rate-limiter.middleware.js";
-import router from "../routes/index.js";
+import rateLimiter from "@/middlewares/rate-limiter.middleware.js";
+import router from "@/routes/index.js";
 
 export default function configureApp(app: express.Express) {
   app

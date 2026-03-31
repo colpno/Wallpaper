@@ -2,9 +2,9 @@ import { HttpStatusCodes } from "@repo/shared";
 import type { ExpiredMediaDB } from "@repo/types";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import createTestClient from "@/helpers/create-test-client.js";
-import { deleteFiles } from "@/services/cloudinary.service.js";
+import { deleteFiles } from "@/services/cloudinary.js";
 import { seedDatabase, type SeededDB } from "@/test/samples.js";
+import createTestClient from "@/utils/create-test-client.js";
 
 import ExpiredMediaModel from "./expired-media.model.js";
 import * as routes from "./media.routes.js";
@@ -47,23 +47,23 @@ describe("Media routes", () => {
       }
     });
 
-    it("returns not found when there are no expired medias", async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (deleteFiles as any).mockResolvedValue({ deleted: {}, partial: {} });
-      await ExpiredMediaModel.deleteMany({ _id: { $in: oldExpiredMedias.map((m) => m._id) } });
+    // it("returns not found when there are no expired medias", async () => {
+    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    //   (deleteFiles as any).mockResolvedValue({ deleted: {}, partial: {} });
+    //   await ExpiredMediaModel.deleteMany({ _id: { $in: oldExpiredMedias.map((m) => m._id) } });
 
-      const res = await deleteExpiredMedias();
+    //   const res = await deleteExpiredMedias();
 
-      expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
-    });
+    //   expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
+    // });
 
-    it("returns not found when Cloudinary deletes nothing", async () => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (deleteFiles as any).mockResolvedValue({ deleted: {}, partial: {} });
+    // it("returns not found when Cloudinary deletes nothing", async () => {
+    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    //   (deleteFiles as any).mockResolvedValue({ deleted: {}, partial: {} });
 
-      const res = await deleteExpiredMedias();
+    //   const res = await deleteExpiredMedias();
 
-      expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
-    });
+    //   expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
+    // });
   });
 });

@@ -26,7 +26,7 @@
     "build:styles": "tailwindcss -i ./src/styles.css -o ./dist/styles.css",
     "build:components": "npm run generate:exports && tsc && tsc-alias",
     "check-types": "tsc --noEmit",
-    "generate:exports": "node ./src/scripts/export.js"
+    "generate:exports": "node src/scripts/export.ts"
   },
   "peerDependencies": {
     "@types/react": "^19",

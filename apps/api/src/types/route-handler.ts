@@ -1,49 +1,43 @@
 import type { KnownKeys } from "./common.js";
 import type z from "@/lib/zod.js";
 import type { RequestHandler, Response } from "express";
-import type mongoose from "mongoose";
 
 import type {
-  RouteConfig,
+  RouteConfig as BaseRouteConfig,
   ZodMediaTypeObject,
   ZodRequestBody,
 } from "@asteasolutions/zod-to-openapi";
 
+type MultipartContentType = "multipart/form-data";
 export type RequestContentType =
-  | keyof KnownKeys<NonNullable<NonNullable<RouteConfig["request"]>["body"]>["content"]>
-  | "multipart/form-data";
+  | keyof KnownKeys<NonNullable<NonNullable<BaseRouteConfig["request"]>["body"]>["content"]>
+  | MultipartContentType;
 
-export type TypedRouteConfig = Omit<RouteConfig, "request"> & {
-  request?: Omit<NonNullable<RouteConfig["request"]>, "body"> & {
+export type RouteConfig = Omit<BaseRouteConfig, "request"> & {
+  request?: Omit<NonNullable<BaseRouteConfig["request"]>, "body"> & {
     body?: Omit<ZodRequestBody, "content"> & {
-      content: Partial<Record<RequestContentType, ZodMediaTypeObject>>;
+      content: Partial<
+        Record<
+          Exclude<RequestContentType, MultipartContentType>,
+          Omit<ZodMediaTypeObject, "schema"> & {
+            schema: z.ZodType;
+          }
+        > &
+          Record<
+            MultipartContentType,
+            Omit<ZodMediaTypeObject, "schema"> & {
+              schema: z.ZodObject;
+            }
+          >
+      >;
     };
   };
 };
 
-type ObjectIdToString<T> = T extends string
-  ? string | mongoose.mongo.ObjectId
-  : T extends mongoose.Document
-    ? T
-    : T extends mongoose.TreatAsPrimitives
-      ? T
-      : // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        T extends Record<string, any>
-        ? {
-            [K in keyof T]: T[K] extends string
-              ? string | mongoose.mongo.ObjectId
-              : T[K] extends mongoose.Types.DocumentArray<infer ItemType>
-                ? mongoose.Types.DocumentArray<ObjectIdToString<ItemType>>
-                : T[K] extends mongoose.Types.Subdocument<unknown, unknown, infer SubdocType>
-                  ? mongoose.HydratedSingleSubdocument<ObjectIdToString<SubdocType>>
-                  : ObjectIdToString<T[K]>;
-          }
-        : T;
-
 type TypedResponseMethod<T> = T extends z.ZodType
   ? {
-      json: (body: ObjectIdToString<z.infer<T>>) => void;
-      send: (body: ObjectIdToString<z.infer<T>>) => void;
+      json: (body: z.infer<T>) => void;
+      send: (body: z.infer<T>) => void;
     }
   : never;
 
@@ -51,8 +45,8 @@ type TypedResponseMethod<T> = T extends z.ZodType
  * A typed version of the Express Response object that
  * infers the response types based on the content type of the route configuration.
  */
-type TypedResponse<TConfig extends TypedRouteConfig> = {
-  status: <TCode extends keyof TConfig["responses"]>(
+type TypedResponse<TConfig extends RouteConfig> = {
+  status: <TCode extends Extract<keyof TConfig["responses"], number>>(
     code: TCode
   ) => TConfig["responses"] extends { [K in TCode]: { content: infer TContent } }
     ? TContent["application/json" & keyof TContent] extends { schema: infer TSchema }
@@ -62,10 +56,10 @@ type TypedResponse<TConfig extends TypedRouteConfig> = {
 } & Omit<Response, "status">;
 
 /**
- * A typed version of the Express RequestHandler that
- * infers the request and response types based on the route configuration.
+ * Maps a `RouteConfig` to an Express `RequestHandler` with inferred
+ * types for `req.params`, `req.query`, and `req.body`.
  */
-type TypedRequestHandler<TConfig extends TypedRouteConfig> = RequestHandler<
+type TypedRequestHandler<TConfig extends RouteConfig> = RequestHandler<
   TConfig["request"] extends { params: infer S } ? z.infer<S> : object,
   TConfig["responses"][keyof TConfig["responses"]] extends { content: infer MediaObject }
     ? MediaObject[keyof MediaObject] extends { schema: infer S }
@@ -81,10 +75,12 @@ type TypedRequestHandler<TConfig extends TypedRouteConfig> = RequestHandler<
 >;
 
 /**
- * A typed version of the Express RequestHandler that
- * infers the request and response types based on the route configuration.
+ * Typed route handler based on `RouteConfig`.
+ *
+ * Same as `TypedRequestHandler`, but replaces `res` with a strongly-typed
+ * `TypedResponse` for safe `res.status(...).json(...)`.
  */
-export type RouteHandler<TConfig extends TypedRouteConfig> = {
+export type RouteHandler<TConfig extends RouteConfig> = {
   (
     req: Parameters<TypedRequestHandler<TConfig>>[0],
     res: TypedResponse<TConfig>,
