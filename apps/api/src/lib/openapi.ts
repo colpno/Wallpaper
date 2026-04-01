@@ -31,7 +31,7 @@ export default function serveAPIDocument(router: Router, path: string) {
     apiReference({
       url: `${path}.json`,
       theme: "kepler",
-      layout: "classic",
+      layout: "modern",
       defaultHttpClient: {
         targetKey: "js",
         clientKey: "axios",
