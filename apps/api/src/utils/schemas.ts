@@ -84,3 +84,9 @@ export const metaPaginationSchema = z
     currentPage: z.number().int().nonnegative().openapi({ description: "Current page number" }),
   })
   .openapi("MetaPagination") satisfies ZodType<PaginationPayload<unknown[]>["meta"]>;
+
+export const paginationPayloadSchema = <T extends z.ZodArray>(dataSchema: T) =>
+  z.object({
+    data: dataSchema,
+    meta: metaPaginationSchema,
+  });

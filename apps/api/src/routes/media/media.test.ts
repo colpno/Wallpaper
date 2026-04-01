@@ -8,6 +8,7 @@ import createTestClient from "@/utils/create-test-client.js";
 
 import ExpiredMediaModel from "./expired-media.model.js";
 import * as routes from "./media.routes.js";
+import { requestSchemas } from "./media.schemas.js";
 
 let db: SeededDB;
 let oldExpiredMedias: ExpiredMediaDB[];
@@ -33,9 +34,9 @@ describe("Media routes", () => {
         deleted: Object.fromEntries(oldExpiredMedias.map((m) => [m.publicId, "deleted"])),
       });
 
-      const deleteRes = await deleteExpiredMedias();
+      const deleteResponse = await deleteExpiredMedias();
 
-      expect(deleteRes.status).toBe(HttpStatusCodes.NO_CONTENT);
+      expect(deleteResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
 
       const remainingExpiredMedias = await ExpiredMediaModel.find().lean<ExpiredMediaDB[]>();
 
@@ -47,23 +48,35 @@ describe("Media routes", () => {
       }
     });
 
-    // it("returns not found when there are no expired medias", async () => {
-    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //   (deleteFiles as any).mockResolvedValue({ deleted: {}, partial: {} });
-    //   await ExpiredMediaModel.deleteMany({ _id: { $in: oldExpiredMedias.map((m) => m._id) } });
+    it("returns a not found error when there are no expired medias", async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (deleteFiles as any).mockResolvedValue({ deleted: {}, partial: {} });
+      await ExpiredMediaModel.deleteMany({ _id: { $in: oldExpiredMedias.map((m) => m._id) } });
 
-    //   const res = await deleteExpiredMedias();
+      const response = await deleteExpiredMedias();
 
-    //   expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
-    // });
+      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
 
-    // it("returns not found when Cloudinary deletes nothing", async () => {
-    //   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    //   (deleteFiles as any).mockResolvedValue({ deleted: {}, partial: {} });
+      const parseResult = requestSchemas.deleteExpiredMedias.responses[
+        HttpStatusCodes.NOT_FOUND
+      ].safeParse(response.body);
 
-    //   const res = await deleteExpiredMedias();
+      expect(parseResult.success).toBe(true);
+    });
 
-    //   expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
-    // });
+    it("returns a not found error when Cloudinary deletes nothing", async () => {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (deleteFiles as any).mockResolvedValue({ deleted: {}, partial: {} });
+
+      const response = await deleteExpiredMedias();
+
+      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
+
+      const parseResult = requestSchemas.deleteExpiredMedias.responses[
+        HttpStatusCodes.NOT_FOUND
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
   });
 });

@@ -1,6 +1,3 @@
-import type { UserKeys } from "@/types/common.js";
-import type { ValidationError } from "@/utils/schemas.js";
-
 import { HttpStatusCodes } from "@repo/shared";
 import { beforeEach, describe, expect, it } from "vitest";
 
@@ -10,6 +7,7 @@ import createTestClient from "@/utils/create-test-client.js";
 
 import { signin as signinRouteConfig } from "../auth/auth.routes.js";
 import * as routes from "./user.routes.js";
+import { requestSchemas } from "./user.schemas.js";
 
 let db: SeededDB;
 const updateUserById = createTestClient(routes.updateOneById);
@@ -23,82 +21,115 @@ describe("User routes", () => {
 
   describe(`${routes.updateOneById.method.toUpperCase()} ${routes.updateOneById.path}`, () => {
     it("returns a successful response", async () => {
-      const res = await updateUserById({ id: db.users[0]!._id.toString() })
+      const oldUser = db.users[0]!;
+
+      const response = await updateUserById({ id: oldUser._id })
         .field({ email: "updated@example.com" })
         .attach("avatar", testImages[0]!);
 
-      expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body).toHaveProperty("email" as UserKeys);
-      expect(res.body.email !== db.users[0]!.email).toBe(true);
-      expect(res.body).toHaveProperty("avatarUrl" as UserKeys);
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = requestSchemas.updateOneById.responses[HttpStatusCodes.OK].safeParse(
+        response.body
+      );
+
+      expect(parseResult.success).toBe(true);
+      expect(parseResult.data?.email !== oldUser.email).toBe(true);
+      expect(parseResult.data?.avatarUrl !== oldUser.avatarUrl).toBe(true);
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const res = await updateUserById();
+      const response = await updateUserById();
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.updateOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const res = await updateUserById({ id: "invalid" }).send({
+      const response = await updateUserById({ id: "invalid" }).send({
         email: "test",
         password: "a",
       });
-      const body = res.body as ValidationError | undefined;
-      const paths = body?.flatMap((b) => b.issues.flatMap((issue) => issue.path));
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-      expect(body).toBeInstanceOf(Array);
-      expect(body).toHaveLength(2);
-      for (const path of paths || []) {
-        expect(["id", "email", "password"]).toContain(path);
-      }
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.updateOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a not found error if id does not belong to any", async () => {
-      const res = await updateUserById({ id: "68d817527719e9421cb63734" }).send({
+      const response = await updateUserById({ id: "68d817527719e9421cb63734" }).send({
         email: "test@example.com",
       });
 
-      expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
+      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
+
+      const parseResult = requestSchemas.updateOneById.responses[
+        HttpStatusCodes.NOT_FOUND
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
   });
 
   describe(`${routes.deleteOneById.method.toUpperCase()} ${routes.deleteOneById.path}`, () => {
     it("returns a successful response", async () => {
-      const res = await deleteUserById({ id: db.users[0]!._id.toString() });
+      const user = db.users[0]!;
 
-      expect(res.status).toBe(HttpStatusCodes.NO_CONTENT);
+      const deleteResponse = await deleteUserById({ id: user._id });
 
-      const signinRes = await signin().send({
-        email: db.users[0]!.email,
-        password: db.users[0]!.password,
+      expect(deleteResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
+
+      const signinResponse = await signin().send({
+        email: user.email,
+        password: user.password,
       });
 
-      expect(signinRes.status).toBe(HttpStatusCodes.NOT_FOUND);
+      expect(signinResponse.status).toBe(HttpStatusCodes.NOT_FOUND);
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const res = await deleteUserById();
+      const response = await deleteUserById();
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.deleteOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const res = await deleteUserById({ id: "invalid" });
-      const body = res.body as ValidationError | undefined;
+      const response = await deleteUserById({ id: "invalid" });
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-      expect(body).toBeInstanceOf(Array);
-      expect(body).toHaveLength(1);
-      expect(body?.[0]!.issues).toHaveLength(1);
-      expect(body?.[0]!.issues[0]!.path[0]).toBe("id");
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.deleteOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a not found error if id does not belong to any", async () => {
-      const res = await deleteUserById({ id: "68d817527719e9421cb63734" });
+      const response = await deleteUserById({ id: "68d817527719e9421cb63734" });
 
-      expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
+      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
+
+      const parseResult = requestSchemas.deleteOneById.responses[
+        HttpStatusCodes.NOT_FOUND
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
   });
 });

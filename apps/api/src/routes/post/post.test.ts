@@ -1,15 +1,18 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import type { PostKeys, UserKeys } from "@/types/common.js";
+import type { PostKeys } from "@/types/common.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 import { beforeEach, describe, expect, it } from "vitest";
+import z from "zod";
 
 import { seedDatabase, type SeededDB } from "@/test/samples.js";
 import { testImages } from "@/test/variables.js";
 import createTestClient from "@/utils/create-test-client.js";
-import { type ValidationError, validationErrorSchema } from "@/utils/schemas.js";
+import { paginationPayloadSchema } from "@/utils/schemas.js";
 
+import { userSchema } from "../user/user.schemas.js";
 import * as routes from "./post.routes.js";
+import { postSchema, requestSchemas } from "./post.schemas.js";
 
 let db: SeededDB;
 const getPostById = createTestClient(routes.getOneById);
@@ -26,169 +29,252 @@ describe("Post routes", () => {
 
   describe(`${routes.getOneById.method.toUpperCase()} ${routes.getOneById.path}`, () => {
     it("returns a successful response", async () => {
-      const res = await getPostById({ id: db.posts[0]!._id });
+      const response = await getPostById({ id: db.posts[0]!._id });
 
-      expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body).toBeDefined();
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK].safeParse(
+        response.body
+      );
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a post with stripped properties", async () => {
-      const res = await getPostById({ id: db.posts[0]!._id }).query({
+      const stripKeys: PostKeys[] = ["postTitle", "postOwner"];
+
+      const response = await getPostById({ id: db.posts[0]!._id }).query({
         select: {
           _id: 0,
-          postTitle: 1,
-          postOwner: 1,
+          ...Object.fromEntries(stripKeys.map((key) => [key, 1])),
         },
       });
 
-      expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(Object.keys(res.body).length).toBe(2);
-      expect(res.body).toHaveProperty("postTitle" as PostKeys);
-      expect(res.body).toHaveProperty("postOwner" as PostKeys);
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK]
+        .pick(Object.fromEntries(stripKeys.map((key) => [key, true])))
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a post with populated fields", async () => {
-      const res = await getPostById({ id: db.posts[0]!._id }).query({ embed: "postOwner" });
+      const embedKey: PostKeys = "postOwner";
 
-      expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body).toHaveProperty("postOwner" as PostKeys);
-      expect(typeof res.body.postOwner).toBe("object");
-      expect(res.body.postOwner).toHaveProperty("email" as UserKeys);
+      const response = await getPostById({ id: db.posts[0]!._id }).query({ embed: embedKey });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK]
+        .omit({
+          [embedKey]: true,
+        })
+        .extend({
+          [embedKey]: userSchema,
+        })
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const res = await getPostById();
+      const response = await getPostById();
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.getOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const res = await getPostById({ id: "invalid-id" }).query({
+      const response = await getPostById({ id: "invalid-id" }).query({
         select: {
           // @ts-expect-error
           photoHeight: "invalid-select",
         },
       });
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.getOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a not found error if id does not belong to any", async () => {
-      const res = await getPostById({ id: "68d817527719e9421cb63734" });
+      const response = await getPostById({ id: "68d817527719e9421cb63734" });
 
-      expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
+      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
+
+      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.NOT_FOUND].safeParse(
+        response.body
+      );
+
+      expect(parseResult.success).toBe(true);
     });
   });
 
   describe(`${routes.getMany.method.toUpperCase()} ${routes.getMany.path}`, () => {
     it("Returns filtered posts", async () => {
-      const postOwnerId = db.users[0]!._id.toString();
+      const postOwnerId = db.users[0]!._id;
 
-      const res = await getPosts().query({
+      const response = await getPosts().query({
         postOwner: postOwnerId,
       });
 
-      expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body).toBeInstanceOf(Array);
-      expect(res.body.length).toBeGreaterThan(0);
-      expect(res.body[0]).toHaveProperty("postOwner" as PostKeys, postOwnerId);
-    });
+      expect(response.status).toBe(HttpStatusCodes.OK);
 
-    it("returns a list of posts with stripped properties", async () => {
-      const res = await getPosts().query({
-        select: {
-          _id: 0,
-          postOwner: 1,
-          postTitle: 1,
-        },
-      });
+      const parseResult = z.array(postSchema).safeParse(response.body);
 
-      expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body).toBeInstanceOf(Array);
-      expect(res.body.length).toBeGreaterThan(0);
-      for (const img of res.body) {
-        expect(Object.keys(img).length).toBe(2);
-        expect(img).toHaveProperty("postOwner" as PostKeys);
-        expect(img).toHaveProperty("postTitle" as PostKeys);
+      expect(parseResult.success).toBe(true);
+      for (const post of parseResult.data!) {
+        expect(post.postOwner).toBe(postOwnerId);
       }
     });
 
-    it("returns a paginated list of db.posts", async () => {
-      const res = await getPosts().query({
-        page: 1,
-        limit: 1,
+    it("returns a list of posts with stripped properties", async () => {
+      const stripKeys: PostKeys[] = ["postOwner", "postTitle"];
+
+      const response = await getPosts().query({
+        select: {
+          _id: 0,
+          ...Object.fromEntries(stripKeys.map((key) => [key, 1])),
+        },
       });
 
-      expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body.data).toBeInstanceOf(Array);
-      expect(res.body.data.length).toBe(1);
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z
+        .array(postSchema.pick(Object.fromEntries(stripKeys.map((key) => [key, true]))))
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
-    it("returns a sorted list of db.posts", async () => {
-      const res = await getPosts().query({
+    it("returns a paginated list of posts", async () => {
+      const page = 1;
+      const limit = 1;
+
+      const response = await getPosts().query({ page, limit });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = paginationPayloadSchema(z.array(postSchema)).safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+      expect(parseResult.data!.meta.currentPage).toBe(page);
+      expect(parseResult.data!.meta.itemsPerPage).toBe(limit);
+    });
+
+    it("returns a sorted list of posts", async () => {
+      const response = await getPosts().query({
         sort: {
           photoWidth: "asc",
         },
       });
 
-      expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body).toBeInstanceOf(Array);
-      expect(res.body.length).toBeGreaterThan(1);
-      for (let i = 1; i < res.body.length; i++) {
-        expect(res.body[i - 1].photoWidth <= res.body[i].photoWidth).toBe(true);
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z.array(postSchema).safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+      expect(parseResult.data!.length).toBeGreaterThan(0);
+      if (parseResult.data && parseResult.data.length > 1) {
+        for (let i = 1; i < parseResult.data.length; i++) {
+          expect(parseResult.data[i - 1]!.photoWidth <= parseResult.data[i]!.photoWidth).toBe(true);
+        }
       }
     });
 
-    it("returns a list of db.posts with populated fields", async () => {
-      const res = await getPosts().query({
-        embed: "postOwner",
+    it("returns a list of posts with populated fields", async () => {
+      const embedKey: PostKeys = "postOwner";
+
+      const response = await getPosts().query({
+        embed: embedKey,
       });
 
-      expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body).toBeInstanceOf(Array);
-      expect(res.body.length).toBeGreaterThan(1);
-      for (const post of res.body) {
-        expect(post).toHaveProperty("postOwner" as PostKeys);
-        expect(typeof post.postOwner).toBe("object");
-        expect(post.postOwner).toHaveProperty("email" as UserKeys);
-      }
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z
+        .array(
+          postSchema
+            .omit({
+              [embedKey]: true,
+            })
+            .extend({
+              [embedKey]: userSchema,
+            })
+        )
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const res = await getPosts().query({
+      const response = await getPosts().query({
         limit: -5,
         // @ts-expect-error
         page: "invalid",
       });
-      const body = res.body as ValidationError | undefined;
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-      expect(body).toBeInstanceOf(Array);
-      expect(body).toHaveLength(1);
-      expect(body?.[0]!.issues).toHaveLength(2);
-      for (const issue of body?.[0]!.issues || []) {
-        expect(["limit", "page"]).toContain(issue.path[0]);
-      }
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.getMany.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
   });
 
   describe(`${routes.addOne.method.toUpperCase()} ${routes.addOne.path}`, () => {
-    it("returns a validation error if missing required fields", async () => {
-      const res = await addPost()
-        // @ts-expect-error
+    it("returns a successful response", async () => {
+      const response = await addPost()
         .field({
-          postOwner: db.users[0]!._id.toString(),
+          postTitle: "New Post",
+          postDescription: "New post description",
+          postOwner: db.users[0]!._id,
+          photoBlurHash: "some-random-string",
         })
         .attach("photo", testImages[0]!);
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+      expect(response.status).toBe(HttpStatusCodes.CREATED);
+
+      const parseResult = requestSchemas.addOne.responses[HttpStatusCodes.CREATED].safeParse(
+        response.body
+      );
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a validation error if missing required fields", async () => {
+      const response = await addPost()
+        // @ts-expect-error
+        .field({
+          postOwner: db.users[0]!._id,
+        })
+        .attach("photo", testImages[0]!);
+
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.addOne.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a validation error if payload is invalid", async () => {
       const date = new Date();
       date.setDate(date.getDate() + 1);
 
-      const res = await addPost()
+      const response = await addPost()
         .field({
           postTitle: "New Post",
           postDescription: "This is a new post.",
@@ -196,153 +282,216 @@ describe("Post routes", () => {
           postOwner: 12345,
         })
         .attach("photo", testImages[0]!);
-      const body = res.body as ValidationError | undefined;
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-      expect(body).toBeInstanceOf(Array);
-      expect(body).toHaveLength(1);
-      expect(body?.[0]!.issues).toHaveLength(1);
-      for (const issue of body?.[0]!.issues || []) {
-        expect(["postOwner"] as PostKeys[]).toContain(issue.path[0]);
-      }
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.addOne.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a post without extra field", async () => {
-      const res = await addPost()
+      const extraKey: string = "extraField";
+
+      const response = await addPost()
         .field({
           postTitle: "New Post",
-          postOwner: db.users[0]!._id.toString(),
+          postOwner: db.users[0]!._id,
           postDescription: "This is a new post.",
-          // @ts-expect-error
-          extraField: "extra",
+          photoBlurHash: "New blur hash",
+          [extraKey]: "extra",
         })
         .attach("photo", testImages[0]!);
 
-      expect(res.status).toBe(HttpStatusCodes.CREATED);
-      expect(res.body).not.toHaveProperty("extraField");
+      expect(response.status).toBe(HttpStatusCodes.CREATED);
+
+      const parseResult = requestSchemas.addOne.responses[HttpStatusCodes.CREATED].safeParse(
+        response.body
+      );
+
+      expect(parseResult.success).toBe(true);
+      expect(parseResult.data).not.toHaveProperty(extraKey);
     });
   });
 
   describe(`${routes.updateOneById.method.toUpperCase()} ${routes.updateOneById.path}`, () => {
     it("returns a successful response", async () => {
-      const res = await updatePostById({ id: db.posts[0]!._id }).send({
-        postTitle: "Updated Test Post",
+      const oldPost = db.posts[0]!;
+      const newTitle = "Updated Test Post";
+
+      const response = await updatePostById({ id: oldPost._id }).send({
+        postTitle: newTitle,
       });
 
-      expect(res.status).toBe(HttpStatusCodes.OK);
-      expect(res.body).toHaveProperty("postTitle" as PostKeys, "Updated Test Post");
-      expect(res.body.postTitle !== db.posts[0]!.postTitle).toBe(true);
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = requestSchemas.updateOneById.responses[HttpStatusCodes.OK].safeParse(
+        response.body
+      );
+
+      expect(parseResult.success).toBe(true);
+      expect(parseResult.data).toHaveProperty("postTitle" as PostKeys, newTitle);
+      expect(parseResult.data!.postTitle !== oldPost.postTitle).toBe(true);
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const res = await updatePostById();
+      const response = await updatePostById();
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.updateOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const date = new Date();
-      date.setDate(date.getDate() + 1);
-
-      const res = await updatePostById({ id: "invalid-id" }).send(
+      const response = await updatePostById({ id: "invalid-id" }).send(
         // @ts-expect-error
         { postTitle: 12345 }
       );
-      const { success, data } = validationErrorSchema.safeParse(res.body);
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-      expect(success).toBeTruthy();
-      expect(data).toBeInstanceOf(Array);
-      expect(data).toHaveLength(2);
-      for (const item of data || []) {
-        expect(["id", "postTitle"] as PostKeys[]).toContain(item.issues[0]!.path[0]);
-      }
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.updateOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBeTruthy();
     });
 
     it("returns a not found error if id does not belong to any", async () => {
-      const res = await updatePostById({ id: "68d817527719e9421cb63734" }).send({
+      const response = await updatePostById({ id: "68d817527719e9421cb63734" }).send({
         postTitle: "Updated Title",
       });
 
-      expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
+      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
+
+      const parseResult = requestSchemas.updateOneById.responses[
+        HttpStatusCodes.NOT_FOUND
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
   });
 
   describe(`${routes.removeOneById.method.toUpperCase()} ${routes.removeOneById.path}`, () => {
     it("returns a successful response", async () => {
-      const res = await removePostById({ id: db.posts[0]!._id });
+      const removePostResponse = await removePostById({ id: db.posts[0]!._id });
 
-      expect(res.status).toBe(HttpStatusCodes.NO_CONTENT);
+      expect(removePostResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
 
-      const getRes = await getPostById({ id: db.posts[0]!._id });
+      const getPostResponse = await getPostById({ id: db.posts[0]!._id });
 
-      expect(getRes.body).toHaveProperty("removedAt" as PostKeys);
+      expect(getPostResponse.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK].safeParse(
+        getPostResponse.body
+      );
+
+      expect(parseResult.success).toBe(true);
+      expect(parseResult.data?.removedAt).toBeDefined();
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const res = await removePostById();
+      const response = await removePostById();
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.removeOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const res = await removePostById({ id: "invalid" });
-      const body = res.body as ValidationError | undefined;
+      const response = await removePostById({ id: "invalid" });
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-      expect(body).toBeInstanceOf(Array);
-      expect(body).toHaveLength(1);
-      expect(body?.[0]!.issues).toHaveLength(1);
-      expect(body?.[0]!.issues[0]!.path[0]).toBe("id");
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.removeOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a not found error if id does not belong to any", async () => {
-      const res = await removePostById({ id: "68d817527719e9421cb63734" });
+      const response = await removePostById({ id: "68d817527719e9421cb63734" });
 
-      expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
+      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
+
+      const parseResult = requestSchemas.removeOneById.responses[
+        HttpStatusCodes.NOT_FOUND
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
   });
 
   describe(`${routes.removeMany.method.toUpperCase()} ${routes.removeMany.path}`, () => {
     it("returns a successful response", async () => {
-      const res = await removePosts().send({
-        ids: db.posts.slice(0, 2).map((post) => post._id),
-      });
+      const ids = db.posts.slice(0, 2).map((post) => post._id);
 
-      expect(res.status).toBe(HttpStatusCodes.NO_CONTENT);
+      const removePostsResponse = await removePosts().send({ ids });
 
-      const getRes1 = await getPostById({ id: db.posts[0]!._id });
-      const getRes2 = await getPostById({ id: db.posts[1]!._id });
+      expect(removePostsResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
 
-      expect(getRes1.body).toHaveProperty("removedAt" as PostKeys);
-      expect(getRes2.body).toHaveProperty("removedAt" as PostKeys);
+      const getPostsResponse = await getPosts().query({ _id: { in: ids } });
+
+      expect(getPostsResponse.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z.array(postSchema).safeParse(getPostsResponse.body);
+
+      expect(parseResult.success).toBe(true);
+      expect(parseResult.data?.length).toBe(ids.length);
+      for (const post of parseResult.data ?? []) {
+        expect(post.removedAt).toBeDefined();
+      }
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const res = await removePosts();
+      const response = await removePosts();
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.removeMany.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const res = await removePosts().send({
+      const response = await removePosts().send({
         ids: ["invalid-id"],
       });
-      const body = res.body as ValidationError | undefined;
 
-      expect(res.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-      expect(body).toBeInstanceOf(Array);
-      expect(body).toHaveLength(1);
-      expect(body?.[0]!.issues).toHaveLength(1);
-      expect(body?.[0]!.issues[0]!.path[0]).toBe("ids");
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.removeMany.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
 
     it("returns a not found error if none of the ids belong to any", async () => {
-      const res = await removePosts().send({
+      const response = await removePosts().send({
         ids: ["68d817527719e9421cb63734", "68d817527719e9421cb63735"],
       });
 
-      expect(res.status).toBe(HttpStatusCodes.NOT_FOUND);
+      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
+
+      const parseResult = requestSchemas.removeMany.responses[HttpStatusCodes.NOT_FOUND].safeParse(
+        response.body
+      );
+
+      expect(parseResult.success).toBe(true);
     });
   });
 });

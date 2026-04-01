@@ -49,39 +49,52 @@ export type SeededDB = Readonly<{
 }>;
 
 export const seedDatabase = async (): Promise<SeededDB> => {
-  const users = (await UserModel.insertMany(
-    faker.helpers.multiple(() => createUser(), { count: 4 })
-  )) as unknown as Required<UserDB>[];
+  const users = (
+    await UserModel.insertMany(faker.helpers.multiple(() => createUser(), { count: 4 }))
+  ).map((item) => ({
+    ...item.toObject(),
+    _id: item._id.toString(),
+  })) as unknown as SeededDB["users"];
 
-  const expiredMedias = (await ExpiredMediaModel.insertMany([
-    ...faker.helpers.multiple(() => createExpiredMedia(), { count: 2 }),
-    ...faker.helpers.multiple(
-      () => {
-        const now = new Date();
-        const monthsAgo = faker.number.int({ min: 2, max: 10 });
-        return {
-          ...createExpiredMedia(),
-          createdAt: new Date(now.setMonth(now.getMonth() - monthsAgo)),
-        };
-      },
-      { count: 3 }
-    ),
-  ])) as unknown as Required<ExpiredMediaDB>[];
+  const expiredMedias = (
+    await ExpiredMediaModel.insertMany([
+      ...faker.helpers.multiple(() => createExpiredMedia(), { count: 2 }),
+      ...faker.helpers.multiple(
+        () => {
+          const now = new Date();
+          const monthsAgo = faker.number.int({ min: 2, max: 10 });
+          return {
+            ...createExpiredMedia(),
+            createdAt: new Date(now.setMonth(now.getMonth() - monthsAgo)),
+          };
+        },
+        { count: 3 }
+      ),
+    ])
+  ).map((item) => ({
+    ...item.toObject(),
+    _id: item._id.toString(),
+  })) as unknown as SeededDB["expiredMedias"];
 
   return {
     users,
 
     expiredMedias,
 
-    posts: (await PostModel.insertMany(
-      faker.helpers.multiple(
-        () =>
-          ({
-            ...createPost(),
-            postOwner: faker.helpers.arrayElement(users)._id.toString(),
-          }) satisfies Post,
-        { count: 10 }
+    posts: (
+      await PostModel.insertMany(
+        faker.helpers.multiple(
+          () =>
+            ({
+              ...createPost(),
+              postOwner: faker.helpers.arrayElement(users)._id.toString(),
+            }) satisfies Post,
+          { count: 10 }
+        )
       )
-    )) as unknown as Required<PostDB<Types.ObjectId>>[],
+    ).map((item) => ({
+      ...item.toObject(),
+      _id: item._id.toString(),
+    })) as unknown as SeededDB["posts"],
   };
 };
