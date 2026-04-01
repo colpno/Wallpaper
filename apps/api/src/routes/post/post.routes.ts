@@ -1,6 +1,7 @@
 import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
 
 import multer from "@/middlewares/multer.js";
+import rateLimiter from "@/middlewares/rate-limiter.middleware.js";
 import jsonContent from "@/utils/json-content.js";
 import multipartContent from "@/utils/multipart-content.js";
 import Router from "@/utils/Router.js";
@@ -105,7 +106,7 @@ export const updateOneById = router.register({
           schema: requestSchemas.updateOneById.body,
         },
         "application/json": {
-          schema: requestSchemas.updateOneById.body,
+          schema: requestSchemas.updateOneById.body.omit({ photo: true }),
         },
       },
     },
@@ -243,4 +244,9 @@ router
   ])
   .addHandler(removeOneById, [handlers.removeOneById])
   .addHandler(removeMany, [handlers.removeMany])
-  .addHandler(search, [handlers.search]);
+  .addHandler(search, ({ validator }) => [
+    rateLimiter({ limit: 2, windowMs: 5000 }),
+    multer("single", "image")(fileSchema.optional()),
+    validator,
+    handlers.search,
+  ]);

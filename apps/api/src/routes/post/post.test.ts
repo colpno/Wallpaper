@@ -241,6 +241,7 @@ describe("Post routes", () => {
           postDescription: "New post description",
           postOwner: db.users[0]!._id,
           photoBlurHash: "some-random-string",
+          photo: "no-value",
         })
         .attach("photo", testImages[0]!);
 
@@ -301,6 +302,7 @@ describe("Post routes", () => {
           postOwner: db.users[0]!._id,
           postDescription: "This is a new post.",
           photoBlurHash: "New blur hash",
+          photo: "no-value",
           [extraKey]: "extra",
         })
         .attach("photo", testImages[0]!);

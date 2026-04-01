@@ -30,7 +30,7 @@ export const updateOneById = router.register({
           schema: requestSchemas.updateOneById.body,
         },
         "application/json": {
-          schema: requestSchemas.updateOneById.body,
+          schema: requestSchemas.updateOneById.body.omit({ avatar: true }),
         },
       },
     },

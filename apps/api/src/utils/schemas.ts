@@ -63,6 +63,11 @@ export const fileSchema = z.object({
 }) satisfies ZodType<Omit<Express.Multer.File, "stream" | "destination" | "filename" | "path">>;
 export type File = z.infer<typeof fileSchema>;
 
+/**
+ * Placeholder schema, Multer must handle this.
+ */
+export const placeholderFileSchema = z.any().openapi({ type: "string", format: "binary" });
+
 export const metaPaginationSchema = z
   .object({
     totalItems: z

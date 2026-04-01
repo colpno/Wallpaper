@@ -212,12 +212,13 @@ export const search: Search["handler"] = async (req, res, next) => {
   }
 
   const { limit = 50, ...queries } = req.query;
-  const { search } = req.body;
   /** @see https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/#fields */
   const numCandidates = limit * 10 <= 10000 ? limit * 10 : 10000;
 
   try {
-    const embeddings = await toEmbeddings(search);
+    const embeddings = await toEmbeddings(
+      "text" in req.body ? req.body.text : await describeImage(req.file!)
+    );
 
     const results: Array<
       Omit<PostDB, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }

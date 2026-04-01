@@ -10,6 +10,7 @@ import {
   atLeastOneField,
   notFoundSchema,
   objectIdSchema,
+  placeholderFileSchema,
   validationErrorSchema,
 } from "@/utils/schemas.js";
 
@@ -40,8 +41,11 @@ export const requestSchemas = {
         email: z.email().optional(),
         password: z.string().min(6).optional(),
         username: z.string().min(3).max(30).optional(),
-      } satisfies ZodObjectShapeMap<Omit<UpdateOneById["body"], "photo">>)
-      .refine(atLeastOneField),
+      })
+      .extend({
+        avatar: placeholderFileSchema,
+      })
+      .refine(atLeastOneField) satisfies ZodType<UpdateOneById["body"]>,
     responses: {
       [HttpStatusCodes.OK]: userSchema satisfies ZodType<UpdateOneById["response"]>,
       [HttpStatusCodes.NOT_FOUND]: notFoundSchema,

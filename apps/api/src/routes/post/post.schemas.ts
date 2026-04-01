@@ -23,6 +23,7 @@ import {
   metaPaginationSchema,
   notFoundSchema,
   objectIdSchema,
+  placeholderFileSchema,
   validationErrorSchema,
 } from "@/utils/schemas.js";
 
@@ -105,12 +106,16 @@ export const requestSchemas = {
   },
 
   addOne: {
-    body: postSchema.pick({
-      postTitle: true,
-      postDescription: true,
-      postOwner: true,
-      photoBlurHash: true,
-    }) satisfies ZodType<Omit<AddOne["body"], "photo">>,
+    body: postSchema
+      .pick({
+        postTitle: true,
+        postDescription: true,
+        postOwner: true,
+        photoBlurHash: true,
+      })
+      .extend({
+        photo: placeholderFileSchema,
+      }) satisfies ZodType<AddOne["body"]>,
     responses: {
       [HttpStatusCodes.CREATED]: postSchema satisfies ZodType<AddOne["response"]>,
       [HttpStatusCodes.BAD_REQUEST]: errorSchema,
@@ -128,6 +133,9 @@ export const requestSchemas = {
         postDescription: true,
         photoBlurHash: true,
       } satisfies Record<keyof Omit<Required<UpdateOneById["body"]>, "photo">, true>)
+      .extend({
+        photo: placeholderFileSchema,
+      })
       .partial()
       .refine(atLeastOneField),
     responses: {
@@ -170,9 +178,14 @@ export const requestSchemas = {
 
   search: {
     query: queryFilterSchema,
-    body: z.object({
-      search: z.string(),
-    } satisfies ZodObjectShapeMap<Search["body"]>),
+    body: z.union([
+      z.object({
+        text: z.string(),
+      }),
+      z.object({
+        image: placeholderFileSchema,
+      }),
+    ]) satisfies ZodType<Search["body"]>,
     responses: {
       [HttpStatusCodes.OK]: z.array(
         postSchema
