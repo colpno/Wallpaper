@@ -211,7 +211,16 @@ export const search = router.register({
   description: "Search for similar posts using an image or text.",
   request: {
     query: requestSchemas.search.query,
-    body: jsonContent(requestSchemas.search.body),
+    body: {
+      content: {
+        "application/json": {
+          schema: requestSchemas.search.body,
+        },
+        "multipart/form-data": {
+          schema: requestSchemas.search.body,
+        },
+      },
+    },
   },
   responses: {
     [HttpStatusCodes.OK]: jsonContent(

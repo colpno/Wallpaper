@@ -26,7 +26,7 @@ export type RouteConfig = Omit<BaseRouteConfig, "request"> & {
           Record<
             MultipartContentType,
             Omit<ZodMediaTypeObject, "schema"> & {
-              schema: z.ZodObject;
+              schema: z.ZodType;
             }
           >
       >;
