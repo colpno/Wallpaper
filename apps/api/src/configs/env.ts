@@ -31,6 +31,7 @@ const schema = z.object({
   CLOUDINARY_CLOUD_NAME: z.string(),
   CLOUDINARY_API_KEY: z.string(),
   CLOUDINARY_API_SECRET: z.string(),
+  HUGGING_FACE_TOKEN: z.string(),
 });
 
 const { error, data: env, success } = schema.safeParse(process.env);
