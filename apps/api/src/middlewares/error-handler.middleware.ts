@@ -8,18 +8,22 @@ import logger from "@/lib/logger.js";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
-  logger.error(err);
+  try {
+    logger.error(err);
 
-  const statusCode = err.statusCode || HttpStatusCodes.INTERNAL_SERVER_ERROR;
-  const error: Error = {
-    message: err.message,
-  };
+    const statusCode = err.statusCode || HttpStatusCodes.INTERNAL_SERVER_ERROR;
+    const error: Error = {
+      message: err.message,
+    };
 
-  if (env.ENVIRONMENT !== "production") {
-    error.stack = err.stack;
+    if (env.ENVIRONMENT !== "production") {
+      error.stack = err.stack;
+    }
+
+    return res.status(statusCode).json(error);
+  } catch {
+    return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Unhandled errors" });
   }
-
-  res.status(statusCode).json(error);
 };
 
 export default errorHandler;

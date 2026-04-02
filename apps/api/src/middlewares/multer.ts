@@ -13,7 +13,7 @@ const multer =
   (validationSchema?: ZodType): RequestHandler =>
   (req, res, next) =>
     handler()[method](...(args as [never]))(req, res, function (error: unknown) {
-      if (error) throw error;
+      if (error) return next(error);
 
       // Validate
       const methods: Method[] = ["single", "array", "fields"];
