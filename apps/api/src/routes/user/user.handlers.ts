@@ -18,7 +18,7 @@ export const updateOneById: UpdateOneById["handler"] = async (req, res, next) =>
     const user = await UserModel.findById(id);
 
     if (!user) {
-      logger.error(`User with id ${id.toString()} not found`);
+      logger.debug(`User with id ${id.toString()} not found`);
       return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "User not found" });
     }
 
@@ -36,7 +36,7 @@ export const updateOneById: UpdateOneById["handler"] = async (req, res, next) =>
     }).lean<UserDB>();
 
     if (!updatedUser) {
-      logger.error(
+      logger.debug(
         `User with id ${id.toString()} not found after update with new data ${JSON.stringify(updateData)}`
       );
       throw new HttpError(HttpStatusCodes.NOT_FOUND, "User not found after update");

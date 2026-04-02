@@ -104,7 +104,7 @@ export const updateOneById: UpdateOneById["handler"] = async (req, res, next) =>
     const post = await PostModel.findById(id);
 
     if (!post) {
-      logger.error(`Post with id ${id.toString()} not found`);
+      logger.debug(`Post with id ${id.toString()} not found`);
       return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Post not found" });
     }
 
@@ -122,7 +122,7 @@ export const updateOneById: UpdateOneById["handler"] = async (req, res, next) =>
     }).lean<PostDB>();
 
     if (!updatedPost) {
-      logger.error(
+      logger.debug(
         `Post with id ${id.toString()} not found after update with new data ${JSON.stringify(updateData)}`
       );
       throw new HttpError(HttpStatusCodes.NOT_FOUND, "Post not found after update");
@@ -141,7 +141,7 @@ export const removeOneById: RemoveOneById["handler"] = async (req, res, next) =>
     const post = await PostModel.findByIdAndUpdate(id, { removedAt: new Date() });
 
     if (!post) {
-      logger.error(`Post with id ${id.toString()} not found`);
+      logger.debug(`Post with id ${id.toString()} not found`);
       return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Post not found" });
     }
 
@@ -158,7 +158,7 @@ export const removeMany: RemoveMany["handler"] = async (req, res, next) => {
     const result = await PostModel.updateMany({ _id: { $in: ids } }, { removedAt: new Date() });
 
     if (result.matchedCount === 0) {
-      logger.error(
+      logger.debug(
         `No posts found to delete with ids: ${ids.map((id) => id.toString()).join(", ")}`
       );
       return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "No posts found to delete" });
@@ -183,7 +183,7 @@ export const undoRemoval: UndoRemoval["handler"] = async (req, res, next) => {
     );
 
     if (result.matchedCount === 0) {
-      logger.error(
+      logger.debug(
         `No posts found to delete with ids: ${ids.map((id) => id.toString()).join(", ")}`
       );
       return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "No posts found to delete" });
