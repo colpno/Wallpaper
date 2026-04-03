@@ -41,19 +41,21 @@ describe("Post routes", () => {
     });
 
     it("returns a post with stripped properties", async () => {
-      const stripKeys: PostKeys[] = ["postTitle", "postOwner"];
-
       const response = await getPostById({ id: db.posts[0]!._id }).query({
         select: {
           _id: 0,
-          ...Object.fromEntries(stripKeys.map((key) => [key, 1])),
+          postTitle: 1,
+          postOwner: 1,
         },
       });
 
       expect(response.status).toBe(HttpStatusCodes.OK);
 
       const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK]
-        .pick(Object.fromEntries(stripKeys.map((key) => [key, true])))
+        .pick({
+          postTitle: true,
+          postOwner: true,
+        })
         .safeParse(response.body);
 
       expect(parseResult.success).toBe(true);
@@ -139,19 +141,23 @@ describe("Post routes", () => {
     });
 
     it("returns a list of posts with stripped properties", async () => {
-      const stripKeys: PostKeys[] = ["postOwner", "postTitle"];
-
       const response = await getPosts().query({
         select: {
           _id: 0,
-          ...Object.fromEntries(stripKeys.map((key) => [key, 1])),
+          postTitle: 1,
+          postOwner: 1,
         },
       });
 
       expect(response.status).toBe(HttpStatusCodes.OK);
 
       const parseResult = z
-        .array(postSchema.pick(Object.fromEntries(stripKeys.map((key) => [key, true]))))
+        .array(
+          postSchema.pick({
+            postTitle: true,
+            postOwner: true,
+          })
+        )
         .safeParse(response.body);
 
       expect(parseResult.success).toBe(true);
