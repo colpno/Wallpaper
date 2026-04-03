@@ -188,7 +188,7 @@ export default class PipelineBuilder {
         },
         {
           $set: {
-            [`${localField}`]: {
+            [localField]: {
               $cond: {
                 if: { $eq: ["$_isLocalFieldArray", true] },
                 then: `$${localField}`,
@@ -202,15 +202,16 @@ export default class PipelineBuilder {
         },
       ];
 
-      // Remove docs which array-type localField is empty after $match operator within $lookup
       if (refer.match) {
         stages.push({
           $match: {
             $expr: {
               $cond: {
                 if: { $isArray: `$${localField}` },
+                // Return documents where localField is an array and has at least 1 item
                 then: { $gt: [{ $size: `$${localField}` }, 0] },
-                else: true,
+                // Return documents where localField exists and is not an array
+                else: { $ne: [{ $ifNull: [`$${localField}`, null] }, null] },
               },
             },
           },
