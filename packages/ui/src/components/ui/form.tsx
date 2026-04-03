@@ -1,7 +1,6 @@
-"use client";
+import type { Label as LabelPrimitive } from "radix-ui";
 
-import * as LabelPrimitive from "@radix-ui/react-label";
-import { Slot } from "@radix-ui/react-slot";
+import { Slot } from "radix-ui";
 import * as React from "react";
 import {
   Controller,
@@ -74,7 +73,7 @@ function FormItem({ className, ...props }: React.ComponentProps<"div">) {
 
   return (
     <FormItemContext.Provider value={{ id }}>
-      <div data-slot="form-item" className={cn("ui:grid ui:gap-2", className)} {...props} />
+      <div data-slot="form-item" className={cn("grid gap-2", className)} {...props} />
     </FormItemContext.Provider>
   );
 }
@@ -86,18 +85,18 @@ function FormLabel({ className, ...props }: React.ComponentProps<typeof LabelPri
     <Label
       data-slot="form-label"
       data-error={!!error}
-      className={cn("ui:data-[error=true]:text-destructive", className)}
+      className={cn("data-[error=true]:text-destructive", className)}
       htmlFor={formItemId}
       {...props}
     />
   );
 }
 
-function FormControl({ ...props }: React.ComponentProps<typeof Slot>) {
+function FormControl({ ...props }: React.ComponentProps<typeof Slot.Root>) {
   const { error, formItemId, formDescriptionId, formMessageId } = useFormField();
 
   return (
-    <Slot
+    <Slot.Root
       data-slot="form-control"
       id={formItemId}
       aria-describedby={!error ? `${formDescriptionId}` : `${formDescriptionId} ${formMessageId}`}
@@ -114,7 +113,7 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
     <p
       data-slot="form-description"
       id={formDescriptionId}
-      className={cn("ui:text-sm ui:text-muted-foreground", className)}
+      className={cn("text-sm text-muted-foreground", className)}
       {...props}
     />
   );
@@ -132,9 +131,8 @@ function FormMessage({ className, ...props }: React.ComponentProps<"p">) {
     <p
       data-slot="form-message"
       id={formMessageId}
-      className={cn("ui:text-sm ui:text-destructive", className)}
-      {...props}
-    >
+      className={cn("text-sm text-destructive", className)}
+      {...props}>
       {body}
     </p>
   );

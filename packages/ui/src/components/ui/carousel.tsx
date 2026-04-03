@@ -1,3 +1,5 @@
+"use client";
+
 import useEmblaCarousel, { type UseEmblaCarouselType } from "embla-carousel-react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import * as React from "react";
@@ -111,16 +113,14 @@ function Carousel({
         scrollNext,
         canScrollPrev,
         canScrollNext,
-      }}
-    >
+      }}>
       <div
         onKeyDownCapture={handleKeyDown}
-        className={cn("ui:relative", className)}
+        className={cn("relative", className)}
         role="region"
         aria-roledescription="carousel"
         data-slot="carousel"
-        {...props}
-      >
+        {...props}>
         {children}
       </div>
     </CarouselContext.Provider>
@@ -131,13 +131,9 @@ function CarouselContent({ className, ...props }: React.ComponentProps<"div">) {
   const { carouselRef, orientation } = useCarousel();
 
   return (
-    <div ref={carouselRef} className="ui:overflow-hidden" data-slot="carousel-content">
+    <div ref={carouselRef} className="overflow-hidden" data-slot="carousel-content">
       <div
-        className={cn(
-          "ui:flex",
-          orientation === "horizontal" ? "ui:-ml-4" : "ui:-mt-4 ui:flex-col",
-          className
-        )}
+        className={cn("flex", orientation === "horizontal" ? "-ml-4" : "-mt-4 flex-col", className)}
         {...props}
       />
     </div>
@@ -153,8 +149,8 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
       aria-roledescription="slide"
       data-slot="carousel-item"
       className={cn(
-        "ui:min-w-0 ui:shrink-0 ui:grow-0 ui:basis-full",
-        orientation === "horizontal" ? "ui:pl-4" : "ui:pt-4",
+        "min-w-0 shrink-0 grow-0 basis-full",
+        orientation === "horizontal" ? "pl-4" : "pt-4",
         className
       )}
       {...props}
@@ -164,8 +160,7 @@ function CarouselItem({ className, ...props }: React.ComponentProps<"div">) {
 
 function CarouselPrevious({
   className,
-  variant = "outline",
-  size = "icon",
+  variant = "outline-icon",
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { orientation, scrollPrev, canScrollPrev } = useCarousel();
@@ -174,28 +169,25 @@ function CarouselPrevious({
     <Button
       data-slot="carousel-previous"
       variant={variant}
-      size={size}
       className={cn(
-        "ui:absolute ui:size-8 ui:rounded-full",
+        "absolute size-8 rounded-full",
         orientation === "horizontal"
-          ? "ui:top-1/2 ui:-left-12 ui:-translate-y-1/2"
-          : "ui:-top-12 ui:left-1/2 ui:-translate-x-1/2 ui:rotate-90",
+          ? "top-1/2 -left-12 -translate-y-1/2"
+          : "-top-12 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
       disabled={!canScrollPrev}
       onClick={scrollPrev}
-      {...props}
-    >
+      {...props}>
       <ArrowLeft />
-      <span className="ui:sr-only">Previous slide</span>
+      <span className="sr-only">Previous slide</span>
     </Button>
   );
 }
 
 function CarouselNext({
   className,
-  variant = "outline",
-  size = "icon",
+  variant = "outline-icon",
   ...props
 }: React.ComponentProps<typeof Button>) {
   const { orientation, scrollNext, canScrollNext } = useCarousel();
@@ -204,20 +196,18 @@ function CarouselNext({
     <Button
       data-slot="carousel-next"
       variant={variant}
-      size={size}
       className={cn(
-        "ui:absolute ui:size-8 ui:rounded-full",
+        "absolute size-8 rounded-full",
         orientation === "horizontal"
-          ? "ui:top-1/2 ui:-right-12 ui:-translate-y-1/2"
-          : "ui:-bottom-12 ui:left-1/2 ui:-translate-x-1/2 ui:rotate-90",
+          ? "top-1/2 -right-12 -translate-y-1/2"
+          : "-bottom-12 left-1/2 -translate-x-1/2 rotate-90",
         className
       )}
       disabled={!canScrollNext}
       onClick={scrollNext}
-      {...props}
-    >
+      {...props}>
       <ArrowRight />
-      <span className="ui:sr-only">Next slide</span>
+      <span className="sr-only">Next slide</span>
     </Button>
   );
 }

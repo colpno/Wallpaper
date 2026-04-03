@@ -1,26 +1,21 @@
+"use client";
+
 import { GripVerticalIcon } from "lucide-react";
-import * as React from "react";
 import * as ResizablePrimitive from "react-resizable-panels";
 
 import { cn } from "@/lib/utils";
 
-function ResizablePanelGroup({
-  className,
-  ...props
-}: React.ComponentProps<typeof ResizablePrimitive.PanelGroup>) {
+function ResizablePanelGroup({ className, ...props }: ResizablePrimitive.GroupProps) {
   return (
-    <ResizablePrimitive.PanelGroup
+    <ResizablePrimitive.Group
       data-slot="resizable-panel-group"
-      className={cn(
-        "ui:flex ui:h-full ui:w-full ui:data-[panel-group-direction=vertical]:flex-col",
-        className
-      )}
+      className={cn("flex h-full w-full aria-[orientation=vertical]:flex-col", className)}
       {...props}
     />
   );
 }
 
-function ResizablePanel({ ...props }: React.ComponentProps<typeof ResizablePrimitive.Panel>) {
+function ResizablePanel({ ...props }: ResizablePrimitive.PanelProps) {
   return <ResizablePrimitive.Panel data-slot="resizable-panel" {...props} />;
 }
 
@@ -28,24 +23,23 @@ function ResizableHandle({
   withHandle,
   className,
   ...props
-}: React.ComponentProps<typeof ResizablePrimitive.PanelResizeHandle> & {
+}: ResizablePrimitive.SeparatorProps & {
   withHandle?: boolean;
 }) {
   return (
-    <ResizablePrimitive.PanelResizeHandle
+    <ResizablePrimitive.Separator
       data-slot="resizable-handle"
       className={cn(
-        "ui:relative ui:flex ui:w-px ui:items-center ui:justify-center ui:bg-border ui:after:absolute ui:after:inset-y-0 ui:after:left-1/2 ui:after:w-1 ui:after:-translate-x-1/2 ui:focus-visible:ring-1 ui:focus-visible:ring-ring ui:focus-visible:ring-offset-1 ui:focus-visible:outline-hidden ui:data-[panel-group-direction=vertical]:h-px ui:data-[panel-group-direction=vertical]:w-full ui:data-[panel-group-direction=vertical]:after:left-0 ui:data-[panel-group-direction=vertical]:after:h-1 ui:data-[panel-group-direction=vertical]:after:w-full ui:data-[panel-group-direction=vertical]:after:translate-x-0 ui:data-[panel-group-direction=vertical]:after:-translate-y-1/2 ui:[&[data-panel-group-direction=vertical]>div]:rotate-90",
+        "relative flex w-px items-center justify-center bg-border after:absolute after:inset-y-0 after:left-1/2 after:w-1 after:-translate-x-1/2 focus-visible:ring-1 focus-visible:ring-ring focus-visible:ring-offset-1 focus-visible:outline-hidden aria-[orientation=horizontal]:h-px aria-[orientation=horizontal]:w-full aria-[orientation=horizontal]:after:left-0 aria-[orientation=horizontal]:after:h-1 aria-[orientation=horizontal]:after:w-full aria-[orientation=horizontal]:after:translate-x-0 aria-[orientation=horizontal]:after:-translate-y-1/2 [&[aria-orientation=horizontal]>div]:rotate-90",
         className
       )}
-      {...props}
-    >
+      {...props}>
       {withHandle && (
-        <div className="ui:z-10 ui:flex ui:h-4 ui:w-3 ui:items-center ui:justify-center ui:rounded-xs ui:border ui:bg-border">
-          <GripVerticalIcon className="ui:size-2.5" />
+        <div className="z-10 flex h-4 w-3 items-center justify-center rounded-xs border bg-border">
+          <GripVerticalIcon className="size-2.5" />
         </div>
       )}
-    </ResizablePrimitive.PanelResizeHandle>
+    </ResizablePrimitive.Separator>
   );
 }
 
