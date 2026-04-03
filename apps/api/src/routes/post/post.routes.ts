@@ -5,7 +5,7 @@ import rateLimiter from "@/middlewares/rate-limiter.middleware.js";
 import jsonContent from "@/utils/json-content.js";
 import multipartContent from "@/utils/multipart-content.js";
 import Router from "@/utils/Router.js";
-import { fileSchema } from "@/utils/schemas.js";
+import { atLeastOneField, fileSchema } from "@/utils/schemas.js";
 
 import * as handlers from "./post.handlers.js";
 import { requestSchemas } from "./post.schemas.js";
@@ -103,10 +103,10 @@ export const updateOneById = router.register({
     body: {
       content: {
         "multipart/form-data": {
-          schema: requestSchemas.updateOneById.body,
+          schema: requestSchemas.updateOneById.body.refine(atLeastOneField),
         },
         "application/json": {
-          schema: requestSchemas.updateOneById.body.omit({ photo: true }),
+          schema: requestSchemas.updateOneById.body.omit({ photo: true }).refine(atLeastOneField),
         },
       },
     },

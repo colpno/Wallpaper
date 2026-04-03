@@ -18,7 +18,6 @@ import type { PostDB, UserDB } from "@repo/types";
 import z from "@/lib/zod.js";
 import createQueryFilterSchema from "@/utils/create-query-filter-schema.js";
 import {
-  atLeastOneField,
   errorSchema,
   metaPaginationSchema,
   notFoundSchema,
@@ -136,8 +135,7 @@ export const requestSchemas = {
       .extend({
         photo: placeholderFileSchema,
       })
-      .partial()
-      .refine(atLeastOneField),
+      .partial(),
     responses: {
       [HttpStatusCodes.OK]: postSchema satisfies ZodType<UpdateOneById["response"]>,
       [HttpStatusCodes.NOT_FOUND]: notFoundSchema,

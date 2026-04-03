@@ -7,7 +7,6 @@ import type { UserDB } from "@repo/types";
 
 import z from "@/lib/zod.js";
 import {
-  atLeastOneField,
   notFoundSchema,
   objectIdSchema,
   placeholderFileSchema,
@@ -44,8 +43,7 @@ export const requestSchemas = {
       })
       .extend({
         avatar: placeholderFileSchema,
-      })
-      .refine(atLeastOneField) satisfies ZodType<UpdateOneById["body"]>,
+      }) satisfies ZodType<UpdateOneById["body"]>,
     responses: {
       [HttpStatusCodes.OK]: userSchema satisfies ZodType<UpdateOneById["response"]>,
       [HttpStatusCodes.NOT_FOUND]: notFoundSchema,

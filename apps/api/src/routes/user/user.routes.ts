@@ -5,7 +5,7 @@ import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
 import multer from "@/middlewares/multer.js";
 import jsonContent from "@/utils/json-content.js";
 import Router from "@/utils/Router.js";
-import { fileSchema } from "@/utils/schemas.js";
+import { atLeastOneField, fileSchema } from "@/utils/schemas.js";
 
 import * as handlers from "./user.handlers.js";
 import { requestSchemas } from "./user.schemas.js";
@@ -27,10 +27,10 @@ export const updateOneById = router.register({
     body: {
       content: {
         "multipart/form-data": {
-          schema: requestSchemas.updateOneById.body,
+          schema: requestSchemas.updateOneById.body.refine(atLeastOneField),
         },
         "application/json": {
-          schema: requestSchemas.updateOneById.body.omit({ avatar: true }),
+          schema: requestSchemas.updateOneById.body.omit({ avatar: true }).refine(atLeastOneField),
         },
       },
     },
