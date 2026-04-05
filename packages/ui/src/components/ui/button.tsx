@@ -11,12 +11,9 @@ const buttonVariants = cva(
       variant: {
         default: "hover:bg-primary-700 bg-primary text-primary-foreground",
         destructive: "hover:bg-destructive-600 bg-destructive text-white",
-        warning: "bg-warning hover:bg-warning-600 text-white",
-        success: "bg-success hover:bg-success-600 text-white",
-        info: "bg-info hover:bg-info-600 text-white",
         outline:
-          "hover:border-primary-700 hover:text-primary-700 border border-primary text-primary",
-        secondary: "bg-secondary text-secondary-foreground",
+          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+        secondary: "bg-secondary text-secondary-foreground hover:bg-neutral-300",
         ghost: "hover:bg-accent hover:text-accent-foreground",
         icon: "hover:bg-primary-700 bg-primary text-primary-foreground",
         "ghost-icon": "hover:bg-accent hover:text-accent-foreground",
@@ -41,19 +38,19 @@ const buttonVariants = cva(
           },
           {
             size: "sm",
-            className: "size-6 rounded-sm text-sm",
+            className: "size-6 rounded-sm text-xs",
           },
           {
             size: "md",
-            className: "size-7 rounded-md text-base",
+            className: "size-7 rounded-md text-sm",
           },
           {
             size: "lg",
-            className: "size-8 rounded-md text-lg",
+            className: "size-8 rounded-lg text-base",
           },
           {
             size: "xl",
-            className: "size-9 rounded-md text-[22px]",
+            className: "size-9 rounded-xl text-lg",
           },
         ] as const
       ).map((config) => ({
@@ -67,11 +64,11 @@ const buttonVariants = cva(
         [
           {
             size: "xs",
-            className: "px-1 py-0.5 text-xs",
+            className: "px-1 py-1 text-xs",
           },
           {
             size: "sm",
-            className: "px-2 py-1 text-xs",
+            className: "px-2 py-2 text-sm",
           },
           {
             size: "md",
@@ -88,24 +85,8 @@ const buttonVariants = cva(
         ] as const
       ).map((config) => ({
         ...config,
-        variant: [
-          "default",
-          "destructive",
-          "warning",
-          "success",
-          "info",
-          "outline",
-          "secondary",
-          "ghost",
-        ] as Array<
-          | "default"
-          | "destructive"
-          | "warning"
-          | "success"
-          | "info"
-          | "outline"
-          | "secondary"
-          | "ghost"
+        variant: ["default", "outline", "secondary", "ghost"] as Array<
+          "default" | "outline" | "secondary" | "ghost"
         >,
       })),
     ],
