@@ -6,6 +6,6 @@ export type Signin = {
 };
 
 export type Register = {
-  body: Pick<User, "email" | "password" | "username">;
+  body: Pick<User, "email" | "password">;
   response: UserDB;
 };

@@ -80,7 +80,6 @@ describe("Auth routes", () => {
       const user = db.users[0]!;
 
       const response = await register().send({
-        username: "testuser1",
         email: user.email,
         password: "password",
       });
@@ -96,7 +95,6 @@ describe("Auth routes", () => {
 
     it("returns a validation error if payload is invalid", async () => {
       const response = await register().send({
-        username: "testuser1",
         email: "test",
         password: "a",
       });
