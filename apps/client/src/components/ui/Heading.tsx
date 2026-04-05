@@ -1,30 +1,26 @@
+import type { ElementType } from "react";
+
+import { cn } from "@repo/ui/lib";
 import { cva, type VariantProps } from "class-variance-authority";
 
-type Variant = Exclude<VariantProps<typeof headingVariants>["variant"], undefined | null>;
+type Variant = Exclude<VariantProps<typeof variants>["variant"], undefined | null>;
 
-type Props<V extends Variant> = {
-  /**
-   * @default "h1"
-   */
-  variant: V;
-} & React.ComponentProps<V> &
-  VariantProps<typeof headingVariants>;
+type Props<TVariant extends Variant> = React.ComponentProps<TVariant> &
+  VariantProps<typeof variants>;
 
-const headingVariants = cva("font-bold -tracking-[0.5px]", {
+const variants = cva("font-bold -tracking-[0.5px]", {
   variants: {
     variant: {
-      h1: "my-8 text-4xl",
-      h2: "mb-4 text-[28px]",
+      h2: "text-[50px]",
+      h3: "text-[38px]",
     },
   },
 });
 
-function Heading<V extends Variant>({ variant, className, ...props }: Props<V>) {
-  if (!variant) throw new Error("Variant is required");
+function Heading<TVariant extends Variant>({ variant, ...props }: Props<TVariant>) {
+  const Element = (variant ?? "h1") as ElementType;
 
-  const Component = (variant as "h1") || "h1";
-
-  return <Component {...props} className={headingVariants({ variant, className })} />;
+  return <Element {...props} className={cn(variants({ variant }), props.className)} />;
 }
 
 export default Heading;

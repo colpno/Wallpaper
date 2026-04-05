@@ -21,7 +21,7 @@ function SearchPage() {
   useInfiniteScroll({ fetchNextPage, hasNextPage, isFetchingNextPage });
 
   return (
-    <Container component="section" className="pt-11">
+    <Container as="section" className="pt-11">
       {isLoading ? (
         <div>Skeletons here</div>
       ) : data ? (

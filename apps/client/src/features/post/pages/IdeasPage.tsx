@@ -29,14 +29,14 @@ function IdeasPage() {
   useInfiniteScroll({ fetchNextPage, hasNextPage, isFetchingNextPage });
 
   return (
-    <Container component="section" className="pt-11">
+    <Container as="section" className="pt-11">
       {isLoading ? (
         <Heading variant="h2" className="text-center">
           Loading today&apos;s picks...
         </Heading>
       ) : data ? (
         <>
-          <Heading variant="h1">What&apos;s new on Pinterest</Heading>
+          <Heading variant="h2">What&apos;s new on Pinterest</Heading>
 
           <MasonryLayout>
             {data.map((item) => (
