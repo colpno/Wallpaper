@@ -9,6 +9,10 @@ const routes = createBrowserRouter([
     Component: GuessLayout,
     children: [
       {
+        path: ROUTES.SEARCH(),
+        Component: lazy(() => import("@/features/post/pages/SearchPage")),
+      },
+      {
         path: ROUTES.IDEAS(),
         Component: lazy(() => import("@/features/post/pages/IdeasPage")),
       },

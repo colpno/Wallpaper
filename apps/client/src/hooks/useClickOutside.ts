@@ -1,6 +1,9 @@
 import React, { useEffect } from "react";
 
-const useClickOutside = (ref: React.RefObject<HTMLElement | null>, callback: () => void) => {
+export const useClickOutside = (
+  ref: React.RefObject<HTMLElement | null>,
+  callback: () => void
+): void => {
   useEffect(() => {
     const handler = (e: MouseEvent | TouchEvent) => {
       if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -14,5 +17,3 @@ const useClickOutside = (ref: React.RefObject<HTMLElement | null>, callback: () 
     };
   }, [callback, ref]);
 };
-
-export default useClickOutside;

@@ -224,8 +224,8 @@ export const search: Search["handler"] = async (req, res, next) => {
       "text" in req.body ? req.body.text : await describeImage(req.file!)
     );
 
-    const postsArray = await PostModel.aggregate<
-      Array<Omit<PostDB, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }>
+    const posts = await PostModel.aggregate<
+      Omit<PostDB, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }
     >([
       {
         $vectorSearch: {
@@ -252,11 +252,11 @@ export const search: Search["handler"] = async (req, res, next) => {
 
     const totalItems = await PostModel.countDocuments({});
 
-    const result: PaginationPayload<(typeof postsArray)[number]> = {
-      data: postsArray[0]!,
+    const result: PaginationPayload<typeof posts> = {
+      data: posts,
       meta: {
         currentPage: req.query.page ?? 1,
-        itemCount: postsArray[0]!.length,
+        itemCount: posts.length,
         itemsPerPage: limit,
         totalItems,
         totalPages: Math.ceil(totalItems / limit),

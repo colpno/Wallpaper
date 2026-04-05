@@ -36,9 +36,16 @@ export const getPostByIdQueryOptions = <TQuery extends PostAPIs.GetOneById["quer
 
 export const searchPostsQueryOptions = (
   body: PostAPIs.Search["body"],
-  query?: PostAPIs.Search["query"]
+  query: Omit<PostAPIs.Search["query"], "limit" | "page"> &
+    Required<Pick<PostAPIs.Search["query"], "limit" | "page">>
 ) =>
-  queryOptions({
+  infiniteQueryOptions({
     queryFn: () => searchPosts(body, query),
     queryKey: "text" in body && body.text ? POST_KEYS.search(body.text) : POST_KEYS.lists(),
+    initialPageParam: query.page,
+    getNextPageParam: (lastPageResult) =>
+      lastPageResult.meta.currentPage < lastPageResult.meta.totalPages
+        ? lastPageResult.meta.currentPage + 1
+        : undefined,
+    select: (data) => data.pages.flatMap((page) => page.data),
   });
