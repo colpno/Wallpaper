@@ -8,7 +8,7 @@ function Container({ component, ...props }: Props) {
   const Comp = component ?? "div";
 
   return (
-    <Comp {...props} className={cn("mx-auto w-full max-w-7xl px-8 2xl:px-0", props.className)} />
+    <Comp {...props} className={cn("mx-auto w-full max-w-7xl px-3 2xl:px-0", props.className)} />
   );
 }
 
