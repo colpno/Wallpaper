@@ -71,14 +71,7 @@ export default class PipelineBuilder {
         ...(stages.lookupStages ?? []),
         stages.$sort ? { $sort: stages.$sort } : undefined,
         stages.$project ? { $project: stages.$project } : undefined,
-        ...(stages.paginationStages
-          ? [
-              ...stages.paginationStages,
-              {
-                $unwind: "$meta",
-              },
-            ]
-          : [undefined]),
+        ...(stages.paginationStages ?? []),
       ].filter(Boolean);
       return pipeline as BuildPipelineReturnType<IsPipeline>;
     }

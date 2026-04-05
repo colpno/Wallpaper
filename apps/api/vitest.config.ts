@@ -7,7 +7,6 @@ export default defineConfig({
   test: {
     ...baseConfig.test,
     setupFiles: ["./src/test/setup.ts"],
-    maxWorkers: 1,
   },
   resolve: {
     alias: {

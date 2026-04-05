@@ -1,4 +1,4 @@
-import type { PaginationPayload, PostDB, UserDB } from "@repo/types";
+import type { PostDB, UserDB } from "@repo/types";
 import { beforeEach, describe, expect, it } from "vitest";
 
 import PostModel from "@/routes/post/post.model.js";
@@ -84,18 +84,9 @@ describe("PipelineBuilder", () => {
       page,
     });
 
-    const result = await PostModel.aggregate<PaginationPayload<PostDB[]>>(pipeline);
+    const result = await PostModel.aggregate<PostDB[]>(pipeline);
 
-    expect(result.length).toBe(1);
-    expect(result[0]).toHaveProperty("data");
-    expect(result[0]!.data).toBeInstanceOf(Array);
-    expect(result[0]).toHaveProperty(
-      "meta",
-      expect.objectContaining({
-        itemsPerPage: limit,
-      } satisfies Partial<PaginationPayload<unknown[]>["meta"]>)
-    );
-    expect(result[0]!.data.length).toBe(limit);
+    expect(result.length).toBe(limit);
   });
 
   it("should build $limit stage", async () => {
@@ -104,17 +95,8 @@ describe("PipelineBuilder", () => {
       limit,
     });
 
-    const result = await PostModel.aggregate<PaginationPayload<PostDB[]>>(pipeline);
+    const result = await PostModel.aggregate<PostDB[]>(pipeline);
 
-    expect(result.length).toBe(1);
-    expect(result[0]).toHaveProperty("data");
-    expect(result[0]!.data).toBeInstanceOf(Array);
-    expect(result[0]).toHaveProperty(
-      "meta",
-      expect.objectContaining({
-        itemsPerPage: limit,
-      } satisfies Partial<PaginationPayload<unknown[]>["meta"]>)
-    );
-    expect(result[0]!.data.length).toBe(limit);
+    expect(result.length).toBe(limit);
   });
 });
