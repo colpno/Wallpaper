@@ -1,11 +1,19 @@
 import { lazy } from "react";
-import { createBrowserRouter, type RouteObject } from "react-router";
+import { createBrowserRouter } from "react-router";
 
-const routes: RouteObject[] = [
+import { ROUTES } from "@/constants/common";
+import GuessLayout from "@/layouts/GuessLayout";
+
+const routes = createBrowserRouter([
   {
-    path: "/ideas",
-    Component: lazy(() => import("@/features/explore/pages/Explore")),
+    Component: GuessLayout,
+    children: [
+      {
+        path: ROUTES.IDEAS(),
+        Component: lazy(() => import("@/features/post/pages/IdeasPage")),
+      },
+    ],
   },
-];
+]);
 
-export default createBrowserRouter(routes);
+export default routes;
