@@ -1,9 +1,8 @@
-import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
+import { API_ROUTES, HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
 
 import multer from "@/middlewares/multer.js";
 import rateLimiter from "@/middlewares/rate-limiter.middleware.js";
-import jsonContent from "@/utils/json-content.js";
-import multipartContent from "@/utils/multipart-content.js";
+import { jsonContent, multipartContent } from "@/utils/openapi.js";
 import Router from "@/utils/Router.js";
 import { atLeastOneField, fileSchema } from "@/utils/schemas.js";
 
@@ -11,7 +10,6 @@ import * as handlers from "./post.handlers.js";
 import { requestSchemas } from "./post.schemas.js";
 
 const tags = ["Post"];
-const basePath = "/posts";
 const router = new Router();
 
 export const { router: postRouter } = router;
@@ -19,7 +17,7 @@ export const { router: postRouter } = router;
 export const getMany = router.register({
   tags,
   method: "get",
-  path: basePath,
+  path: API_ROUTES.POST.getMany.path(),
   summary: "Get multiple posts",
   description: "Retrieve multiple posts.",
   request: {
@@ -44,7 +42,7 @@ export const getMany = router.register({
 export const getOneById = router.register({
   tags,
   method: "get",
-  path: `${basePath}/{id}`,
+  path: API_ROUTES.POST.getOneById.path("{id}"),
   summary: "Get a post by ID",
   description: "Retrieve a post by its ID.",
   request: {
@@ -70,7 +68,7 @@ export const getOneById = router.register({
 export const addOne = router.register({
   tags,
   method: "post",
-  path: basePath,
+  path: API_ROUTES.POST.addOne.path(),
   summary: "Add a post",
   description: "Create a new post.",
   request: {
@@ -95,7 +93,7 @@ export const addOne = router.register({
 export const updateOneById = router.register({
   tags,
   method: "patch",
-  path: `${basePath}/{id}`,
+  path: API_ROUTES.POST.updateOneById.path("{id}"),
   summary: "Update a post by ID",
   description: "Update an existing post using its unique ID.",
   request: {
@@ -134,7 +132,7 @@ export const updateOneById = router.register({
 export const removeOneById = router.register({
   tags,
   method: "delete",
-  path: `${basePath}/{id}`,
+  path: API_ROUTES.POST.removeOneById.path("{id}"),
   summary: "Softly remove a post by ID",
   description: "Softly remove a single post using its unique ID.",
   request: {
@@ -158,7 +156,7 @@ export const removeOneById = router.register({
 export const removeMany = router.register({
   tags,
   method: "delete",
-  path: basePath,
+  path: API_ROUTES.POST.removeMany.path(),
   summary: "Remove multiple posts",
   description: "Remove multiple posts using its unique IDs.",
   request: {
@@ -182,7 +180,7 @@ export const removeMany = router.register({
 export const undoRemoval = router.register({
   tags,
   method: "patch",
-  path: `${basePath}/undo-removal`,
+  path: API_ROUTES.POST.undoRemoval.path(),
   summary: "Undo removal of multiple posts",
   description: "Undo removal of multiple posts.",
   request: {
@@ -206,7 +204,7 @@ export const undoRemoval = router.register({
 export const search = router.register({
   tags,
   method: "post",
-  path: `${basePath}/search`,
+  path: API_ROUTES.POST.search.path(),
   summary: "Search for similar posts",
   description: "Search for similar posts using an image or text.",
   request: {

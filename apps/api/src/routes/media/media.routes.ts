@@ -1,13 +1,12 @@
-import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
+import { API_ROUTES, HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
 
-import jsonContent from "@/utils/json-content.js";
+import { jsonContent } from "@/utils/openapi.js";
 import Router from "@/utils/Router.js";
 
 import * as handlers from "./media.handlers.js";
 import { requestSchemas } from "./media.schemas.js";
 
 const tags = ["Media"];
-const basePath = "/medias";
 const router = new Router();
 
 export const { router: mediaRouter } = router;
@@ -15,7 +14,7 @@ export const { router: mediaRouter } = router;
 export const deleteExpiredMedias = router.register({
   tags,
   method: "delete",
-  path: `${basePath}/expired`,
+  path: API_ROUTES.MEDIA.deleteExpiredMedias.path(),
   summary: "Delete Expired Medias",
   description: "Delete all expired media files.",
   responses: {

@@ -1,9 +1,9 @@
 import type { UserKeys } from "@/types/common.js";
 
-import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
+import { API_ROUTES, HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
 
 import multer from "@/middlewares/multer.js";
-import jsonContent from "@/utils/json-content.js";
+import { jsonContent } from "@/utils/openapi.js";
 import Router from "@/utils/Router.js";
 import { atLeastOneField, fileSchema } from "@/utils/schemas.js";
 
@@ -11,7 +11,6 @@ import * as handlers from "./user.handlers.js";
 import { requestSchemas } from "./user.schemas.js";
 
 const tags = ["User"];
-const basePath = "/users";
 const router = new Router();
 
 export const { router: userRouter } = router;
@@ -19,7 +18,7 @@ export const { router: userRouter } = router;
 export const updateOneById = router.register({
   tags,
   method: "patch",
-  path: `${basePath}/{id}`,
+  path: API_ROUTES.USER.updateOneById.path("{id}"),
   summary: "Update an user by ID",
   description: "Update an existing user using their unique ID.",
   request: {
@@ -54,7 +53,7 @@ export const updateOneById = router.register({
 export const deleteOneById = router.register({
   tags,
   method: "delete",
-  path: `${basePath}/{id}`,
+  path: API_ROUTES.USER.deleteOneById.path("{id}"),
   summary: "Delete an user by ID",
   description: "Delete a single user using their unique ID.",
   request: {

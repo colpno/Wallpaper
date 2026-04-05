@@ -1,13 +1,12 @@
-import { HttpStatusCodes } from "@repo/shared";
+import { API_ROUTES, HttpStatusCodes } from "@repo/shared";
 
-import jsonContent from "@/utils/json-content.js";
+import { jsonContent } from "@/utils/openapi.js";
 import Router from "@/utils/Router.js";
 
 import * as handlers from "./auth.handlers.js";
 import { requestSchemas } from "./auth.schemas.js";
 
 const tags = ["Auth"];
-const basePath = "/auth";
 const router = new Router();
 
 export const { router: authRouter } = router;
@@ -15,7 +14,7 @@ export const { router: authRouter } = router;
 export const signin = router.register({
   tags,
   method: "post",
-  path: `${basePath}/signin`,
+  path: API_ROUTES.AUTH.signin.path(),
   summary: "Signin User",
   description: "Signin a user with provided credentials.",
   request: {
@@ -40,7 +39,7 @@ export const signin = router.register({
 export const register = router.register({
   tags,
   method: "post",
-  path: `${basePath}/register`,
+  path: API_ROUTES.AUTH.register.path(),
   summary: "Register User",
   description: "Create a new user.",
   request: {
