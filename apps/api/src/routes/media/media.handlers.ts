@@ -5,7 +5,7 @@ import { HttpStatusCodes } from "@repo/shared";
 
 import env from "@/configs/env.js";
 import * as cloudinary from "@/services/cloudinary.js";
-import fileToBase64 from "@/utils/file-to-base64.js";
+import { fileToBase64 } from "@/utils/converters.js";
 
 import ExpiredMediaModel from "./expired-media.model.js";
 

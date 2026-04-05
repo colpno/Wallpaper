@@ -1,0 +1,13 @@
+import { describe, expect, test } from "vitest";
+
+import { openApiToExpressPath } from "./converters.js";
+
+describe("converters", () => {
+  test("openApiToExpressPath", () => {
+    const path = "/users/{userId}/posts/{postId}";
+
+    const result = openApiToExpressPath(path);
+
+    expect(result).toBe(path.replaceAll("}", "").replaceAll("{", ":"));
+  });
+});

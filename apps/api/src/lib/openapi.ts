@@ -8,9 +8,7 @@ import env from "@/configs/env.js";
 export const registry = new OpenAPIRegistry();
 
 export default function serveAPIDocument(app: Express, path: string): void;
-
 export default function serveAPIDocument(router: Router, path: string): void;
-
 export default function serveAPIDocument(router: Router, path: string) {
   const generator = new OpenApiGeneratorV31(registry.definitions);
 

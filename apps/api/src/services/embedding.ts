@@ -2,7 +2,7 @@ import { InferenceClient } from "@huggingface/inference";
 
 import env from "@/configs/env.js";
 import logger from "@/lib/logger.js";
-import fileToBase64 from "@/utils/file-to-base64.js";
+import { fileToBase64 } from "@/utils/converters.js";
 import { Error500 } from "@/utils/HttpError.js";
 
 type File = Parameters<typeof fileToBase64>[0];

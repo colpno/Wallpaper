@@ -4,7 +4,7 @@ import type { ZodType } from "zod";
 import { HttpStatusCodes } from "@repo/shared";
 import handler from "multer";
 
-import createErrorObjectFromZod from "@/utils/create-error-object-from-zod.js";
+import { createErrorObjectFromZod } from "@/utils/converters.js";
 
 type Method = keyof handler.Multer;
 

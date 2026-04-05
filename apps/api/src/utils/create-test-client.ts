@@ -8,8 +8,8 @@ import request from "supertest";
 
 import configureApp from "@/utils/configure-app.js";
 
+import { openApiToExpressPath } from "./converters.js";
 import { Error500 } from "./HttpError.js";
-import openApiToExpressPath from "./open-api-to-express-path.js";
 
 type ObjectIdReplacer<T> = T extends Types.ObjectId
   ? string

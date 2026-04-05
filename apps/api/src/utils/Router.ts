@@ -5,8 +5,7 @@ import { type Request, type RequestHandler, type Response, Router as ExpressRout
 
 import { registry } from "@/lib/openapi.js";
 
-import createErrorObjectFromZod from "./create-error-object-from-zod.js";
-import openApiToExpressPath from "./open-api-to-express-path.js";
+import { createErrorObjectFromZod, openApiToExpressPath } from "./converters.js";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Handlers<T extends RouteConfig> = RequestHandler<any, any, any, any> | RouteHandler<T>;
