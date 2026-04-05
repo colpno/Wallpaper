@@ -27,27 +27,31 @@ const pipelineBuilder = new PipelineBuilder();
 
 export const getMany: GetMany["handler"] = async (req, res, next) => {
   try {
-    if (req.query.limit) {
-      const pipeline = pipelineBuilder.build(req.query);
-
-      const result = await PostModel.aggregate<PaginationPayload<PostDB[]>>(pipeline);
-
-      if (!result[0]) {
-        return res.status(HttpStatusCodes.NOT_FOUND).json({
-          message: "Can not find any post that meets criteria",
-        });
-      }
-
-      return res.status(HttpStatusCodes.OK).json(result[0]);
-    }
-
     const { options, queryFilters } = organizeQueryInput(req.query);
 
     const posts = await buildQueryWithOptions(PostModel.find(queryFilters), options).lean<
       PostDB[]
     >();
 
-    return res.status(HttpStatusCodes.OK).json(posts);
+    if (!req.query.limit) {
+      return res.status(HttpStatusCodes.OK).json(posts);
+    }
+
+    const totalItems = await PostModel.countDocuments({});
+    const itemsPerPage = req.query.limit;
+
+    const result: PaginationPayload<PostDB[]> = {
+      data: posts,
+      meta: {
+        currentPage: req.query.page ?? 1,
+        itemCount: posts.length,
+        itemsPerPage,
+        totalItems,
+        totalPages: Math.ceil(totalItems / itemsPerPage),
+      },
+    };
+
+    return res.status(HttpStatusCodes.OK).json(result);
   } catch (error) {
     return next(error);
   }
@@ -220,9 +224,9 @@ export const search: Search["handler"] = async (req, res, next) => {
       "text" in req.body ? req.body.text : await describeImage(req.file!)
     );
 
-    const results: Array<
-      Omit<PostDB, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }
-    > = await PostModel.aggregate([
+    const postsArray = await PostModel.aggregate<
+      Array<Omit<PostDB, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }>
+    >([
       {
         $vectorSearch: {
           index: "vector_index",
@@ -246,7 +250,20 @@ export const search: Search["handler"] = async (req, res, next) => {
       ...pipelineBuilder.build(queries),
     ]);
 
-    return res.status(HttpStatusCodes.OK).json(results);
+    const totalItems = await PostModel.countDocuments({});
+
+    const result: PaginationPayload<(typeof postsArray)[number]> = {
+      data: postsArray[0]!,
+      meta: {
+        currentPage: req.query.page ?? 1,
+        itemCount: postsArray[0]!.length,
+        itemsPerPage: limit,
+        totalItems,
+        totalPages: Math.ceil(totalItems / limit),
+      },
+    };
+
+    return res.status(HttpStatusCodes.OK).json(result);
   } catch (error) {
     return next(error);
   }

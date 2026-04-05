@@ -62,32 +62,7 @@ export default class PipelineBuilder {
 
     if (limit) {
       const pageNumber = page ?? 1;
-      stages.paginationStages = [
-        {
-          $facet: {
-            meta: [
-              { $count: "totalItems" },
-              {
-                $addFields: {
-                  currentPage: pageNumber,
-                  itemsPerPage: limit,
-                },
-              },
-              {
-                $addFields: {
-                  totalPages: { $ceil: { $divide: ["$totalItems", "$itemsPerPage"] } },
-                },
-              },
-            ],
-            data: [this.skip(pageNumber, limit), { $limit: limit }],
-          },
-        },
-        {
-          $addFields: {
-            "meta.itemCount": { $size: "$data" },
-          },
-        },
-      ];
+      stages.paginationStages = [this.skip(pageNumber, limit), this.limit(limit)];
     }
 
     if (options?.isPipeline) {
@@ -125,6 +100,10 @@ export default class PipelineBuilder {
 
   public skip(page: number, perPage: number): PipelineStage.Skip {
     return { $skip: (page - 1) * perPage };
+  }
+
+  public limit(value: number): PipelineStage.Limit {
+    return { $limit: value };
   }
 
   public sort<T extends string>(input: Sort<T>): PipelineStage.Sort {

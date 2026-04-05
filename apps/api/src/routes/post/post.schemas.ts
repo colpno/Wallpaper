@@ -22,6 +22,7 @@ import {
   metaPaginationSchema,
   notFoundSchema,
   objectIdSchema,
+  paginationPayloadSchema,
   placeholderFileSchema,
   validationErrorSchema,
 } from "@/utils/schemas.js";
@@ -185,15 +186,17 @@ export const requestSchemas = {
       }),
     ]) satisfies ZodType<Search["body"]>,
     responses: {
-      [HttpStatusCodes.OK]: z.array(
-        postSchema
-          .omit({
-            descriptionEmbeddings: true,
-            photoCloudinaryId: true,
-          })
-          .extend({
-            score: z.number(),
-          })
+      [HttpStatusCodes.OK]: paginationPayloadSchema(
+        z.array(
+          postSchema
+            .omit({
+              descriptionEmbeddings: true,
+              photoCloudinaryId: true,
+            })
+            .extend({
+              score: z.number(),
+            })
+        )
       ) satisfies ZodType<Search["response"]>,
       [HttpStatusCodes.SERVICE_UNAVAILABLE]: errorSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,

@@ -65,10 +65,13 @@ export type UndoRemoval = {
 };
 
 export type Search = {
+  query: GetMany["query"];
   body: { text: string } | { image: File };
-  response: Array<
-    Omit<PostDB, "descriptionEmbeddings" | "photoCloudinaryId"> & {
-      score: number;
-    }
+  response: PaginationPayload<
+    Array<
+      Omit<PostDB, "descriptionEmbeddings" | "photoCloudinaryId"> & {
+        score: number;
+      }
+    >
   >;
 };
