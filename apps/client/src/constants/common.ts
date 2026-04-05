@@ -1,4 +1,5 @@
 export const ROUTES = {
+  HOME: () => "/",
   IDEAS: () => "/ideas",
   SEARCH: (searchValue?: string) => {
     const basePath = "/search";
