@@ -13,4 +13,5 @@ export const config = {
   jsxSingleQuote: false,
   htmlWhitespaceSensitivity: "css",
   singleAttributePerLine: false,
+  bracketSameLine: false,
 };
