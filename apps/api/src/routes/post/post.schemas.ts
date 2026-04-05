@@ -24,6 +24,7 @@ import {
   objectIdSchema,
   paginationPayloadSchema,
   placeholderFileSchema,
+  stringSchema,
   validationErrorSchema,
 } from "@/utils/schemas.js";
 
@@ -33,19 +34,19 @@ export const postSchema = z
   .object({
     _id: objectIdSchema,
     __v: z.number(),
-    createdAt: z.string(),
-    updatedAt: z.string(),
-    removedAt: z.string().optional(),
-    postTitle: z.string(),
+    createdAt: stringSchema,
+    updatedAt: stringSchema,
+    removedAt: stringSchema.optional(),
+    postTitle: stringSchema,
     postOwner: objectIdSchema,
-    postDescription: z.string().optional(),
-    photoCloudinaryId: z.string().optional(),
-    photoBlurHash: z.string(),
-    photoUrl: z.string(),
+    postDescription: stringSchema.optional(),
+    photoCloudinaryId: stringSchema.optional(),
+    photoBlurHash: stringSchema,
+    photoUrl: stringSchema,
     photoWidth: z.number().int(),
     photoHeight: z.number().int(),
     photoAspectRatio: z.number(),
-    photoDescription: z.string(),
+    photoDescription: stringSchema,
     descriptionEmbeddings: z.array(z.number()),
   } satisfies ZodObjectShapeMap<PostDB>)
   .openapi("Post");
@@ -179,7 +180,7 @@ export const requestSchemas = {
     query: queryFilterSchema,
     body: z.union([
       z.object({
-        text: z.string(),
+        text: stringSchema,
       }),
       z.object({
         image: placeholderFileSchema,

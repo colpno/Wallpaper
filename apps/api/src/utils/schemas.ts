@@ -95,3 +95,5 @@ export const paginationPayloadSchema = <T extends z.ZodArray>(dataSchema: T) =>
     data: dataSchema,
     meta: metaPaginationSchema,
   });
+
+export const stringSchema = z.string().trim().nonempty();

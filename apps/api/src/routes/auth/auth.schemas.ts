@@ -1,23 +1,20 @@
 import type { Register, Signin } from "./auth.types.js";
-import type { RequestSchemas, ZodObjectShapeMap } from "@/types/common.js";
+import type { RequestSchemas } from "@/types/common.js";
 import type { ZodType } from "zod";
 
 import { HttpStatusCodes } from "@repo/shared";
 
-import z from "@/lib/zod.js";
-import { atLeastOneField, errorSchema, validationErrorSchema } from "@/utils/schemas.js";
+import { errorSchema, validationErrorSchema } from "@/utils/schemas.js";
 
 import { userSchema } from "../user/user.schemas.js";
 import * as handlers from "./auth.handlers.js";
 
 export const requestSchemas = {
   signin: {
-    body: z
-      .object({
-        email: z.email(),
-        password: z.string().min(6),
-      } satisfies ZodObjectShapeMap<Omit<Signin["body"], "photo">>)
-      .refine(atLeastOneField),
+    body: userSchema.pick({
+      email: true,
+      password: true,
+    }) satisfies ZodType<Omit<Signin["body"], "photo">>,
     responses: {
       [HttpStatusCodes.OK]: userSchema satisfies ZodType<Signin["response"]>,
       [HttpStatusCodes.UNAUTHORIZED]: errorSchema,
@@ -26,10 +23,9 @@ export const requestSchemas = {
   },
 
   register: {
-    body: z.object({
-      email: z.email(),
-      password: z.string().min(6),
-      username: z.string().min(3).max(30),
+    body: userSchema.pick({
+      email: true,
+      password: true,
     }) satisfies ZodType<Register["body"]>,
     responses: {
       [HttpStatusCodes.CREATED]: userSchema,
