@@ -69,7 +69,6 @@ function SearchBar({ placeholder = "Search for easy dinners, fashion, etc.", ...
         onBlur={handleInputBlur}
         placeholder={placeholder}
         className="flex-1 border-none p-0 text-base! shadow-none ring-0!"
-        autoFocus
       />
 
       {isInputFocus && !!searchValue && (
