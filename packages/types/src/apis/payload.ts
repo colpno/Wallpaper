@@ -8,3 +8,8 @@ export type PaginationPayload<D extends unknown[]> = {
     currentPage: number;
   };
 };
+
+export type FailedPayload = {
+  message: string;
+  stack?: string;
+};

@@ -1,7 +1,7 @@
-import type { Error } from "@/utils/schemas.js";
 import type { ErrorRequestHandler } from "express";
 
 import { HttpStatusCodes } from "@repo/shared";
+import type { FailedPayload } from "@repo/types";
 
 import env from "@/configs/env.js";
 import logger from "@/lib/logger.js";
@@ -12,7 +12,7 @@ const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     logger.error(err);
 
     const statusCode = err.statusCode || HttpStatusCodes.INTERNAL_SERVER_ERROR;
-    const error: Error = {
+    const error: FailedPayload = {
       message: err.message,
     };
 

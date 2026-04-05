@@ -1,7 +1,7 @@
 import type { ZodType } from "zod";
 
 import { HttpStatusPhrases } from "@repo/shared";
-import type { PaginationPayload } from "@repo/types";
+import type { FailedPayload, PaginationPayload } from "@repo/types";
 import { isObjectIdOrHexString, Types } from "mongoose";
 
 import z from "@/lib/zod.js";
@@ -24,7 +24,7 @@ export const errorSchema = createMessageObjectSchema().extend({
     .string()
     .optional()
     .openapi({ description: "Available only in non-production environments" }),
-});
+}) satisfies ZodType<FailedPayload>;
 export type Error = z.infer<typeof errorSchema>;
 
 export const validationErrorSchema = z
