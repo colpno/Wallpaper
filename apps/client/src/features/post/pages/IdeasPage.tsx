@@ -1,6 +1,6 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-import MasonryLayout from "@/components/common/MasonryLayout";
+import Masonry from "@/components/common/Masonry";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
 import { INFINITE_PAGE_SIZE, INITIAL_PAGE } from "@/constants/common";
@@ -38,11 +38,11 @@ function IdeasPage() {
         <>
           <Heading variant="h2">What&apos;s new on Pinterest</Heading>
 
-          <MasonryLayout>
+          <Masonry>
             {data.map((item) => (
               <PostCard key={item._id} {...item} />
             ))}
-          </MasonryLayout>
+          </Masonry>
         </>
       ) : (
         <Heading variant="h2" className="text-center">

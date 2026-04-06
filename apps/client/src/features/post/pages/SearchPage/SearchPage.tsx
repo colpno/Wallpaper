@@ -1,7 +1,7 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { useSearchParams } from "react-router";
 
-import MasonryLayout from "@/components/common/MasonryLayout";
+import Masonry from "@/components/common/Masonry";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
 import { INFINITE_PAGE_SIZE, INITIAL_PAGE } from "@/constants/common";
@@ -25,11 +25,11 @@ function SearchPage() {
       {isLoading ? (
         <div>Skeletons here</div>
       ) : data ? (
-        <MasonryLayout>
+        <Masonry>
           {data.map((item) => (
             <PostCard key={item._id} {...item} />
           ))}
-        </MasonryLayout>
+        </Masonry>
       ) : (
         <Heading variant="h2" className="text-center">
           No search results meet your criteria
