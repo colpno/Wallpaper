@@ -1,7 +1,7 @@
 import type { PostAPIs, PostDB } from "@repo/types";
 import { mutationOptions } from "@tanstack/react-query";
 
-import queryClient from "@/lib/react-query/client";
+import { queryClient } from "@/lib/react-query/client";
 
 import { addPost, removePostById, removePosts, undoPostsRemoval, updatePostById } from "./apis";
 import { POST_KEYS } from "./keys";

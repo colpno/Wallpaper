@@ -14,6 +14,4 @@ const schema = new Schema<ExpiredMedia>(
   }
 );
 
-const ExpiredMediaModel = model("expired_medias", schema);
-
-export default ExpiredMediaModel;
+export const ExpiredMediaModel = model("expired_medias", schema);

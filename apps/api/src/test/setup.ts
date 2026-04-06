@@ -1,6 +1,6 @@
 import { afterAll, afterEach, beforeAll, vi } from "vitest";
 
-import env from "@/configs/env.js";
+import { env } from "@/configs/env.js";
 import { clearCollections, connectDB, disconnectDB } from "@/lib/database.js";
 
 import cloudinaryMocks from "./mocks/cloudinary.js";

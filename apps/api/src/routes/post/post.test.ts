@@ -7,7 +7,7 @@ import z from "zod";
 
 import { seedDatabase, type SeededDB } from "@/test/samples.js";
 import { testImages } from "@/test/variables.js";
-import createTestClient from "@/utils/create-test-client.js";
+import { createTestClient } from "@/utils/create-test-client.js";
 import { paginationPayloadSchema } from "@/utils/schemas.js";
 
 import { userSchema } from "../user/user.schemas.js";

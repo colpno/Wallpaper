@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import parseFilterOperators from "./parse-filter-operators.js";
+import { parseFilterOperators } from "./parse-filter-operators.js";
 
 describe("parseQuerySelectors", () => {
   it("should parse to $regex", () => {

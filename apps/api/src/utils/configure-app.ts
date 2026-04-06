@@ -2,14 +2,14 @@ import bodyParser from "body-parser";
 import express from "express";
 import { parse } from "qs";
 
-import env from "@/configs/env.js";
-import cors from "@/middlewares/cors.middleware.js";
-import errorHandler from "@/middlewares/error-handler.middleware.js";
+import { env } from "@/configs/env.js";
+import { cors } from "@/middlewares/cors.js";
+import { errorHandler } from "@/middlewares/error-handler.js";
 import { morgan } from "@/middlewares/morgan.js";
-import rateLimiter from "@/middlewares/rate-limiter.middleware.js";
-import router from "@/routes/index.js";
+import { rateLimiter } from "@/middlewares/rate-limiter.js";
+import { router } from "@/routes/index.js";
 
-export default function configureApp(app: express.Express) {
+export const configureApp = (app: express.Express) => {
   app
     .set("query parser", (str: string) => parse(str))
     .use(bodyParser.urlencoded({ extended: true }))
@@ -20,4 +20,4 @@ export default function configureApp(app: express.Express) {
   }
 
   app.use(router).use(errorHandler);
-}
+};

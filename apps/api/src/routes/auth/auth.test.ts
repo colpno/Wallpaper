@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { seedDatabase, type SeededDB } from "@/test/samples.js";
 import { testUserPassword } from "@/test/variables.js";
-import createTestClient from "@/utils/create-test-client.js";
+import { createTestClient } from "@/utils/create-test-client.js";
 
 import * as routes from "./auth.routes.js";
 import { requestSchemas } from "./auth.schemas.js";

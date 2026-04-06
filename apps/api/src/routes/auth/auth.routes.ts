@@ -1,7 +1,7 @@
 import { API_ROUTES, HttpStatusCodes } from "@repo/shared";
 
 import { jsonContent } from "@/utils/openapi.js";
-import Router from "@/utils/Router.js";
+import { Router } from "@/utils/Router.js";
 
 import * as handlers from "./auth.handlers.js";
 import { requestSchemas } from "./auth.schemas.js";

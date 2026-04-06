@@ -1,5 +1,5 @@
 import type { KnownKeys } from "./common.js";
-import type z from "@/lib/zod.js";
+import type { z } from "@/lib/zod.js";
 import type { RequestHandler, Response } from "express";
 
 import type {

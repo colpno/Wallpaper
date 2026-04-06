@@ -2,7 +2,7 @@ import type { User, UserDB } from "@repo/types";
 import { model, Schema } from "mongoose";
 
 import { generateSalt, hash } from "../auth/auth.services.js";
-import PostModel from "../post/post.model.js";
+import { PostModel } from "../post/post.model.js";
 
 type SchemaType = Omit<User, "birthdate"> & {
   birthdate: Date;
@@ -53,6 +53,4 @@ schema.post("findOneAndDelete", async function (doc?: UserDB) {
   await PostModel.deleteMany({ postOwner: doc._id });
 });
 
-const UserModel = model("users", schema);
-
-export default UserModel;
+export const UserModel = model("users", schema);

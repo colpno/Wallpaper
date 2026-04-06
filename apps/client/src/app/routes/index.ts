@@ -5,7 +5,7 @@ import { ROUTES } from "@/constants/common";
 import HomePage from "@/features/home/HomePage";
 import GuessLayout from "@/layouts/GuessLayout";
 
-const routes = createBrowserRouter([
+export const routes = createBrowserRouter([
   {
     Component: GuessLayout,
     children: [
@@ -24,5 +24,3 @@ const routes = createBrowserRouter([
     ],
   },
 ]);
-
-export default routes;

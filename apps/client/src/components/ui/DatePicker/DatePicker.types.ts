@@ -15,14 +15,11 @@ export type Value<TMode extends Mode = Mode> =
   | (TMode extends "single" ? Date : TMode extends "multiple" ? Date[] : DateRange)
   | "";
 
-export type DatePickerProps<TMode extends Mode = Mode> = Omit<
-  CalendarProps,
-  "required" | "mode"
-> & {
+export type DatePickerProps<TMode extends Mode = Mode> = {
   value: Value<TMode>;
   onChange: (date: Value<TMode>) => void;
   mode?: TMode;
   required?: boolean;
   ref?: Ref<HTMLInputElement>;
   placeholder?: string;
-};
+} & Omit<CalendarProps, "required" | "mode">;

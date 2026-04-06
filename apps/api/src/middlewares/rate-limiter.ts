@@ -1,6 +1,6 @@
 import handler, { type Options } from "express-rate-limit";
 
-import env from "@/configs/env.js";
+import { env } from "@/configs/env.js";
 
 type Config = Omit<Options, "windowMs" | "limit"> & {
   /**
@@ -21,11 +21,9 @@ type Config = Omit<Options, "windowMs" | "limit"> & {
   limit?: number;
 };
 
-const rateLimiter = (config?: Partial<Config>) =>
+export const rateLimiter = (config?: Partial<Config>) =>
   handler({
     ...config,
     windowMs: config?.windowMs ?? env.RATE_LIMIT_TIME,
     limit: config?.limit ?? env.RATE_LIMIT_MAX,
   });
-
-export default rateLimiter;

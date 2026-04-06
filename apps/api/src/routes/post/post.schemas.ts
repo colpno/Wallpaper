@@ -15,8 +15,8 @@ import type { ZodType } from "zod";
 import { HttpStatusCodes } from "@repo/shared";
 import type { PostDB, UserDB } from "@repo/types";
 
-import z from "@/lib/zod.js";
-import createQueryFilterSchema from "@/utils/create-query-filter-schema.js";
+import { z } from "@/lib/zod.js";
+import { createQueryFilterSchema } from "@/utils/create-query-filter-schema.js";
 import {
   errorSchema,
   metaPaginationSchema,

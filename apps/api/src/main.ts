@@ -2,9 +2,9 @@ let server: import("http").Server | undefined;
 
 import express from "express";
 
-import env from "./configs/env.js";
+import { env } from "./configs/env.js";
 import { connectDB } from "./lib/database.js";
-import configureApp from "./utils/configure-app.js";
+import { configureApp } from "./utils/configure-app.js";
 
 process.on("unhandledRejection", (err) => {
   console.error("Unhandled Rejection:", err);

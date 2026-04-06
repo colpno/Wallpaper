@@ -1,6 +1,6 @@
 import type { Post, User } from "@repo/types";
 
-import z from "@/lib/zod.js";
+import { z } from "@/lib/zod.js";
 
 export type NonOptionalKeys<T> = { [k in keyof T]-?: undefined extends T[k] ? never : k }[keyof T];
 

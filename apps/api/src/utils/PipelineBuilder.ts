@@ -21,7 +21,7 @@ type BuildPipelineReturnType<P extends boolean> = P extends true
       paginationStages?: PipelineStage[];
     };
 
-export default class PipelineBuilder {
+export class PipelineBuilder {
   private fieldToCollectionNameMap: NonNullable<Options["fieldToCollectionNameMap"]>;
 
   constructor(options?: Options) {

@@ -3,11 +3,11 @@ import type { ErrorRequestHandler } from "express";
 import { HttpStatusCodes } from "@repo/shared";
 import type { FailedPayload } from "@repo/types";
 
-import env from "@/configs/env.js";
-import logger from "@/lib/logger.js";
+import { env } from "@/configs/env.js";
+import { logger } from "@/lib/logger.js";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
+export const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
   try {
     logger.error(err);
 
@@ -25,5 +25,3 @@ const errorHandler: ErrorRequestHandler = (err, _req, res, _next) => {
     return res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).json({ message: "Unhandled errors" });
   }
 };
-
-export default errorHandler;

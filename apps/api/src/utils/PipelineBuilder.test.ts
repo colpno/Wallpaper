@@ -1,10 +1,10 @@
 import type { PostDB, UserDB } from "@repo/types";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import PostModel from "@/routes/post/post.model.js";
+import { PostModel } from "@/routes/post/post.model.js";
 import { seedDatabase, type SeededDB } from "@/test/samples.js";
 
-import PipelineBuilder from "./PipelineBuilder.js";
+import { PipelineBuilder } from "./PipelineBuilder.js";
 
 let db: SeededDB;
 const pipelineBuilder = new PipelineBuilder({

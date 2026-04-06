@@ -4,9 +4,9 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { deleteFiles } from "@/services/cloudinary.js";
 import { seedDatabase, type SeededDB } from "@/test/samples.js";
-import createTestClient from "@/utils/create-test-client.js";
+import { createTestClient } from "@/utils/create-test-client.js";
 
-import ExpiredMediaModel from "./expired-media.model.js";
+import { ExpiredMediaModel } from "./expired-media.model.js";
 import * as routes from "./media.routes.js";
 import { requestSchemas } from "./media.schemas.js";
 

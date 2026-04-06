@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { seedDatabase, type SeededDB } from "@/test/samples.js";
 import { testImages } from "@/test/variables.js";
-import createTestClient from "@/utils/create-test-client.js";
+import { createTestClient } from "@/utils/create-test-client.js";
 
 import { signin as signinRouteConfig } from "../auth/auth.routes.js";
 import * as routes from "./user.routes.js";

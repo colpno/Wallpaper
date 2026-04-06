@@ -13,12 +13,12 @@ import type {
   SortOrder,
 } from "@repo/types";
 
-import z from "@/lib/zod.js";
+import { z } from "@/lib/zod.js";
 
-import parseFilterOperators from "./parse-filter-operators.js";
+import { parseFilterOperators } from "./parse-filter-operators.js";
 import { objectIdSchema } from "./schemas.js";
 
-export default function createQueryFilterSchema<T extends Record<string, unknown>>() {
+export const createQueryFilterSchema = <T extends Record<string, unknown>>() => {
   return <
     TSortable extends FlattenObjectKeys<T>,
     TSelectable extends FlattenObjectKeys<T>,
@@ -79,7 +79,7 @@ export default function createQueryFilterSchema<T extends Record<string, unknown
       )
       .partial();
   };
-}
+};
 
 const createFilterOperatorsSchema = <TSchema extends ZodType>(base: TSchema) => {
   type T = z.infer<TSchema>;

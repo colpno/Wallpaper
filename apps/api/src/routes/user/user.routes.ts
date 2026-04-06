@@ -2,9 +2,9 @@ import type { UserKeys } from "@/types/common.js";
 
 import { API_ROUTES, HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
 
-import multer from "@/middlewares/multer.js";
+import { multer } from "@/middlewares/multer.js";
 import { jsonContent } from "@/utils/openapi.js";
-import Router from "@/utils/Router.js";
+import { Router } from "@/utils/Router.js";
 import { atLeastOneField, fileSchema } from "@/utils/schemas.js";
 
 import * as handlers from "./user.handlers.js";

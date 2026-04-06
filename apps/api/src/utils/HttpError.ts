@@ -1,6 +1,6 @@
 import { HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
 
-export default class HttpError extends Error {
+export class HttpError extends Error {
   statusCode: number;
 
   constructor(statusCode: number, message: string) {

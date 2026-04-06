@@ -9,9 +9,9 @@ import { AiOutlineExclamationCircle } from "react-icons/ai";
 
 import Button from "../ui/Button";
 
-type Props = React.ComponentProps<typeof UIFormLabel> & {
+type Props = {
   hint?: string;
-};
+} & React.ComponentProps<typeof UIFormLabel>;
 
 function Label({ children, hint, ...props }: Props) {
   if (hint) {

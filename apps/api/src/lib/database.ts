@@ -1,7 +1,7 @@
 import { MongoMemoryServer } from "mongodb-memory-server";
 import mongoose from "mongoose";
 
-import env from "@/configs/env.js";
+import { env } from "@/configs/env.js";
 
 const memoryDB = env.ENVIRONMENT === "test" ? await MongoMemoryServer.create() : undefined;
 

@@ -14,7 +14,7 @@ type BuiltInMiddlewares<T extends RouteConfig> = {
   validator: Handlers<T>;
 };
 
-export default class Router {
+export class Router {
   private routeConfigs: RouteConfig[] = [];
   private _router = ExpressRouter();
 

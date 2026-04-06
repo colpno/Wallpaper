@@ -43,7 +43,7 @@ const operatorMap: Record<
  * parseCondition({ size: { gt: 1 } }) // { $size: { $gt: 1 } }
  * parseCondition({ all: ["john", "joe"] }) // { $all: [ 'john', 'joe' ] }
  */
-export default function parseFilterOperators<T>(input: T): NormalizeFilterOperators<T> {
+export const parseFilterOperators = <T>(input: T): NormalizeFilterOperators<T> => {
   if (typeof input !== "object" || !input || input instanceof Date) {
     return input as NormalizeFilterOperators<T>;
   }
@@ -66,4 +66,4 @@ export default function parseFilterOperators<T>(input: T): NormalizeFilterOperat
   }
 
   return output as NormalizeFilterOperators<T>;
-}
+};

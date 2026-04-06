@@ -1,4 +1,4 @@
-import type z from "@/lib/zod.js";
+import type { z } from "@/lib/zod.js";
 import type { RouteConfig } from "@/types/route-handler.js";
 import type { Types } from "mongoose";
 
@@ -6,7 +6,7 @@ import type { FilterOperators } from "@repo/types";
 import express from "express";
 import request from "supertest";
 
-import configureApp from "@/utils/configure-app.js";
+import { configureApp } from "@/utils/configure-app.js";
 
 import { openApiToExpressPath } from "./converters.js";
 import { Error500 } from "./HttpError.js";
@@ -84,7 +84,7 @@ const agent = request(createApp());
  * Creates a test client for the provided Express router.
  * @returns A test client for making requests to the API.
  */
-export default function createTestClient<
+export const createTestClient = <
   TConfig extends RouteConfig,
   TParams extends Record<string, string> | never = ExtractRequestInputFromRouteConfig<
     TConfig,
@@ -92,7 +92,9 @@ export default function createTestClient<
   >,
   TQuery extends Record<string, unknown> = ExtractRequestInputFromRouteConfig<TConfig, "query">,
   TBody = ExtractRequestInputFromRouteConfig<TConfig, "body">,
->(config: TConfig) {
+>(
+  config: TConfig
+) => {
   return (params?: TParams extends never ? never : Record<keyof TParams, string>) => {
     const resolvedPath = resolvePath(config.path, params);
     const client = agent[config.method](resolvedPath);
@@ -108,4 +110,4 @@ export default function createTestClient<
 
     return client as TestClient;
   };
-}
+};

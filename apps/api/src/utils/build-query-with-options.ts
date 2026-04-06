@@ -8,9 +8,9 @@ type BuildQuerySettingsReturn<T extends Record<string, unknown>> = {
   options: Pick<QueryFilter<T>, Command>;
 };
 
-export function organizeQueryInput<T extends Record<string, unknown>>(
+export const organizeQueryInput = <T extends Record<string, unknown>>(
   args?: QueryFilter<T>
-): BuildQuerySettingsReturn<T> {
+): BuildQuerySettingsReturn<T> => {
   if (!args) {
     return { queryFilters: {} as BuildQuerySettingsReturn<T>["queryFilters"], options: {} };
   }
@@ -42,14 +42,17 @@ export function organizeQueryInput<T extends Record<string, unknown>>(
     queryFilters,
     options,
   };
-}
+};
 
-export default function buildQueryWithOptions<
+export const buildQueryWithOptions = <
   Data extends Record<string, unknown>,
   QueryResultType,
   QueryDocType,
   TQuery extends Query<QueryResultType, QueryDocType>,
->(query: TQuery, options: QueryFilter<Data>) {
+>(
+  query: TQuery,
+  options: QueryFilter<Data>
+) => {
   const { limit, page, select, sort, embed } = options;
 
   if (select) {
@@ -70,4 +73,4 @@ export default function buildQueryWithOptions<
   }
 
   return query;
-}
+};

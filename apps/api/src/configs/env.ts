@@ -2,7 +2,7 @@ import type { Level } from "@repo/logger";
 import type { Environment } from "@repo/types";
 import { config } from "dotenv";
 
-import z from "@/lib/zod.js";
+import { z } from "@/lib/zod.js";
 
 config({
   quiet: true,
@@ -34,11 +34,11 @@ const schema = z.object({
   HUGGING_FACE_TOKEN: z.string(),
 });
 
-const { error, data: env, success } = schema.safeParse(process.env);
+const { error, data, success } = schema.safeParse(process.env);
 
 if (!success) {
   console.error(z.prettifyError(error));
   process.exit(1);
 }
 
-export default env!;
+export const env = data!;

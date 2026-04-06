@@ -2,9 +2,9 @@ import type { ElementType, JSX } from "react";
 
 import { cn } from "@repo/ui/lib";
 
-type Props<TAs extends keyof JSX.IntrinsicElements> = React.ComponentProps<TAs> & {
+type Props<TAs extends keyof JSX.IntrinsicElements> = {
   as?: TAs;
-};
+} & React.ComponentProps<TAs>;
 
 function Container<TAs extends keyof JSX.IntrinsicElements>({ as, ...props }: Props<TAs>) {
   const Element = (as ?? "div") as ElementType;

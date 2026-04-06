@@ -1,8 +1,13 @@
-import type { InputProps } from "./Input.types";
-
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@repo/ui/components";
 import { cn } from "@repo/ui/lib";
 import { useImperativeHandle, useRef } from "react";
+
+export type InputProps = {
+  addons?: {
+    end?: React.ReactNode;
+  };
+  uppercase?: boolean;
+} & React.ComponentProps<typeof InputGroupInput>;
 
 function Input({ addons, uppercase, className, ...props }: InputProps) {
   const ref = useRef<null | HTMLInputElement>(null);

@@ -1,8 +1,8 @@
 import { expect, test } from "vitest";
 
-import z from "@/lib/zod.js";
+import { z } from "@/lib/zod.js";
 
-import createQueryFilterSchema from "./create-query-filter-schema.js";
+import { createQueryFilterSchema } from "./create-query-filter-schema.js";
 
 test("createQueryFilterSchema", () => {
   const schema = createQueryFilterSchema<{

@@ -4,7 +4,7 @@ import { HttpStatusPhrases } from "@repo/shared";
 import type { FailedPayload, PaginationPayload } from "@repo/types";
 import { isObjectIdOrHexString, Types } from "mongoose";
 
-import z from "@/lib/zod.js";
+import { z } from "@/lib/zod.js";
 
 function createMessageObjectSchema(message?: string) {
   const schema = z.object({

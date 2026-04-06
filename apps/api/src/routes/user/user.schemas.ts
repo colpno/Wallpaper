@@ -5,7 +5,7 @@ import type { ZodType } from "zod";
 import { HttpStatusCodes } from "@repo/shared";
 import type { UserDB } from "@repo/types";
 
-import z from "@/lib/zod.js";
+import { z } from "@/lib/zod.js";
 import {
   notFoundSchema,
   objectIdSchema,

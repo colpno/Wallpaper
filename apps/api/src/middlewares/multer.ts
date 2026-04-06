@@ -8,7 +8,7 @@ import { createErrorObjectFromZod } from "@/utils/converters.js";
 
 type Method = keyof handler.Multer;
 
-const multer =
+export const multer =
   <M extends Method>(method: M, ...args: Parameters<handler.Multer[M]>) =>
   (validationSchema?: ZodType): RequestHandler =>
   (req, res, next) =>
@@ -31,5 +31,3 @@ const multer =
 
       return next();
     });
-
-export default multer;

@@ -15,16 +15,16 @@ import Dialog from "@/components/dialogs/Dialog";
 import Button from "@/components/ui/Button";
 import Input, { type InputProps } from "@/components/ui/Input";
 import Typography from "@/components/ui/Typography";
-import { calculatePasswordStrength } from "@/features/auth/utils/common";
+import { calculatePasswordStrength } from "@/features/auth/utils/calculate-password-strength";
 
 import Label from "../../Label";
 
-type Props = InputProps & {
+type Props = {
   name: string;
   label?: React.ReactNode;
   showStrength?: boolean;
   labelHint?: string;
-};
+} & InputProps;
 
 function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
   const { control } = useFormContext();

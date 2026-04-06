@@ -6,7 +6,7 @@ const dateFormat = "yyyy-MM-dd";
 
 const isObject = (value: unknown): value is object => typeof value === "object" && value !== null;
 
-export function formatDate<TMode extends Mode = Mode>(date: Value<TMode> | undefined): string {
+export const formatDate = <TMode extends Mode = Mode>(date: Value<TMode> | undefined): string => {
   if (!date) return "";
   if (Array.isArray(date)) {
     return date.map((d) => format(d, dateFormat)).join(", ");
@@ -17,9 +17,9 @@ export function formatDate<TMode extends Mode = Mode>(date: Value<TMode> | undef
     return `${from} - ${to}`;
   }
   return format(date, dateFormat);
-}
+};
 
-export function isValidDate<TMode extends Mode = Mode>(date: Value<TMode> | undefined): boolean {
+export const isValidDate = <TMode extends Mode = Mode>(date: Value<TMode> | undefined): boolean => {
   if (!date) return false;
   if (Array.isArray(date)) {
     return date.every((d) => !isNaN(d.getTime()));
@@ -30,11 +30,11 @@ export function isValidDate<TMode extends Mode = Mode>(date: Value<TMode> | unde
     return fromValid && toValid;
   }
   return !isNaN(date.getTime());
-}
+};
 
-export function normalizeValue<TMode extends Mode = Mode>(
+export const normalizeValue = <TMode extends Mode = Mode>(
   date: Value<TMode> | undefined
-): Date | undefined {
+): Date | undefined => {
   if (!date) return undefined;
   if (Array.isArray(date)) {
     return date[0];
@@ -43,4 +43,4 @@ export function normalizeValue<TMode extends Mode = Mode>(
     return date.from;
   }
   return date;
-}
+};

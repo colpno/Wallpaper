@@ -4,11 +4,11 @@ import type { File } from "@/utils/schemas.js";
 import { HttpStatusCodes } from "@repo/shared";
 import type { User, UserDB } from "@repo/types";
 
-import logger from "@/lib/logger.js";
-import HttpError from "@/utils/HttpError.js";
+import { logger } from "@/lib/logger.js";
+import { HttpError } from "@/utils/HttpError.js";
 
 import { eraseMedia, uploadMedia } from "../media/media.handlers.js";
-import UserModel from "./user.model.js";
+import { UserModel } from "./user.model.js";
 
 export const updateOneById: UpdateOneById["handler"] = async (req, res, next) => {
   try {

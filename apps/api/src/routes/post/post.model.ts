@@ -1,7 +1,7 @@
 import type { DefaultModelProps, ExpiredMedia, Post } from "@repo/types";
 import { model, Schema, type Types, type UpdateQuery } from "mongoose";
 
-import ExpiredMediaModel from "../media/expired-media.model.js";
+import { ExpiredMediaModel } from "../media/expired-media.model.js";
 
 const schema = new Schema<Post<Types.ObjectId>>(
   {
@@ -97,6 +97,4 @@ schema.post("updateMany", async function () {
   }
 });
 
-const PostModel = model("posts", schema);
-
-export default PostModel;
+export const PostModel = model("posts", schema);

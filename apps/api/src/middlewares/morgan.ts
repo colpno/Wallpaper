@@ -1,7 +1,7 @@
 import handler from "morgan";
 
-import env from "@/configs/env.js";
-import logger from "@/lib/logger.js";
+import { env } from "@/configs/env.js";
+import { logger } from "@/lib/logger.js";
 
 let morgan: ReturnType<typeof handler>;
 

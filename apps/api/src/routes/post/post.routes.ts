@@ -1,9 +1,9 @@
 import { API_ROUTES, HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
 
-import multer from "@/middlewares/multer.js";
-import rateLimiter from "@/middlewares/rate-limiter.middleware.js";
+import { multer } from "@/middlewares/multer.js";
+import { rateLimiter } from "@/middlewares/rate-limiter.js";
 import { jsonContent, multipartContent } from "@/utils/openapi.js";
-import Router from "@/utils/Router.js";
+import { Router } from "@/utils/Router.js";
 import { atLeastOneField, fileSchema } from "@/utils/schemas.js";
 
 import * as handlers from "./post.handlers.js";

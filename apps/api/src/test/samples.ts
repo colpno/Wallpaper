@@ -3,9 +3,9 @@ import type { Types } from "mongoose";
 import { faker } from "@faker-js/faker";
 import type { ExpiredMedia, ExpiredMediaDB, Post, PostDB, User, UserDB } from "@repo/types";
 
-import ExpiredMediaModel from "@/routes/media/expired-media.model.js";
-import PostModel from "@/routes/post/post.model.js";
-import UserModel from "@/routes/user/user.model.js";
+import { ExpiredMediaModel } from "@/routes/media/expired-media.model.js";
+import { PostModel } from "@/routes/post/post.model.js";
+import { UserModel } from "@/routes/user/user.model.js";
 
 import { testUserPassword } from "./variables.js";
 

@@ -3,13 +3,13 @@ import { apiReference } from "@scalar/express-api-reference";
 import { type Express, Router } from "express";
 
 import packageJson from "@/../package.json" with { type: "json" };
-import env from "@/configs/env.js";
+import { env } from "@/configs/env.js";
 
 export const registry = new OpenAPIRegistry();
 
-export default function serveAPIDocument(app: Express, path: string): void;
-export default function serveAPIDocument(router: Router, path: string): void;
-export default function serveAPIDocument(router: Router, path: string) {
+export function serveAPIDocument(app: Express, path: string): void;
+export function serveAPIDocument(router: Router, path: string): void;
+export function serveAPIDocument(router: Router, path: string) {
   const generator = new OpenApiGeneratorV31(registry.definitions);
 
   const document = generator.generateDocument({

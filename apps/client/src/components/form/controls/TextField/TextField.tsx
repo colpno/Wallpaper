@@ -5,11 +5,11 @@ import Input, { type InputProps } from "@/components/ui/Input";
 
 import Label from "../../Label";
 
-type Props = InputProps & {
+type Props = {
   name: string;
   label?: React.ReactNode;
   labelHint?: string;
-};
+} & InputProps;
 
 function TextField({ label, labelHint, ...props }: Props) {
   const { control } = useFormContext();

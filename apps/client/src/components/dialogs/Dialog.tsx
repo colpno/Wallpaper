@@ -12,16 +12,16 @@ import { cn } from "@repo/ui/lib";
 
 import Button from "../ui/Button";
 
-type Props = Omit<React.ComponentProps<typeof DialogContent>, "showCloseButton"> &
-  Pick<React.ComponentProps<typeof UIDialog>, "onOpenChange" | "open" | "modal" | "defaultOpen"> & {
-    trigger?: React.ReactNode;
-    slotProps?: {
-      trigger?: React.ComponentProps<typeof DialogTrigger>;
-      header?: React.ComponentProps<typeof DialogHeader>;
-      footer?: React.ComponentProps<typeof DialogFooter>;
-      contentContainer?: React.ComponentProps<"div">;
-    };
+type Props = {
+  trigger?: React.ReactNode;
+  slotProps?: {
+    trigger?: React.ComponentProps<typeof DialogTrigger>;
+    header?: React.ComponentProps<typeof DialogHeader>;
+    footer?: React.ComponentProps<typeof DialogFooter>;
+    contentContainer?: React.ComponentProps<"div">;
   };
+} & Omit<React.ComponentProps<typeof DialogContent>, "showCloseButton"> &
+  Pick<React.ComponentProps<typeof UIDialog>, "onOpenChange" | "open" | "modal" | "defaultOpen">;
 
 function Dialog({
   children,
