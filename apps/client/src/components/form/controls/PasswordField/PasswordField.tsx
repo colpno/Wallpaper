@@ -1,10 +1,4 @@
-import {
-  FormControl,
-  FormDescription,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@repo/ui/components";
+import { FormControl, FormField, FormItem, FormMessage } from "@repo/ui/components";
 import { cn } from "@repo/ui/lib";
 import { useState } from "react";
 import { useFormContext } from "react-hook-form";
@@ -73,7 +67,7 @@ function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
 
             {showStrength && (
               <>
-                <FormDescription className="mt-5 px-2">
+                <div className="mt-5 px-2 text-muted-foreground">
                   <div
                     className={cn(
                       "relative mb-2 h-2 w-full rounded-full bg-gray-200 before:absolute before:left-0 before:h-full before:rounded-full before:content-['']",
@@ -88,7 +82,7 @@ function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
                   </Typography>
 
                   <Typography size="xs">Use 8 or more letters, numbers and symbols</Typography>
-                </FormDescription>
+                </div>
 
                 <Dialog
                   title="Password tips"
@@ -98,6 +92,9 @@ function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
                     </Button>
                   }
                   slotProps={{
+                    trigger: {
+                      asChild: true,
+                    },
                     contentContainer: {
                       className: cn("space-y-2 **:text-sm!"),
                     },
