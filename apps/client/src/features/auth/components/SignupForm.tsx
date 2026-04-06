@@ -1,8 +1,6 @@
 import type { FormProps } from "@/components/form/Form";
-import type { FieldValues } from "react-hook-form";
 
 import { cn } from "@repo/ui/lib";
-import z from "zod";
 
 import DatePickerField from "@/components/form/controls/DatePickerField";
 import PasswordField from "@/components/form/controls/PasswordField";
@@ -13,20 +11,16 @@ import Heading from "@/components/ui/Heading";
 import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
 
-type Props<TFormData extends FieldValues> = React.ComponentProps<"div"> &
-  Pick<FormProps<TFormData>, "onSubmit"> & {
-    slotProps?: Pick<FormProps<TFormData>, "slotProps"> & {
-      form?: Omit<FormProps<TFormData>, "schema" | "children" | "showButtons" | "slotProps">;
-    };
+import { type SignupFormData, signupFormSchema } from "../constants/schemas";
+
+type Props = {
+  slotProps?: FormProps<SignupFormData>["slotProps"] & {
+    form?: Omit<FormProps<SignupFormData>, "schema" | "children" | "showButtons" | "slotProps">;
   };
+} & React.ComponentProps<"div"> &
+  Pick<FormProps<SignupFormData>, "onSubmit">;
 
-const schema = z.any();
-
-function SignupForm<TFormData extends FieldValues>({
-  onSubmit,
-  slotProps,
-  ...props
-}: Props<TFormData>) {
+function SignupForm({ onSubmit, slotProps, ...props }: Props) {
   return (
     <div
       className={cn(
@@ -43,8 +37,9 @@ function SignupForm<TFormData extends FieldValues>({
       <div className="mx-auto w-[268px]">
         <Form
           {...slotProps?.form}
+          slotProps={slotProps}
           onSubmit={onSubmit}
-          schema={schema}
+          schema={signupFormSchema}
           showButtons={false}
           className={cn("space-y-2.5", slotProps?.form?.className)}
         >
