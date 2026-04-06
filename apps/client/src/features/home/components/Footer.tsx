@@ -5,34 +5,7 @@ import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
 import { ROUTES } from "@/constants/common";
 
-const menu = [
-  {
-    label: "Get the app",
-    items: [
-      { label: "IOS", link: "#" },
-      { label: "Android", link: "#" },
-    ],
-  },
-  {
-    label: "Quick links",
-    items: [
-      { label: "Explore", link: ROUTES.IDEAS() },
-      { label: "Shop", link: "#" },
-      { label: "Users", link: "#" },
-      { label: "Collections", link: "#" },
-      { label: "Shopping", link: "#" },
-      { label: "Help Center", link: "#" },
-    ],
-  },
-  {
-    label: "Policies",
-    items: [
-      { label: "Terms of service", link: "#" },
-      { label: "Privacy policy", link: "#" },
-      { label: "Non-user notice", link: "#" },
-    ],
-  },
-];
+import { footerMenu } from "../constants";
 
 function Footer(props: React.ComponentProps<"footer">) {
   return (
@@ -47,12 +20,12 @@ function Footer(props: React.ComponentProps<"footer">) {
       </nav>
 
       <nav className="grid grid-cols-3">
-        {menu.map((col) => (
+        {footerMenu.map((col) => (
           <div key={col.label} className="flex flex-col gap-4">
             <Typography className="font-bold">{col.label}</Typography>
 
             {col.items.map((item) => (
-              <Link key={item.link} href={item.link} className="hover:underline">
+              <Link key={item.label} href={item.link} className="hover:underline">
                 {item.label}
               </Link>
             ))}

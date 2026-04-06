@@ -4,30 +4,12 @@ import { FaPause, FaPlay } from "react-icons/fa6";
 import { TiPinOutline } from "react-icons/ti";
 import Slider from "react-slick";
 
-import {
-  Decor1,
-  Decor2,
-  Fashion1,
-  Fashion2,
-  Food1,
-  Food2,
-  Nail1,
-  Nail2,
-  Tattoo1,
-  Tattoo2,
-} from "@/assets/images";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
 import Image from "@/components/ui/Image";
 
-const contents = [
-  { text: "cozy home decor", images: [Decor1, Decor2] },
-  { text: "weeknight dinner", images: [Food1, Food2] },
-  { text: "effortless outfits", images: [Fashion1, Fashion2] },
-  { text: "classic nail art", images: [Nail1, Nail2] },
-  { text: "statement tattoos", images: [Tattoo1, Tattoo2] },
-];
+import { heroContents } from "../constants";
 
 function Hero(props: React.ComponentProps<"section">) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -99,7 +81,7 @@ function Hero(props: React.ComponentProps<"section">) {
               "[&_.slick-dots>li.slick-active:nth-child(5)>button]:bg-(--color-5)!"
             )}
           >
-            {contents.map((item) => (
+            {heroContents.map((item) => (
               <div key={item.text}>
                 <Heading
                   variant="h2"
@@ -127,7 +109,7 @@ function Hero(props: React.ComponentProps<"section">) {
       {/* Right column */}
       <div className="relative w-fit">
         <div className="relative h-[400px] w-[300px]">
-          {contents.map((item, index) => (
+          {heroContents.map((item, index) => (
             <Image
               key={item.text}
               src={item.images[0]}
@@ -146,7 +128,7 @@ function Hero(props: React.ComponentProps<"section">) {
         </div>
 
         <div className="absolute -right-27 bottom-0 h-[270px] w-[200px]">
-          {contents.map((item, index) => (
+          {heroContents.map((item, index) => (
             <Image
               key={item.text}
               src={item.images[1]}
