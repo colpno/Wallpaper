@@ -26,6 +26,7 @@ export const requestSchemas = {
     body: userSchema.pick({
       email: true,
       password: true,
+      birthdate: true,
     }) satisfies ZodType<Register["body"]>,
     responses: {
       [HttpStatusCodes.CREATED]: userSchema,

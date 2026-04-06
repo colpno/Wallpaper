@@ -32,6 +32,7 @@ export const createPost = (): Readonly<Required<Omit<Post, "postOwner" | "remove
 export const createUser = (): Readonly<Required<User>> => ({
   username: faker.string.alphanumeric({ length: 6 }),
   email: faker.internet.email(),
+  birthdate: faker.date.birthdate().toISOString(),
   password: testUserPassword,
   salt: faker.string.alphanumeric({ length: 3 }),
   avatarUrl: faker.image.url(),

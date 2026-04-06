@@ -4,25 +4,17 @@ import { model, Schema } from "mongoose";
 import { generateSalt, hash } from "../auth/auth.services.js";
 import PostModel from "../post/post.model.js";
 
-const schema = new Schema<User>(
+type SchemaType = Omit<User, "birthdate"> & {
+  birthdate: Date;
+};
+
+const schema = new Schema<SchemaType>(
   {
-    username: {
-      type: String,
-      required: true,
-    },
-    email: {
-      type: String,
-      required: true,
-      unique: true,
-    },
-    password: {
-      type: String,
-      required: true,
-    },
-    salt: {
-      type: String,
-      required: true,
-    },
+    username: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    birthdate: { type: Date, required: true },
+    password: { type: String, required: true },
+    salt: { type: String, required: true },
     avatarUrl: String,
     avatarCloudinaryId: String,
   },

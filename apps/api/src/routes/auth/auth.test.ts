@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { HttpStatusCodes } from "@repo/shared";
 import { beforeEach, describe, expect, it } from "vitest";
 
@@ -82,6 +83,7 @@ describe("Auth routes", () => {
       const response = await register().send({
         email: user.email,
         password: "password",
+        birthdate: "12/09/2000",
       });
 
       expect(response.status).toBe(HttpStatusCodes.CONFLICT);
@@ -97,6 +99,8 @@ describe("Auth routes", () => {
       const response = await register().send({
         email: "test",
         password: "a",
+        // @ts-expect-error
+        birthdate: 2,
       });
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
