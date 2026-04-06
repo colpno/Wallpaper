@@ -1,0 +1,84 @@
+import type { CalendarProps, DatePickerProps, DateRange, Mode, Value } from "./DatePicker.types";
+
+import { Calendar, Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components";
+import { CalendarIcon } from "lucide-react";
+import { useState } from "react";
+
+import Button from "../Button";
+import Input from "../Input";
+import { formatDate, isValidDate, normalizeValue } from "./DatePicker.utils";
+
+function DatePicker<TMode extends Mode = "single">({
+  value: valueProp,
+  onChange,
+  placeholder,
+  ...props
+}: DatePickerProps<TMode>) {
+  const [open, setOpen] = useState(false);
+  const [month, setMonth] = useState<Date | undefined>(() => normalizeValue(valueProp));
+  const [value, setValue] = useState(() => formatDate(valueProp));
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const date = new Date(e.target.value);
+    setValue(e.target.value);
+    if (isValidDate(date)) {
+      onChange?.(date as Value<TMode>);
+      setMonth(date);
+    }
+  };
+
+  const handleInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "ArrowDown") {
+      e.preventDefault();
+      setOpen(true);
+    }
+  };
+
+  const handleCalendarSelect = (date: Date | Date[] | DateRange | undefined) => {
+    if (date) {
+      onChange?.(date as Value<TMode>);
+    }
+    setValue(formatDate(date));
+    setOpen(false);
+  };
+
+  return (
+    <Input
+      value={value}
+      onChange={handleInputChange}
+      onKeyDown={handleInputKeyDown}
+      placeholder={placeholder}
+      addons={{
+        end: (
+          <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger asChild>
+              <Button variant="ghost-icon" aria-label="Select date">
+                <CalendarIcon className="size-4.5" />
+
+                <span className="sr-only">Select date</span>
+              </Button>
+            </PopoverTrigger>
+
+            <PopoverContent
+              className="w-auto overflow-hidden p-0"
+              align="end"
+              alignOffset={-8}
+              sideOffset={10}
+            >
+              <Calendar
+                mode="single"
+                {...(props as Omit<CalendarProps, "mode">)}
+                selected={valueProp === "" ? undefined : (valueProp as Date)}
+                month={month}
+                onMonthChange={setMonth}
+                onSelect={handleCalendarSelect}
+              />
+            </PopoverContent>
+          </Popover>
+        ),
+      }}
+    />
+  );
+}
+
+export default DatePicker;
