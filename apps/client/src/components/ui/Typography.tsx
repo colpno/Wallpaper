@@ -9,8 +9,7 @@ type Props<TAs extends keyof JSX.IntrinsicElements> = {
    */
   as?: TAs;
 } & React.ComponentProps<TAs> &
-  VariantProps<typeof variants> &
-  React.ComponentProps<TAs>;
+  VariantProps<typeof variants>;
 
 const variants = cva("", {
   variants: {

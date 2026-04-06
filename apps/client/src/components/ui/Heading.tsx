@@ -11,8 +11,8 @@ type Props<TVariant extends Variant> = React.ComponentProps<TVariant> &
 const variants = cva("font-bold -tracking-[0.5px]", {
   variants: {
     variant: {
-      h2: "text-[50px]",
-      h3: "text-[38px]",
+      h1: "text-[50px]",
+      h2: "text-[38px]",
     },
   },
 });
