@@ -7,8 +7,8 @@ import Heading from "@/components/ui/Heading";
 import { INFINITE_PAGE_SIZE, INITIAL_PAGE } from "@/constants/common";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
-import PostCard from "../../components/PostCard";
-import { searchPostsQueryOptions } from "../../services/api/queries";
+import PostCard from "../components/PostCard";
+import { searchPostsQueryOptions } from "../services/api/queries";
 
 function SearchPage() {
   const [searchParams] = useSearchParams();
