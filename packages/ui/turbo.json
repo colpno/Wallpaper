@@ -2,7 +2,7 @@
   "extends": ["//"],
   "tasks": {
     "dev": {
-      "with": ["dev:styles", "dev:components"]
+      "with": ["dev:components"]
     },
     "dev:styles": {
       "cache": false,
