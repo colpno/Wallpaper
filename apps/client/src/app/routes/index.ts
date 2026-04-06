@@ -2,7 +2,7 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router";
 
 import { ROUTES } from "@/constants/common";
-import HomePage from "@/features/home/pages/HomePage";
+import HomePage from "@/features/home/HomePage";
 import GuessLayout from "@/layouts/GuessLayout";
 
 const routes = createBrowserRouter([

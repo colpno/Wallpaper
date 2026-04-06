@@ -1,0 +1,13 @@
+export { default as Decor1 } from "./decor-1.jpg";
+export { default as Decor2 } from "./decor-2.jpg";
+export { default as Fashion1 } from "./fashion-1.jpg";
+export { default as Fashion2 } from "./fashion-2.jpg";
+export { default as Food1 } from "./food-1.jpg";
+export { default as Food2 } from "./food-2.jpg";
+export { default as GroupBoards } from "./group-boards.png";
+export { default as Nail1 } from "./nail-1.jpg";
+export { default as Nail2 } from "./nail-2.jpg";
+export { default as SearchBySkinTone } from "./search-by-skin-tone.png";
+export { default as Tattoo1 } from "./tattoo-1.jpg";
+export { default as Tattoo2 } from "./tattoo-2.jpg";
+export { default as VisualSearch } from "./visual-search.png";

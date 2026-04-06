@@ -36,23 +36,23 @@ const buttonVariants = cva(
         [
           {
             size: "xs",
-            className: "size-5 rounded-sm text-xs",
+            className: "size-2 rounded-sm text-xs",
           },
           {
             size: "sm",
-            className: "size-6 rounded-sm text-xs",
+            className: "size-4 rounded-sm text-xs",
           },
           {
             size: "md",
-            className: "size-7 rounded-md text-sm",
+            className: "size-6 rounded-md text-sm",
           },
           {
             size: "lg",
-            className: "size-8 rounded-lg text-base",
+            className: "size-9 rounded-lg text-base",
           },
           {
             size: "xl",
-            className: "size-9 rounded-xl text-lg",
+            className: "size-12 rounded-xl text-lg",
           },
         ] as const
       ).map((config) => ({
