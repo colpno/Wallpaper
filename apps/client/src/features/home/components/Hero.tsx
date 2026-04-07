@@ -4,10 +4,12 @@ import { FaPause, FaPlay } from "react-icons/fa6";
 import { TiPinOutline } from "react-icons/ti";
 import Slider from "react-slick";
 
+import Dialog from "@/components/dialogs/Dialog";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
 import Image from "@/components/ui/Image";
+import AuthForm from "@/features/auth/components/AuthForm";
 
 import { heroContents } from "../constants";
 
@@ -66,7 +68,6 @@ function Hero(props: React.ComponentProps<"section">) {
             infinite
             autoplay
             autoplaySpeed={3000}
-            fade
             beforeChange={(_, nextIndex) => handleSlideChange(nextIndex)}
             className={cn(
               "-mt-4",
@@ -101,8 +102,29 @@ function Hero(props: React.ComponentProps<"section">) {
         </div>
 
         <div className="mt-10 flex gap-2">
-          <Button>Join Pinterest for free</Button>
-          <Button variant="ghost">I already have an account</Button>
+          <Dialog
+            showFooter={false}
+            showCloseButton
+            trigger={<Button>Join Pinterest for free</Button>}
+            slotProps={{ trigger: { asChild: true } }}
+            className="rounded-4xl"
+          >
+            <Image src="/favicon.svg" className="m-[8px_auto_6px] size-10" />
+
+            <AuthForm className="py-0" />
+          </Dialog>
+
+          <Dialog
+            showFooter={false}
+            showCloseButton
+            trigger={<Button variant="ghost">I already have an account</Button>}
+            slotProps={{ trigger: { asChild: true } }}
+            className="rounded-4xl"
+          >
+            <Image src="/favicon.svg" className="m-[8px_auto_6px] size-10" />
+
+            <AuthForm defaultForm="login" className="py-0" />
+          </Dialog>
         </div>
       </div>
 

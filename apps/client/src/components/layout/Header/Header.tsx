@@ -1,9 +1,12 @@
 import { Button } from "@repo/ui/components";
 
+import Dialog from "@/components/dialogs/Dialog";
 import Icon from "@/components/ui/Icon";
+import Image from "@/components/ui/Image";
 import Link from "@/components/ui/Link";
 import { ROUTES } from "@/constants/common";
 import { headerHeight } from "@/constants/components";
+import AuthForm from "@/features/auth/components/AuthForm";
 
 import SearchBar from "./components/SearchBar";
 
@@ -34,8 +37,29 @@ function Header() {
       <SearchBar className="flex-1" />
 
       <div className="flex items-center gap-2 *:max-h-full!">
-        <Button variant="secondary">Log In</Button>
-        <Button>Sign Up</Button>
+        <Dialog
+          showFooter={false}
+          showCloseButton
+          trigger={<Button>Log In</Button>}
+          slotProps={{ trigger: { asChild: true } }}
+          className="rounded-4xl"
+        >
+          <Image src="/favicon.svg" className="m-[8px_auto_6px] size-10" />
+
+          <AuthForm defaultForm="login" className="py-0" />
+        </Dialog>
+
+        <Dialog
+          showFooter={false}
+          showCloseButton
+          trigger={<Button variant="secondary">Sign Up</Button>}
+          slotProps={{ trigger: { asChild: true } }}
+          className="rounded-4xl"
+        >
+          <Image src="/favicon.svg" className="m-[8px_auto_6px] size-10" />
+
+          <AuthForm className="py-0" />
+        </Dialog>
       </div>
     </header>
   );

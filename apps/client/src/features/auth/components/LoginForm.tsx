@@ -2,7 +2,6 @@ import type { FormProps } from "@/components/form/Form";
 
 import { cn } from "@repo/ui/lib";
 
-import DatePickerField from "@/components/form/controls/DatePickerField";
 import PasswordField from "@/components/form/controls/PasswordField";
 import TextField from "@/components/form/controls/TextField";
 import Form from "@/components/form/Form";
@@ -11,20 +10,20 @@ import Heading from "@/components/ui/Heading";
 import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
 
-import { type RegisterFormData, registerFormSchema } from "../constants/schemas";
+import { type LoginFormData, loginFormSchema } from "../constants/schemas";
 import { useAuthFormContext } from "../contexts/auth-form-context";
 
 type Props = {
-  slotProps?: FormProps<RegisterFormData>["slotProps"] & {
-    form?: Omit<FormProps<RegisterFormData>, "schema" | "children" | "showButtons" | "slotProps">;
+  slotProps?: FormProps<LoginFormData>["slotProps"] & {
+    form?: Omit<FormProps<LoginFormData>, "schema" | "children" | "showButtons" | "slotProps">;
   };
 } & React.ComponentProps<"div">;
 
-function RegisterForm({ slotProps, ...props }: Props) {
+function LoginForm({ slotProps, ...props }: Props) {
   const { setForm: setType } = useAuthFormContext();
 
-  const handleSubmit = (formData: RegisterFormData) => {
-    console.log("RegisterForm submits data:", formData);
+  const handleSubmit = (formData: LoginFormData) => {
+    console.log("LoginForm submits data:", formData);
   };
 
   return (
@@ -34,18 +33,16 @@ function RegisterForm({ slotProps, ...props }: Props) {
         props.className
       )}
     >
-      <Heading variant="h1" className="text-center text-[26px]">
+      <Heading variant="h1" className="mb-5.5 text-center text-[26px]">
         Welcome to Pinterest
       </Heading>
-
-      <Typography className="mb-5.5 text-center">Find new ideas to try</Typography>
 
       <div className="mx-auto w-[268px]">
         <Form
           {...slotProps?.form}
           slotProps={slotProps}
           onSubmit={handleSubmit}
-          schema={registerFormSchema}
+          schema={loginFormSchema}
           showButtons={false}
           className={cn("space-y-2.5", slotProps?.form?.className)}
         >
@@ -54,23 +51,22 @@ function RegisterForm({ slotProps, ...props }: Props) {
           <PasswordField
             name="password"
             label="Password"
-            placeholder="Create a password"
-            showStrength
+            placeholder="Password"
             aria-label="Password field"
           />
 
-          <DatePickerField
-            name="birthdate"
-            label="Birthdate"
-            placeholder="mm/dd/yyyy"
-            labelHint="To help keep Pinterest safe, we now require your birthdate. Your birthdate also helps us provide more personalized recommendations and relevant ads. We won't share this information without your permission and it won't be visible on your profile."
-            aria-label="Birthdate field"
-          />
-
           <Button type="submit" size="sm" className="w-full" aria-label="Submit button">
-            Continue
+            Log in
           </Button>
         </Form>
+
+        <button
+          type="button"
+          onClick={() => setType("register")}
+          className="mx-auto mt-3 flex cursor-pointer text-xs font-bold"
+        >
+          Not on Pinterest yet? Sign up
+        </button>
 
         <Typography size="xs" className="mt-2 px-4 text-center font-extralight">
           By continuing, you agree to Pinterest&apos;s{" "}
@@ -87,20 +83,9 @@ function RegisterForm({ slotProps, ...props }: Props) {
           </Link>
           .
         </Typography>
-
-        <Typography size="xs" className="mt-3 text-center">
-          Already a member?{" "}
-          <button
-            type="button"
-            onClick={() => setType("login")}
-            className="inline cursor-pointer text-xs font-bold"
-          >
-            Login
-          </button>
-        </Typography>
       </div>
     </div>
   );
 }
 
-export default RegisterForm;
+export default LoginForm;

@@ -5,7 +5,7 @@ import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
 import Image from "@/components/ui/Image";
-import RegisterForm from "@/features/auth/components/RegisterForm";
+import AuthForm from "@/features/auth/components/AuthForm";
 
 import { dishImages } from "../constants";
 
@@ -33,7 +33,7 @@ function RegisterSection(props: React.ComponentProps<"section">) {
         </Heading>
 
         <div className="relative size-full">
-          <RegisterForm onSubmit={console.log} className="absolute top-20 right-0" />
+          <AuthForm className="absolute top-20 right-0 py-8" />
         </div>
       </Container>
 

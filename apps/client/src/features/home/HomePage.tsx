@@ -1,12 +1,12 @@
 import { GroupBoards, SearchBySkinTone, VisualSearch } from "@/assets/images";
+import Dialog from "@/components/dialogs/Dialog";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
 import Image from "@/components/ui/Image";
-import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
-import { ROUTES } from "@/constants/common";
 
+import AuthForm from "../auth/components/AuthForm";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
 import RegisterSection from "./components/RegisterSection";
@@ -43,9 +43,7 @@ function HomePage() {
             Search with skin tone ranges for beauty ideas that represent you
           </Typography>
 
-          <Link href={ROUTES.SEARCH("bold lip")} button>
-            Try now
-          </Link>
+          <HomePageAuthForm />
         </div>
       </Container>
 
@@ -59,7 +57,7 @@ function HomePage() {
             Visualize your ideas with others, using a Pinterest account
           </Typography>
 
-          <Button>See an example</Button>
+          <HomePageAuthForm />
         </div>
 
         <div>
@@ -89,7 +87,7 @@ function HomePage() {
             Search objects within an image to find more styles you’ll love
           </Typography>
 
-          <Button>Learn more</Button>
+          <HomePageAuthForm />
         </div>
       </Container>
 
@@ -97,6 +95,22 @@ function HomePage() {
 
       <Footer />
     </div>
+  );
+}
+
+function HomePageAuthForm() {
+  return (
+    <Dialog
+      showFooter={false}
+      showCloseButton
+      trigger={<Button>Join Pinterest</Button>}
+      slotProps={{ trigger: { asChild: true } }}
+      className="rounded-4xl"
+    >
+      <Image src="/favicon.svg" className="m-[8px_auto_6px] size-10" />
+
+      <AuthForm className="py-0" />
+    </Dialog>
   );
 }
 

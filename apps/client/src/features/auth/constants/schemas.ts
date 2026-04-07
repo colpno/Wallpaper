@@ -11,3 +11,9 @@ export const registerFormSchema = z.object({
   }
 >;
 export type RegisterFormData = z.infer<typeof registerFormSchema>;
+
+export const loginFormSchema = registerFormSchema.pick({
+  email: true,
+  password: true,
+}) satisfies ZodType<AuthAPIs.Login["body"]>;
+export type LoginFormData = z.infer<typeof loginFormSchema>;
