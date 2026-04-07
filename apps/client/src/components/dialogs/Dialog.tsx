@@ -20,7 +20,8 @@ type Props = {
     footer?: React.ComponentProps<typeof DialogFooter>;
     contentContainer?: React.ComponentProps<"div">;
   };
-} & Omit<React.ComponentProps<typeof DialogContent>, "showCloseButton"> &
+  showFooter?: boolean;
+} & React.ComponentProps<typeof DialogContent> &
   Pick<React.ComponentProps<typeof UIDialog>, "onOpenChange" | "open" | "modal" | "defaultOpen">;
 
 function Dialog({
@@ -32,6 +33,7 @@ function Dialog({
   title,
   trigger,
   slotProps,
+  showFooter = true,
   ...props
 }: Props) {
   return (
@@ -40,7 +42,6 @@ function Dialog({
 
       <DialogContent
         {...props}
-        showCloseButton={false}
         className={cn("flex max-h-dvh max-w-6xl flex-col", props.className)}
       >
         <DialogHeader
@@ -59,14 +60,16 @@ function Dialog({
           {children}
         </div>
 
-        <DialogFooter
-          {...slotProps?.footer}
-          className={cn("justify-center", slotProps?.footer?.className)}
-        >
-          <DialogClose asChild>
-            <Button className="w-full">Close</Button>
-          </DialogClose>
-        </DialogFooter>
+        {showFooter && (
+          <DialogFooter
+            {...slotProps?.footer}
+            className={cn("justify-center", slotProps?.footer?.className)}
+          >
+            <DialogClose asChild>
+              <Button className="w-full">Close</Button>
+            </DialogClose>
+          </DialogFooter>
+        )}
       </DialogContent>
     </UIDialog>
   );
