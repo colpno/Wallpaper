@@ -29,11 +29,6 @@ function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
     setInputType((prev) => (prev === "password" ? "text" : "password"));
   };
 
-  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
-    setHasTypedIn(true);
-    props.onChange?.(e);
-  };
-
   return (
     <FormField
       control={control}
@@ -42,6 +37,12 @@ function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
       disabled={props.disabled}
       render={({ field }) => {
         const passwordStrength = calculatePasswordStrength(field.value);
+
+        const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+          setHasTypedIn(true);
+          field.onChange(e);
+          props.onChange?.(e);
+        };
 
         return (
           <FormItem className="block! space-y-1.5">

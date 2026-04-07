@@ -13,13 +13,13 @@ const renderComponent = (
 ) => {
   render(
     <Form schema={z.any()} {...props} onSubmit={onSubmit}>
-      <PasswordField name="password" label="Name" />
+      <PasswordField name="password" label="Password" aria-label="Password" />
     </Form>
   );
 
   return {
     user: userEvent.setup(),
-    input: screen.getByLabelText("Name"),
+    input: screen.getByLabelText("Password"),
     revealBtn: screen.getByRole("button", { name: /reveal password/i }),
     submitBtn: screen.getByRole("button", { name: /submit/i }),
   };
