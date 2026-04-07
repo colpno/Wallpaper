@@ -40,7 +40,7 @@ function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
         return (
           <FormItem className="block! space-y-1.5">
             {!!label && (
-              <Label hint={labelHint} className="ml-2 font-normal">
+              <Label hint={labelHint} className="m-2 font-normal">
                 {label}
               </Label>
             )}
@@ -64,6 +64,8 @@ function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
                 }}
               />
             </FormControl>
+
+            <FormMessage className="m-2" />
 
             {showStrength && (
               <>
@@ -117,8 +119,6 @@ function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
                 </Dialog>
               </>
             )}
-
-            <FormMessage />
           </FormItem>
         );
       }}

@@ -23,7 +23,7 @@ function TextField({ label, labelHint, ...props }: Props) {
       render={({ field }) => (
         <FormItem className="block! space-y-1.5">
           {!!label && (
-            <Label hint={labelHint} className="ml-2 font-normal">
+            <Label hint={labelHint} className="m-2 font-normal">
               {label}
             </Label>
           )}
@@ -32,7 +32,7 @@ function TextField({ label, labelHint, ...props }: Props) {
             <Input {...props} {...field} />
           </FormControl>
 
-          <FormMessage />
+          <FormMessage className="m-2" />
         </FormItem>
       )}
     />

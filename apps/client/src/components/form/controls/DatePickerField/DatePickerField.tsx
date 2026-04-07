@@ -22,7 +22,7 @@ function DatePickerField({ label, required, name, labelHint, ...props }: Props) 
       render={({ field }) => (
         <FormItem className="block! space-y-1.5">
           {!!label && (
-            <Label hint={labelHint} className="ml-2 font-normal">
+            <Label hint={labelHint} className="m-2 font-normal">
               {label}
             </Label>
           )}
@@ -31,7 +31,7 @@ function DatePickerField({ label, required, name, labelHint, ...props }: Props) 
             <DatePicker {...props} {...field} required={required} />
           </FormControl>
 
-          <FormMessage />
+          <FormMessage className="m-2" />
         </FormItem>
       )}
     />
