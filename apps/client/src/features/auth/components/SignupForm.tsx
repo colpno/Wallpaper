@@ -43,18 +43,24 @@ function SignupForm({ onSubmit, slotProps, ...props }: Props) {
           showButtons={false}
           className={cn("space-y-2.5", slotProps?.form?.className)}
         >
-          <TextField name="email" label="Email" />
+          <TextField name="email" label="Email" aria-label="Email field" />
 
-          <PasswordField name="password" label="Password" showStrength />
+          <PasswordField
+            name="password"
+            label="Password"
+            showStrength
+            aria-label="Password field"
+          />
 
           <DatePickerField
             name="birthdate"
             label="Birthdate"
-            placeholder="mm / dd / yyyy"
+            placeholder="mm/dd/yyyy"
             labelHint="To help keep Pinterest safe, we now require your birthdate. Your birthdate also helps us provide more personalized recommendations and relevant ads. We won't share this information without your permission and it won't be visible on your profile."
+            aria-label="Birthdate field"
           />
 
-          <Button type="submit" size="sm" className="w-full">
+          <Button type="submit" size="sm" className="w-full" aria-label="Submit button">
             Continue
           </Button>
         </Form>
