@@ -1,6 +1,6 @@
 import { FormControl, FormField, FormItem, FormMessage } from "@repo/ui/components";
 import { cn } from "@repo/ui/lib";
-import { useState } from "react";
+import { type ChangeEvent, useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 import { GoEye, GoEyeClosed } from "react-icons/go";
@@ -23,9 +23,15 @@ type Props = {
 function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
   const { control } = useFormContext();
   const [inputType, setInputType] = useState<"text" | "password">("password");
+  const [hasTypedIn, setHasTypedIn] = useState(false);
 
   const handleEyeClick = (): void => {
     setInputType((prev) => (prev === "password" ? "text" : "password"));
+  };
+
+  const handleInputChange = (e: ChangeEvent<HTMLInputElement>): void => {
+    setHasTypedIn(true);
+    props.onChange?.(e);
   };
 
   return (
@@ -62,6 +68,7 @@ function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
                     </Button>
                   ),
                 }}
+                onChange={handleInputChange}
               />
             </FormControl>
 
@@ -69,21 +76,31 @@ function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
 
             {showStrength && (
               <>
-                <div className="mt-5 px-2 text-muted-foreground">
-                  <div
-                    className={cn(
-                      "relative mb-2 h-2 w-full rounded-full bg-gray-200 before:absolute before:left-0 before:h-full before:rounded-full before:content-['']",
-                      passwordStrength <= 33 && "before:w-1/8 before:bg-red-800",
-                      passwordStrength > 33 && "before:w-1/2 before:bg-blue-500",
-                      passwordStrength > 66 && "before:w-full before:bg-green-700"
-                    )}
-                  />
+                <div className="px-2 font-semibold text-gray-500">
+                  {hasTypedIn && (
+                    <>
+                      <div
+                        className={cn(
+                          "relative mt-5 h-2 w-full rounded-full bg-gray-100 before:absolute before:left-0 before:h-full before:rounded-full before:transition-all before:duration-400 before:content-['']",
+                          passwordStrength.label === "weak" && "before:w-1/8 before:bg-red-800",
+                          passwordStrength.label === "medium" && "before:w-1/2 before:bg-blue-500",
+                          passwordStrength.label === "strong" && "before:w-full before:bg-green-700"
+                        )}
+                      />
 
-                  <Typography size="xs" className="font-bold">
-                    Make it more complicated
+                      <Typography size="xs" className="mt-3 font-bold">
+                        {passwordStrength.label === "weak"
+                          ? "Make it more complicated"
+                          : passwordStrength.label === "medium"
+                            ? "Lookin' good"
+                            : "Perfection!"}
+                      </Typography>
+                    </>
+                  )}
+
+                  <Typography size="xs" className="mt-1">
+                    Use 8 or more letters, numbers and symbols
                   </Typography>
-
-                  <Typography size="xs">Use 8 or more letters, numbers and symbols</Typography>
                 </div>
 
                 <Dialog

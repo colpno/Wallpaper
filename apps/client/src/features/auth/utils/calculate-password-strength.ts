@@ -1,12 +1,17 @@
+type CalculatePasswordStrengthReturn = {
+  score: number;
+  label: "weak" | "medium" | "strong";
+};
+
 /**
  * Calculate password strength based on length, variety,common patterns and repeated.
  * @returns A number represents the strength of the password. Min: 0, Max: 100.
  */
-export const calculatePasswordStrength = (password: string): number => {
+export const calculatePasswordStrength = (password: string): CalculatePasswordStrengthReturn => {
   let score = 0;
 
   if (!password) {
-    return 0;
+    return { score: 0, label: "weak" };
   }
 
   const length = password.length;
@@ -44,5 +49,9 @@ export const calculatePasswordStrength = (password: string): number => {
   // Clamp score
   score = Math.max(0, Math.min(100, score));
 
-  return score;
+  let label: CalculatePasswordStrengthReturn["label"] = "weak";
+  if (score > 66) label = "strong";
+  else if (score > 33) label = "medium";
+
+  return { score, label };
 };
