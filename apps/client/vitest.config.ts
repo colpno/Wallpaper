@@ -8,6 +8,7 @@ export default defineConfig({
     ...uiConfig.test,
     exclude: ["**/node_modules/**", "**/dist/**"],
     setupFiles: "./src/test/setup.ts",
+    maxWorkers: 1,
   },
   resolve: {
     alias: {
