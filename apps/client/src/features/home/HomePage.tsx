@@ -9,7 +9,7 @@ import { ROUTES } from "@/constants/common";
 
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
-import SignupSection from "./components/SignupSection";
+import RegisterSection from "./components/RegisterSection";
 
 function HomePage() {
   return (
@@ -93,7 +93,7 @@ function HomePage() {
         </div>
       </Container>
 
-      <SignupSection />
+      <RegisterSection />
 
       <Footer />
     </div>

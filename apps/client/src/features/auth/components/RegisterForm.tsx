@@ -11,16 +11,16 @@ import Heading from "@/components/ui/Heading";
 import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
 
-import { type SignupFormData, signupFormSchema } from "../constants/schemas";
+import { type RegisterFormData, registerFormSchema } from "../constants/schemas";
 
 type Props = {
-  slotProps?: FormProps<SignupFormData>["slotProps"] & {
-    form?: Omit<FormProps<SignupFormData>, "schema" | "children" | "showButtons" | "slotProps">;
+  slotProps?: FormProps<RegisterFormData>["slotProps"] & {
+    form?: Omit<FormProps<RegisterFormData>, "schema" | "children" | "showButtons" | "slotProps">;
   };
 } & React.ComponentProps<"div"> &
-  Pick<FormProps<SignupFormData>, "onSubmit">;
+  Pick<FormProps<RegisterFormData>, "onSubmit">;
 
-function SignupForm({ onSubmit, slotProps, ...props }: Props) {
+function RegisterForm({ onSubmit, slotProps, ...props }: Props) {
   return (
     <div
       className={cn(
@@ -39,7 +39,7 @@ function SignupForm({ onSubmit, slotProps, ...props }: Props) {
           {...slotProps?.form}
           slotProps={slotProps}
           onSubmit={onSubmit}
-          schema={signupFormSchema}
+          schema={registerFormSchema}
           showButtons={false}
           className={cn("space-y-2.5", slotProps?.form?.className)}
         >
@@ -92,4 +92,4 @@ function SignupForm({ onSubmit, slotProps, ...props }: Props) {
   );
 }
 
-export default SignupForm;
+export default RegisterForm;

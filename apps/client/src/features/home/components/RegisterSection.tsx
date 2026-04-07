@@ -5,11 +5,11 @@ import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
 import Image from "@/components/ui/Image";
-import SignupForm from "@/features/auth/components/SignupForm";
+import RegisterForm from "@/features/auth/components/RegisterForm";
 
 import { dishImages } from "../constants";
 
-function SignupSection(props: React.ComponentProps<"section">) {
+function RegisterSection(props: React.ComponentProps<"section">) {
   return (
     <section
       {...props}
@@ -33,7 +33,7 @@ function SignupSection(props: React.ComponentProps<"section">) {
         </Heading>
 
         <div className="relative size-full">
-          <SignupForm onSubmit={console.log} className="absolute top-20 right-0" />
+          <RegisterForm onSubmit={console.log} className="absolute top-20 right-0" />
         </div>
       </Container>
 
@@ -59,4 +59,4 @@ function SignupSection(props: React.ComponentProps<"section">) {
   );
 }
 
-export default SignupSection;
+export default RegisterSection;

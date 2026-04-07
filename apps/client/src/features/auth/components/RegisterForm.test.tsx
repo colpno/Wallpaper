@@ -4,16 +4,16 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 
-import SignupForm from "./SignupForm";
+import RegisterForm from "./RegisterForm";
 
 const onSubmit = vi.fn();
 
-const renderComponent = (props?: React.ComponentProps<typeof SignupForm>) => {
+const renderComponent = (props?: React.ComponentProps<typeof RegisterForm>) => {
   const { getByRole, getByLabelText } = render(
     <TooltipProvider>
       <MemoryRouter initialEntries={["/"]}>
         <Routes>
-          <Route path="/" element={<SignupForm {...props} onSubmit={onSubmit} />} />
+          <Route path="/" element={<RegisterForm {...props} onSubmit={onSubmit} />} />
         </Routes>
       </MemoryRouter>
     </TooltipProvider>
@@ -28,7 +28,7 @@ const renderComponent = (props?: React.ComponentProps<typeof SignupForm>) => {
   };
 };
 
-describe("SignupForm", () => {
+describe("RegisterForm", () => {
   it("renders correctly", () => {
     const { submitBtn, emailField, passwordField, birthdateField } = renderComponent();
 
