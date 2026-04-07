@@ -4,9 +4,9 @@ import type { AuthAPIs } from "@repo/types";
 
 import * as routes from "./auth.routes.js";
 
-export type Signin = {
-  handler: RouteHandler<typeof routes.signin>;
-} & AuthAPIs.Signin;
+export type Login = {
+  handler: RouteHandler<typeof routes.login>;
+} & AuthAPIs.Login;
 
 export type Register = {
   handler: RouteHandler<typeof routes.register>;

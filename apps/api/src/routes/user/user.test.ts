@@ -5,14 +5,14 @@ import { seedDatabase, type SeededDB } from "@/test/samples.js";
 import { testImages } from "@/test/variables.js";
 import { createTestClient } from "@/utils/create-test-client.js";
 
-import { signin as signinRouteConfig } from "../auth/auth.routes.js";
+import { login as loginRouteConfig } from "../auth/auth.routes.js";
 import * as routes from "./user.routes.js";
 import { requestSchemas } from "./user.schemas.js";
 
 let db: SeededDB;
 const updateUserById = createTestClient(routes.updateOneById);
 const deleteUserById = createTestClient(routes.deleteOneById);
-const signin = createTestClient(signinRouteConfig);
+const login = createTestClient(loginRouteConfig);
 
 describe("User routes", () => {
   beforeEach(async () => {
@@ -88,12 +88,12 @@ describe("User routes", () => {
 
       expect(deleteResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
 
-      const signinResponse = await signin().send({
+      const loginResponse = await login().send({
         email: user.email,
         password: user.password,
       });
 
-      expect(signinResponse.status).toBe(HttpStatusCodes.NOT_FOUND);
+      expect(loginResponse.status).toBe(HttpStatusCodes.NOT_FOUND);
     });
 
     it("returns a validation error if missing required fields", async () => {

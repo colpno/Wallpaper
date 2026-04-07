@@ -19,8 +19,8 @@ const BASE_PATH = {
 
 export const API_ROUTES = {
   AUTH: {
-    signin: {
-      path: () => `${BASE_PATH.AUTH}/signin` as const,
+    login: {
+      path: () => `${BASE_PATH.AUTH}/login` as const,
       method: "post",
     },
     register: {

@@ -10,7 +10,7 @@ import * as routes from "./auth.routes.js";
 import { requestSchemas } from "./auth.schemas.js";
 
 let db: SeededDB;
-const signin = createTestClient(routes.signin);
+const login = createTestClient(routes.login);
 const register = createTestClient(routes.register);
 
 describe("Auth routes", () => {
@@ -18,18 +18,18 @@ describe("Auth routes", () => {
     db = await seedDatabase();
   });
 
-  describe(`${routes.signin.method.toUpperCase()} ${routes.signin.path}`, () => {
+  describe(`${routes.login.method.toUpperCase()} ${routes.login.path}`, () => {
     it("returns a successful response", async () => {
       const { email } = db.users[0]!;
 
-      const response = await signin().send({
+      const response = await login().send({
         email,
         password: testUserPassword,
       });
 
       expect(response.status).toBe(HttpStatusCodes.OK);
 
-      const parseResult = requestSchemas.signin.responses[HttpStatusCodes.OK].safeParse(
+      const parseResult = requestSchemas.login.responses[HttpStatusCodes.OK].safeParse(
         response.body
       );
 
@@ -37,11 +37,11 @@ describe("Auth routes", () => {
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const response = await signin();
+      const response = await login();
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
 
-      const parseResult = requestSchemas.signin.responses[
+      const parseResult = requestSchemas.login.responses[
         HttpStatusCodes.UNPROCESSABLE_ENTITY
       ].safeParse(response.body);
 
@@ -49,14 +49,14 @@ describe("Auth routes", () => {
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const response = await signin().send({
+      const response = await login().send({
         email: "invalid",
         password: "a",
       });
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
 
-      const parseResult = requestSchemas.signin.responses[
+      const parseResult = requestSchemas.login.responses[
         HttpStatusCodes.UNPROCESSABLE_ENTITY
       ].safeParse(response.body);
 

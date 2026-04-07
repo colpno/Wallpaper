@@ -1,4 +1,4 @@
-import type { Register, Signin } from "./auth.types.js";
+import type { Login, Register } from "./auth.types.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 import type { UserDB } from "@repo/types";
@@ -6,7 +6,7 @@ import type { UserDB } from "@repo/types";
 import { UserModel } from "../user/user.model.js";
 import { hash } from "./auth.services.js";
 
-export const signin: Signin["handler"] = async (req, res, next) => {
+export const login: Login["handler"] = async (req, res, next) => {
   try {
     const user = await UserModel.findOne({ email: req.body.email }).lean<UserDB>();
 

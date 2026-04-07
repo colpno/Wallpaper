@@ -1,6 +1,6 @@
 import type { User, UserDB } from "@/models/user.js";
 
-export type Signin = {
+export type Login = {
   body: Pick<User, "email" | "password">;
   response: UserDB;
 };

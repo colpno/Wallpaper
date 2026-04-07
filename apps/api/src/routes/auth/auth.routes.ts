@@ -11,26 +11,26 @@ const router = new Router();
 
 export const { router: authRouter } = router;
 
-export const signin = router.register({
+export const login = router.register({
   tags,
   method: "post",
-  path: API_ROUTES.AUTH.signin.path(),
-  summary: "Signin User",
-  description: "Signin a user with provided credentials.",
+  path: API_ROUTES.AUTH.login.path(),
+  summary: "Login User",
+  description: "Login a user with provided credentials.",
   request: {
-    body: jsonContent(requestSchemas.signin.body),
+    body: jsonContent(requestSchemas.login.body),
   },
   responses: {
     [HttpStatusCodes.OK]: jsonContent(
-      requestSchemas.signin.responses[HttpStatusCodes.OK],
+      requestSchemas.login.responses[HttpStatusCodes.OK],
       "Successful Response"
     ),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
-      requestSchemas.signin.responses[HttpStatusCodes.UNAUTHORIZED],
+      requestSchemas.login.responses[HttpStatusCodes.UNAUTHORIZED],
       "Unauthorized"
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
-      requestSchemas.signin.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      requestSchemas.login.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
       "Validation Error"
     ),
   },
@@ -61,4 +61,4 @@ export const register = router.register({
   },
 });
 
-router.addHandler(signin, [handlers.signin]).addHandler(register, [handlers.register]);
+router.addHandler(login, [handlers.login]).addHandler(register, [handlers.register]);
