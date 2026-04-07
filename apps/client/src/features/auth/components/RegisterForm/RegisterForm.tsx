@@ -1,6 +1,7 @@
 import type { FormProps } from "@/components/form/Form";
 
 import { cn } from "@repo/ui/lib";
+import { useMutation } from "@tanstack/react-query";
 
 import DatePickerField from "@/components/form/controls/DatePickerField";
 import PasswordField from "@/components/form/controls/PasswordField";
@@ -11,8 +12,9 @@ import Heading from "@/components/ui/Heading";
 import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
 
-import { type RegisterFormData, registerFormSchema } from "../constants/schemas";
-import { useAuthFormContext } from "../contexts/auth-form-context";
+import { type RegisterFormData, registerFormSchema } from "../../constants/schemas";
+import { useAuthFormContext } from "../../contexts/auth-form-context";
+import { registerMutationOptions } from "../../services/api/mutations";
 
 type Props = {
   slotProps?: FormProps<RegisterFormData>["slotProps"] & {
@@ -21,10 +23,14 @@ type Props = {
 } & React.ComponentProps<"div">;
 
 function RegisterForm({ slotProps, ...props }: Props) {
-  const { setForm: setType } = useAuthFormContext();
+  const { setForm } = useAuthFormContext();
+  const { mutateAsync } = useMutation(registerMutationOptions());
 
-  const handleSubmit = (formData: RegisterFormData) => {
-    console.log("RegisterForm submits data:", formData);
+  const handleSubmit = async (formData: RegisterFormData) => {
+    await mutateAsync({
+      ...formData,
+      birthdate: formData.birthdate.toISOString(),
+    });
   };
 
   return (
@@ -92,7 +98,7 @@ function RegisterForm({ slotProps, ...props }: Props) {
           Already a member?{" "}
           <button
             type="button"
-            onClick={() => setType("login")}
+            onClick={() => setForm("login")}
             className="inline cursor-pointer text-xs font-bold"
           >
             Login

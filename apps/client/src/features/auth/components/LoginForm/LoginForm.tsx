@@ -1,7 +1,10 @@
 import type { FormProps } from "@/components/form/Form";
 
 import { cn } from "@repo/ui/lib";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router";
 
+import { useStore } from "@/app/stores/useStore";
 import PasswordField from "@/components/form/controls/PasswordField";
 import TextField from "@/components/form/controls/TextField";
 import Form from "@/components/form/Form";
@@ -9,9 +12,11 @@ import Button from "@/components/ui/Button";
 import Heading from "@/components/ui/Heading";
 import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
+import { ROUTES } from "@/constants/common";
 
-import { type LoginFormData, loginFormSchema } from "../constants/schemas";
-import { useAuthFormContext } from "../contexts/auth-form-context";
+import { type LoginFormData, loginFormSchema } from "../../constants/schemas";
+import { useAuthFormContext } from "../../contexts/auth-form-context";
+import { loginMutationOptions } from "../../services/api/mutations";
 
 type Props = {
   slotProps?: FormProps<LoginFormData>["slotProps"] & {
@@ -20,10 +25,15 @@ type Props = {
 } & React.ComponentProps<"div">;
 
 function LoginForm({ slotProps, ...props }: Props) {
-  const { setForm: setType } = useAuthFormContext();
+  const { setForm } = useAuthFormContext();
+  const { mutateAsync } = useMutation(loginMutationOptions());
+  const navigate = useNavigate();
+  const login = useStore((state) => state.login);
 
-  const handleSubmit = (formData: LoginFormData) => {
-    console.log("LoginForm submits data:", formData);
+  const handleSubmit = async (formData: LoginFormData) => {
+    const user = await mutateAsync(formData);
+    login(user);
+    navigate(ROUTES.HOME());
   };
 
   return (
@@ -62,7 +72,7 @@ function LoginForm({ slotProps, ...props }: Props) {
 
         <button
           type="button"
-          onClick={() => setType("register")}
+          onClick={() => setForm("register")}
           className="mx-auto mt-3 flex cursor-pointer text-xs font-bold"
         >
           Not on Pinterest yet? Sign up

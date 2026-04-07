@@ -1,12 +1,19 @@
+import type { AuthAPIs } from "@repo/types";
 import { TooltipProvider } from "@repo/ui/components";
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import RegisterForm from "./RegisterForm";
 
-// const onSubmit = vi.fn();
+const mockMutateAsync = vi.fn().mockResolvedValue({});
+vi.mock("@tanstack/react-query", async (importOriginal) => ({
+  ...((await importOriginal()) as typeof import("@tanstack/react-query")),
+  useMutation: () => ({
+    mutateAsync: mockMutateAsync,
+  }),
+}));
 
 const renderComponent = (props?: React.ComponentProps<typeof RegisterForm>) => {
   const { getByRole, getByLabelText } = render(
@@ -53,12 +60,13 @@ describe("RegisterForm", () => {
     expect(emailField).toHaveDisplayValue(email);
     expect(passwordField).toHaveDisplayValue(password);
     expect(birthdateField).toHaveDisplayValue(birthdate);
-    // TODO: update onSubmit mock after integrating api
-    // expect(onSubmit).toBeCalledWith({
-    //   email,
-    //   password,
-    //   birthdate: new Date(birthdate),
-    // });
+    await waitFor(() => {
+      expect(mockMutateAsync).toBeCalledWith({
+        email,
+        password,
+        birthdate: new Date(birthdate).toISOString(),
+      } satisfies AuthAPIs.Register["body"]);
+    });
   });
 
   it("failed to validate", async () => {
