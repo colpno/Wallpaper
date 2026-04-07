@@ -1,4 +1,4 @@
-import type { CalendarProps, DatePickerProps, DateRange, Mode, Value } from "./DatePicker.types";
+import type { DatePickerProps, DateRange, Mode, Value } from "./DatePicker.types";
 
 import { Calendar, Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components";
 import { CalendarIcon } from "lucide-react";
@@ -11,7 +11,8 @@ import { formatDate, isValidDate, normalizeValue } from "./DatePicker.utils";
 function DatePicker<TMode extends Mode = "single">({
   value: valueProp,
   onChange,
-  placeholder,
+  calendarProps,
+  mode = "single" as TMode,
   ...props
 }: DatePickerProps<TMode>) {
   const [open, setOpen] = useState(false);
@@ -32,6 +33,7 @@ function DatePicker<TMode extends Mode = "single">({
       e.preventDefault();
       setOpen(true);
     }
+    props.onKeyDown?.(e);
   };
 
   const handleCalendarSelect = (date: Date | Date[] | DateRange | undefined) => {
@@ -44,10 +46,10 @@ function DatePicker<TMode extends Mode = "single">({
 
   return (
     <Input
+      {...props}
       value={value}
       onChange={handleInputChange}
       onKeyDown={handleInputKeyDown}
-      placeholder={placeholder}
       addons={{
         end: (
           <Popover open={open} onOpenChange={setOpen}>
@@ -66,12 +68,13 @@ function DatePicker<TMode extends Mode = "single">({
               sideOffset={10}
             >
               <Calendar
-                mode="single"
-                {...(props as Omit<CalendarProps, "mode">)}
+                {...calendarProps}
+                mode={mode as "single"}
                 selected={valueProp === "" ? undefined : (valueProp as Date)}
                 month={month}
                 onMonthChange={setMonth}
                 onSelect={handleCalendarSelect}
+                aria-label="Calendar"
               />
             </PopoverContent>
           </Popover>

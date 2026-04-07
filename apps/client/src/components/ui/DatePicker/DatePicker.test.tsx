@@ -19,16 +19,16 @@ const renderComponent = <TMode extends Mode>(
   return {
     user: userEvent.setup(),
     input: screen.getByRole("textbox"),
-    calendarTrigger: screen.getByRole("button", { expanded: false }),
+    calendarOpener: screen.getByRole("button", { name: /Select date/i }),
   };
 };
 
 describe("DatePicker", () => {
   it("renders the component", () => {
-    const { input, calendarTrigger } = renderComponent();
+    const { input, calendarOpener } = renderComponent();
 
     expect(input).toBeInTheDocument();
-    expect(calendarTrigger).toBeInTheDocument();
+    expect(calendarOpener).toBeInTheDocument();
   });
 
   it("displays a single value", async () => {
@@ -75,9 +75,9 @@ describe("DatePicker", () => {
   });
 
   it("calls onChange with a selected value", async () => {
-    const { user, calendarTrigger } = renderComponent();
+    const { user, calendarOpener } = renderComponent();
 
-    await user.click(calendarTrigger);
+    await user.click(calendarOpener);
 
     const days = screen.getAllByRole("gridcell");
     const day = days[days.length - 15]!;
@@ -89,10 +89,10 @@ describe("DatePicker", () => {
   });
 
   it("calls onChange with multiple values", async () => {
-    const { user, calendarTrigger } = renderComponent({ mode: "multiple" });
+    const { user, calendarOpener } = renderComponent({ mode: "multiple" });
 
     for (let i = 0; i < 2; i++) {
-      await user.click(calendarTrigger);
+      await user.click(calendarOpener);
 
       const days = screen.getAllByRole("gridcell");
       const day = days[days.length - 20 - i]!;
@@ -105,9 +105,9 @@ describe("DatePicker", () => {
   });
 
   it("calls onChange with a range of values", async () => {
-    const { user, calendarTrigger } = renderComponent({ mode: "range" });
+    const { user, calendarOpener } = renderComponent({ mode: "range" });
 
-    await user.click(calendarTrigger);
+    await user.click(calendarOpener);
 
     const days = screen.getAllByRole("gridcell");
     const day = days[days.length - 20]!;

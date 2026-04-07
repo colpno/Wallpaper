@@ -1,4 +1,4 @@
-import type { Ref } from "react";
+import type { InputProps } from "../Input";
 
 import { Calendar } from "@repo/ui/components";
 
@@ -19,7 +19,5 @@ export type DatePickerProps<TMode extends Mode = Mode> = {
   value: Value<TMode>;
   onChange: (date: Value<TMode>) => void;
   mode?: TMode;
-  required?: boolean;
-  ref?: Ref<HTMLInputElement>;
-  placeholder?: string;
-} & Omit<CalendarProps, "required" | "mode">;
+  calendarProps?: Omit<CalendarProps, "required" | "mode">;
+} & Omit<InputProps, "value" | "onChange">;
