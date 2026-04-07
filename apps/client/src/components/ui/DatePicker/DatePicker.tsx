@@ -20,9 +20,10 @@ function DatePicker<TMode extends Mode = "single">({
   const [value, setValue] = useState(() => formatDate(valueProp));
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const date = new Date(e.target.value);
-    setValue(e.target.value);
-    if (isValidDate(date)) {
+    const { value } = e.target;
+    setValue(value);
+    const date = new Date(value);
+    if (isValidDate(date) && /^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
       onChange?.(date as Value<TMode>);
       setMonth(date);
     }

@@ -6,10 +6,11 @@ import { format } from "date-fns";
 import { describe, expect, it, vi } from "vitest";
 
 import DatePicker from "./DatePicker";
+import { dateFormat } from "./DatePicker.utils";
 
 const onChange = vi.fn();
 
-const formatDate = (date: Date) => format(date, "yyyy-MM-dd");
+const formatDate = (date: Date) => format(date, dateFormat);
 
 const renderComponent = <TMode extends Mode>(
   props?: Partial<Omit<DatePickerProps<TMode>, "onChange">>
@@ -32,23 +33,23 @@ describe("DatePicker", () => {
   });
 
   it("displays a single value", async () => {
-    const value = new Date("1995-12-25");
+    const value = new Date("12/25/1995");
     renderComponent({ value });
 
-    expect(screen.getByDisplayValue(format(value, "yyyy-MM-dd"))).toBeInTheDocument();
+    expect(screen.getByDisplayValue(formatDate(value))).toBeInTheDocument();
   });
 
   it("displays multiple values", async () => {
-    const values = [new Date("1995-12-25"), new Date("1990-05-15")];
+    const values = [new Date("12/25/1995"), new Date("1990-05-15")];
     renderComponent({ mode: "multiple", value: values });
 
     expect(
-      screen.getByDisplayValue(values.map((date) => format(date, "yyyy-MM-dd")).join(", "))
+      screen.getByDisplayValue(values.map((date) => formatDate(date)).join(", "))
     ).toBeInTheDocument();
   });
 
   it("displays a range of values", async () => {
-    const values = { from: new Date("1995-12-25"), to: new Date("1990-05-15") };
+    const values = { from: new Date("12/25/1995"), to: new Date("05/15/1990") };
     renderComponent({ mode: "range", value: values });
 
     expect(
@@ -57,7 +58,7 @@ describe("DatePicker", () => {
   });
 
   it("displays value", async () => {
-    const date = "1990-05-15";
+    const date = "05/15/1990";
     const { user, input } = renderComponent();
 
     await user.type(input, date);
@@ -66,7 +67,7 @@ describe("DatePicker", () => {
   });
 
   it("calls onChange with the entered value", async () => {
-    const date = "1990-05-15";
+    const date = "05/15/1990";
     const { user, input } = renderComponent();
 
     await user.type(input, date);

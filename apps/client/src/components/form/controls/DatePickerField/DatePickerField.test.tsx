@@ -4,10 +4,14 @@ import { format } from "date-fns";
 import { describe, expect, it, vi } from "vitest";
 import z from "zod";
 
+import { dateFormat } from "@/components/ui/DatePicker";
+
 import Form, { type FormProps } from "../../Form";
 import DatePickerField from "./DatePickerField";
 
 const onSubmit = vi.fn();
+
+const formatDate = (date: Date) => format(date, dateFormat);
 
 const renderComponent = (
   props?: Partial<Omit<FormProps<{ dob: Date | string }>, "children" | "onSubmit">>
@@ -35,7 +39,7 @@ describe("DatePickerField", () => {
   });
 
   it("displays value", async () => {
-    const date = "1990-05-15";
+    const date = "05/15/1990";
     const { user, input } = renderComponent();
 
     await user.type(input, date);
@@ -44,7 +48,7 @@ describe("DatePickerField", () => {
   });
 
   it("displays default value if it is a string", async () => {
-    const defaultValue = "2000-01-01";
+    const defaultValue = "01/01/2000";
     renderComponent({
       defaultValues: {
         dob: defaultValue,
@@ -55,14 +59,14 @@ describe("DatePickerField", () => {
   });
 
   it("displays default value if it is a Date object", async () => {
-    const defaultValue = new Date("1995-12-25");
+    const defaultValue = new Date("12/25/1995");
     renderComponent({
       defaultValues: {
         dob: defaultValue,
       },
     });
 
-    expect(screen.getByDisplayValue(format(defaultValue, "yyyy-MM-dd"))).toBeInTheDocument();
+    expect(screen.getByDisplayValue(formatDate(defaultValue))).toBeInTheDocument();
   });
 
   it("displays selected value", async () => {
@@ -76,7 +80,7 @@ describe("DatePickerField", () => {
 
     await user.click(day.querySelector("button")!);
 
-    expect(screen.getByDisplayValue(/\d{4}-\d{2}-\d{2}/)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(/\d{2}\/\d{2}\/\d{4}/)).toBeInTheDocument();
   });
 
   it("fails validation", async () => {
@@ -94,7 +98,7 @@ describe("DatePickerField", () => {
   });
 
   it("submits correct value", async () => {
-    const date = "1990-05-15";
+    const date = "05/15/1990";
     const { user, input, submitBtn } = renderComponent();
 
     await user.type(input, date);

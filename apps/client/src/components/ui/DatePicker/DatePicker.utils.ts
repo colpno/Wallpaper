@@ -2,7 +2,7 @@ import type { Mode, Value } from "./DatePicker.types";
 
 import { format } from "date-fns";
 
-const dateFormat = "yyyy-MM-dd";
+export const dateFormat = "MM/dd/yyyy";
 
 const isObject = (value: unknown): value is object => typeof value === "object" && value !== null;
 
