@@ -33,7 +33,7 @@ function IdeasPage() {
     <Container as="section" className="pt-11">
       {isLoading ? (
         <>
-          <Heading variant="h2" className="text-center">
+          <Heading variant="h3" className="text-center">
             Loading today&apos;s picks...
           </Heading>
 
@@ -41,7 +41,9 @@ function IdeasPage() {
         </>
       ) : data ? (
         <>
-          <Heading variant="h2">What&apos;s new on Pinterest</Heading>
+          <Heading variant="h3" className="mb-3">
+            What&apos;s new on Pinterest
+          </Heading>
 
           <Masonry>
             {data.map((item) => (
@@ -50,7 +52,7 @@ function IdeasPage() {
           </Masonry>
         </>
       ) : (
-        <Heading variant="h2" className="text-center">
+        <Heading variant="h3" className="text-center">
           Today&apos;s picks have nothing
         </Heading>
       )}

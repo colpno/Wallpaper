@@ -13,6 +13,7 @@ const variants = cva("font-bold -tracking-[0.5px]", {
     variant: {
       h1: "text-[50px]",
       h2: "text-[38px]",
+      h3: "text-[28px]",
     },
   },
 });
