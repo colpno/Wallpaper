@@ -4,7 +4,7 @@ import { openApiToExpressPath } from "./converters.js";
 
 describe("converters", () => {
   test("openApiToExpressPath", () => {
-    const path = "/users/{userId}/posts/{postId}";
+    const path = "/path/{to}/api/{no}";
 
     const result = openApiToExpressPath(path);
 

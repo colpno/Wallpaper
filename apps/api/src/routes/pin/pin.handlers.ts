@@ -7,11 +7,11 @@ import type {
   Search,
   UndoRemoval,
   UpdateOneById,
-} from "./post.types.js";
+} from "./pin.types.js";
 import type { File } from "@/utils/schemas.js";
 
 import { HttpStatusCodes } from "@repo/shared";
-import type { PaginationPayload, Post, PostDB } from "@repo/types";
+import type { PaginationPayload, Pin, PinDB } from "@repo/types";
 
 import { env } from "@/configs/env.js";
 import { logger } from "@/lib/logger.js";
@@ -21,7 +21,7 @@ import { HttpError } from "@/utils/HttpError.js";
 import { PipelineBuilder } from "@/utils/PipelineBuilder.js";
 
 import { eraseMedia, uploadMedia } from "../media/media.handlers.js";
-import { PostModel } from "./post.model.js";
+import { PinModel } from "./pin.model.js";
 
 const pipelineBuilder = new PipelineBuilder();
 
@@ -29,22 +29,20 @@ export const getMany: GetMany["handler"] = async (req, res, next) => {
   try {
     const { options, queryFilters } = organizeQueryInput(req.query);
 
-    const posts = await buildQueryWithOptions(PostModel.find(queryFilters), options).lean<
-      PostDB[]
-    >();
+    const pins = await buildQueryWithOptions(PinModel.find(queryFilters), options).lean<PinDB[]>();
 
     if (!req.query.limit) {
-      return res.status(HttpStatusCodes.OK).json(posts);
+      return res.status(HttpStatusCodes.OK).json(pins);
     }
 
-    const totalItems = await PostModel.countDocuments({});
+    const totalItems = await PinModel.countDocuments({});
     const itemsPerPage = req.query.limit;
 
-    const result: PaginationPayload<PostDB[]> = {
-      data: posts,
+    const result: PaginationPayload<PinDB[]> = {
+      data: pins,
       meta: {
         currentPage: req.query.page ?? 1,
-        itemCount: posts.length,
+        itemCount: pins.length,
         itemsPerPage,
         totalItems,
         totalPages: Math.ceil(totalItems / itemsPerPage),
@@ -61,16 +59,16 @@ export const getOneById: GetOneById["handler"] = async (req, res, next) => {
   try {
     const { options } = organizeQueryInput(req.query);
 
-    const post = await buildQueryWithOptions(
-      PostModel.findById(req.params.id),
+    const pin = await buildQueryWithOptions(
+      PinModel.findById(req.params.id),
       options
-    ).lean<PostDB>();
+    ).lean<PinDB>();
 
-    if (!post) {
-      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Post not found" });
+    if (!pin) {
+      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Pin not found" });
     }
 
-    return res.status(HttpStatusCodes.OK).json(post);
+    return res.status(HttpStatusCodes.OK).json(pin);
   } catch (error) {
     return next(error);
   }
@@ -83,7 +81,7 @@ export const addOne: AddOne["handler"] = async (req, res, next) => {
     const media = await uploadMedia(photo);
     const aiDescription = await describeImage(photo);
 
-    const newPost = await PostModel.create({
+    const newPin = await PinModel.create({
       ...req.body,
       photoCloudinaryId: media.public_id,
       photoUrl: media.secure_url,
@@ -94,7 +92,7 @@ export const addOne: AddOne["handler"] = async (req, res, next) => {
       descriptionEmbeddings: await toEmbeddings(aiDescription),
     });
 
-    return res.status(HttpStatusCodes.CREATED).json(newPost.toObject<PostDB>());
+    return res.status(HttpStatusCodes.CREATED).json(newPin.toObject<PinDB>());
   } catch (error) {
     return next(error);
   }
@@ -105,34 +103,34 @@ export const updateOneById: UpdateOneById["handler"] = async (req, res, next) =>
     const { id } = req.params;
     const photo = req.file;
 
-    const post = await PostModel.findById(id);
+    const pin = await PinModel.findById(id);
 
-    if (!post) {
-      logger.debug(`Post with id ${id.toString()} not found`);
-      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Post not found" });
+    if (!pin) {
+      logger.debug(`Pin with id ${id.toString()} not found`);
+      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Pin not found" });
     }
 
-    const updateData: Partial<Post> = { ...req.body };
+    const updateData: Partial<Pin> = { ...req.body };
 
     if (photo) {
       const addedMedia = await uploadMedia(photo as File);
       updateData.photoCloudinaryId = addedMedia.public_id;
 
-      if (post.photoCloudinaryId) await eraseMedia(post.photoCloudinaryId);
+      if (pin.photoCloudinaryId) await eraseMedia(pin.photoCloudinaryId);
     }
 
-    const updatedPost = await PostModel.findByIdAndUpdate(id, updateData, {
+    const updatedPin = await PinModel.findByIdAndUpdate(id, updateData, {
       new: true,
-    }).lean<PostDB>();
+    }).lean<PinDB>();
 
-    if (!updatedPost) {
+    if (!updatedPin) {
       logger.debug(
-        `Post with id ${id.toString()} not found after update with new data ${JSON.stringify(updateData)}`
+        `Pin with id ${id.toString()} not found after update with new data ${JSON.stringify(updateData)}`
       );
-      throw new HttpError(HttpStatusCodes.NOT_FOUND, "Post not found after update");
+      throw new HttpError(HttpStatusCodes.NOT_FOUND, "Pin not found after update");
     }
 
-    return res.status(HttpStatusCodes.OK).json(updatedPost);
+    return res.status(HttpStatusCodes.OK).json(updatedPin);
   } catch (error) {
     return next(error);
   }
@@ -142,11 +140,11 @@ export const removeOneById: RemoveOneById["handler"] = async (req, res, next) =>
   try {
     const { id } = req.params;
 
-    const post = await PostModel.findByIdAndUpdate(id, { removedAt: new Date() });
+    const pin = await PinModel.findByIdAndUpdate(id, { removedAt: new Date() });
 
-    if (!post) {
-      logger.debug(`Post with id ${id.toString()} not found`);
-      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Post not found" });
+    if (!pin) {
+      logger.debug(`Pin with id ${id.toString()} not found`);
+      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Pin not found" });
     }
 
     return res.status(HttpStatusCodes.NO_CONTENT).end();
@@ -159,13 +157,13 @@ export const removeMany: RemoveMany["handler"] = async (req, res, next) => {
   try {
     const { ids } = req.body;
 
-    const result = await PostModel.updateMany({ _id: { $in: ids } }, { removedAt: new Date() });
+    const result = await PinModel.updateMany({ _id: { $in: ids } }, { removedAt: new Date() });
 
     if (result.matchedCount === 0) {
       logger.debug(
-        `No posts found to delete with ids: ${ids.map((id) => id.toString()).join(", ")}`
+        `No pins found to delete with ids: ${ids.map((id) => id.toString()).join(", ")}`
       );
-      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "No posts found to delete" });
+      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "No pins found to delete" });
     }
 
     return res.status(HttpStatusCodes.NO_CONTENT).end();
@@ -178,7 +176,7 @@ export const undoRemoval: UndoRemoval["handler"] = async (req, res, next) => {
   try {
     const { ids } = req.body;
 
-    const result = await PostModel.updateMany(
+    const result = await PinModel.updateMany(
       {
         _id: { $in: ids },
         removedAt: { $exists: true },
@@ -188,9 +186,9 @@ export const undoRemoval: UndoRemoval["handler"] = async (req, res, next) => {
 
     if (result.matchedCount === 0) {
       logger.debug(
-        `No posts found to delete with ids: ${ids.map((id) => id.toString()).join(", ")}`
+        `No pins found to delete with ids: ${ids.map((id) => id.toString()).join(", ")}`
       );
-      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "No posts found to delete" });
+      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "No pins found to delete" });
     }
 
     return res.status(HttpStatusCodes.NO_CONTENT).end();
@@ -224,8 +222,8 @@ export const search: Search["handler"] = async (req, res, next) => {
       "text" in req.body ? req.body.text : await describeImage(req.file!)
     );
 
-    const posts = await PostModel.aggregate<
-      Omit<PostDB, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }
+    const pins = await PinModel.aggregate<
+      Omit<PinDB, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }
     >([
       {
         $vectorSearch: {
@@ -250,13 +248,13 @@ export const search: Search["handler"] = async (req, res, next) => {
       ...pipelineBuilder.build(queries),
     ]);
 
-    const totalItems = await PostModel.countDocuments({});
+    const totalItems = await PinModel.countDocuments({});
 
-    const result: PaginationPayload<typeof posts> = {
-      data: posts,
+    const result: PaginationPayload<typeof pins> = {
+      data: pins,
       meta: {
         currentPage: req.query.page ?? 1,
-        itemCount: posts.length,
+        itemCount: pins.length,
         itemsPerPage: limit,
         totalItems,
         totalPages: Math.ceil(totalItems / limit),

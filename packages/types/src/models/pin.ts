@@ -7,11 +7,11 @@ type ObjectId = Types.ObjectId;
 /**
  * @param O Owner type, one of User, string, or ObjectId.
  */
-export type Post<O extends User | UserDB | string | ObjectId = string> = {
+export type Pin<O extends User | UserDB | string | ObjectId = string> = {
   removedAt?: string;
-  postTitle: string;
-  postOwner: O;
-  postDescription?: string;
+  pinTitle: string;
+  pinOwner: O;
+  pinDescription?: string;
   photoCloudinaryId?: string;
   photoBlurHash: string;
   photoUrl: string;
@@ -27,5 +27,5 @@ export type Post<O extends User | UserDB | string | ObjectId = string> = {
 /**
  * @param O Owner type, one of User, string, or ObjectId.
  */
-export type PostDB<O extends User | UserDB | string | ObjectId = string> = Post<O> &
+export type PinDB<O extends User | UserDB | string | ObjectId = string> = Pin<O> &
   DefaultModelProps;

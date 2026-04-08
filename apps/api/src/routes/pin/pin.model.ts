@@ -1,24 +1,24 @@
-import type { DefaultModelProps, ExpiredMedia, Post } from "@repo/types";
+import type { DefaultModelProps, ExpiredMedia, Pin } from "@repo/types";
 import { model, Schema, type Types, type UpdateQuery } from "mongoose";
 
 import { ExpiredMediaModel } from "../media/expired-media.model.js";
 
-const schema = new Schema<Post<Types.ObjectId>>(
+const schema = new Schema<Pin<Types.ObjectId>>(
   {
     removedAt: {
       type: Date,
       expires: "30d",
     },
-    postTitle: {
+    pinTitle: {
       type: String,
       required: true,
     },
-    postOwner: {
+    pinOwner: {
       type: Schema.ObjectId,
       ref: "users",
       required: true,
     },
-    postDescription: String,
+    pinDescription: String,
     photoCloudinaryId: String,
     photoBlurHash: {
       type: String,
@@ -54,14 +54,8 @@ const schema = new Schema<Post<Types.ObjectId>>(
   }
 );
 
-schema.virtual("comments", {
-  ref: "comments",
-  localField: "_id",
-  foreignField: "postId",
-});
-
 schema.post(["updateOne", "findOneAndUpdate"], async function (doc) {
-  const updateData = this.getUpdate() as UpdateQuery<Post>;
+  const updateData = this.getUpdate() as UpdateQuery<Pin>;
 
   if (doc) {
     if (updateData.removedAt) {
@@ -77,8 +71,8 @@ schema.post(["updateOne", "findOneAndUpdate"], async function (doc) {
 });
 
 schema.post("updateMany", async function () {
-  const updateData = this.getUpdate() as UpdateQuery<Post>;
-  const docs = (await this.model.find(this.getQuery())) as Post[];
+  const updateData = this.getUpdate() as UpdateQuery<Pin>;
+  const docs = (await this.model.find(this.getQuery())) as Pin[];
 
   const expiredMedias: Omit<ExpiredMedia, keyof DefaultModelProps>[] = docs
     .filter((doc) => doc.photoCloudinaryId)
@@ -97,4 +91,4 @@ schema.post("updateMany", async function () {
   }
 });
 
-export const PostModel = model("posts", schema);
+export const PinModel = model("pins", schema);

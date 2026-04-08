@@ -1,37 +1,37 @@
 import type { RouteHandler } from "@/types/route-handler.js";
 
-import type { PostAPIs } from "@repo/types";
+import type { PinAPIs } from "@repo/types";
 
-import * as routes from "./post.routes.js";
+import * as routes from "./pin.routes.js";
 
 export type GetMany = {
   handler: RouteHandler<typeof routes.getMany>;
-} & PostAPIs.GetMany;
+} & PinAPIs.GetMany;
 
 export type GetOneById = {
   handler: RouteHandler<typeof routes.getOneById>;
-} & PostAPIs.GetOneById;
+} & PinAPIs.GetOneById;
 
 export type AddOne = {
   handler: RouteHandler<typeof routes.addOne>;
-} & PostAPIs.AddOne;
+} & PinAPIs.AddOne;
 
 export type UpdateOneById = {
   handler: RouteHandler<typeof routes.updateOneById>;
-} & PostAPIs.UpdateOneById;
+} & PinAPIs.UpdateOneById;
 
 export type RemoveOneById = {
   handler: RouteHandler<typeof routes.removeOneById>;
-} & PostAPIs.RemoveOneById;
+} & PinAPIs.RemoveOneById;
 
 export type RemoveMany = {
   handler: RouteHandler<typeof routes.removeMany>;
-} & PostAPIs.RemoveMany;
+} & PinAPIs.RemoveMany;
 
 export type UndoRemoval = {
   handler: RouteHandler<typeof routes.undoRemoval>;
-} & PostAPIs.UndoRemoval;
+} & PinAPIs.UndoRemoval;
 
 export type Search = {
   handler: RouteHandler<typeof routes.search>;
-} & PostAPIs.Search;
+} & PinAPIs.Search;

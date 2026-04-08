@@ -1,4 +1,4 @@
-import type { Post, User } from "@repo/types";
+import type { Pin, User } from "@repo/types";
 
 import { z } from "@/lib/zod.js";
 
@@ -14,7 +14,7 @@ export type KnownKeys<T> = {
   [K in keyof T as string extends K ? never : number extends K ? never : K]: K;
 };
 
-export type PostKeys = keyof Post;
+export type PinKeys = keyof Pin;
 export type UserKeys = keyof User;
 
 export type RequestSchemas<K extends string> = Record<

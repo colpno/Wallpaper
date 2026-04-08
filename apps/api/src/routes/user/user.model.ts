@@ -2,7 +2,7 @@ import type { User, UserDB } from "@repo/types";
 import { model, Schema } from "mongoose";
 
 import { generateSalt, hash } from "../auth/auth.services.js";
-import { PostModel } from "../post/post.model.js";
+import { PinModel } from "../pin/pin.model.js";
 
 type SchemaType = Omit<User, "birthdate"> & {
   birthdate: Date;
@@ -50,7 +50,7 @@ schema.pre(["updateOne", "findOneAndUpdate"], function (next) {
 schema.post("findOneAndDelete", async function (doc?: UserDB) {
   if (!doc) return;
 
-  await PostModel.deleteMany({ postOwner: doc._id });
+  await PinModel.deleteMany({ pinOwner: doc._id });
 });
 
 export const UserModel = model("users", schema);

@@ -15,11 +15,11 @@ export const routes = createBrowserRouter([
       },
       {
         path: ROUTES.SEARCH(),
-        Component: lazy(() => import("@/features/post/pages/SearchPage")),
+        Component: lazy(() => import("@/features/pin/pages/SearchPage")),
       },
       {
         path: ROUTES.IDEAS(),
-        Component: lazy(() => import("@/features/post/pages/IdeasPage")),
+        Component: lazy(() => import("@/features/pin/pages/IdeasPage")),
       },
     ],
   },

@@ -1,19 +1,19 @@
 import type { PaginationPayload } from "./payload.js";
 import type { FlattenObjectKeys } from "@/helpers.js";
-import type { Post, PostDB } from "@/models/post.js";
+import type { Pin, PinDB } from "@/models/pin.js";
 import type { UserDB } from "@/models/user.js";
 import type { QueryFilter } from "@/query.js";
 
-export type Fields = keyof PostDB | FlattenObjectKeys<PostDB<UserDB>>;
+export type Fields = keyof PinDB | FlattenObjectKeys<PinDB<UserDB>>;
 export type SortableFields = Extract<
   Fields,
   "createdAt" | "updatedAt" | "removedAt" | "photoWidth" | "photoHeight" | "photoAspectRatio"
 >;
-export type EmbeddableFields = Extract<Fields, "postOwner">;
+export type EmbeddableFields = Extract<Fields, "pinOwner">;
 
 export type GetMany = {
-  query: QueryFilter<PostDB, Fields, SortableFields, EmbeddableFields>;
-  response: PostDB[] | PaginationPayload<PostDB[]>;
+  query: QueryFilter<PinDB, Fields, SortableFields, EmbeddableFields>;
+  response: PinDB[] | PaginationPayload<PinDB[]>;
 };
 
 export type GetOneById = {
@@ -21,14 +21,14 @@ export type GetOneById = {
     id: string;
   };
   query: Pick<GetMany["query"], "select" | "embed">;
-  response: PostDB;
+  response: PinDB;
 };
 
 export type AddOne = {
-  body: Pick<Post, "postTitle" | "postDescription" | "postOwner" | "photoBlurHash"> & {
+  body: Pick<Pin, "pinTitle" | "pinDescription" | "pinOwner" | "photoBlurHash"> & {
     photo: File;
   };
-  response: PostDB;
+  response: PinDB;
 };
 
 export type UpdateOneById = {
@@ -36,11 +36,11 @@ export type UpdateOneById = {
     id: string;
   };
   body: Partial<
-    Pick<Post, "postTitle" | "postDescription" | "photoBlurHash"> & {
+    Pick<Pin, "pinTitle" | "pinDescription" | "photoBlurHash"> & {
       photo: File;
     }
   >;
-  response: PostDB;
+  response: PinDB;
 };
 
 export type RemoveOneById = {
@@ -69,7 +69,7 @@ export type Search = {
   body: { text: string } | { image: File };
   response: PaginationPayload<
     Array<
-      Omit<PostDB, "descriptionEmbeddings" | "photoCloudinaryId"> & {
+      Omit<PinDB, "descriptionEmbeddings" | "photoCloudinaryId"> & {
         score: number;
       }
     >

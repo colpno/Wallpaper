@@ -7,12 +7,12 @@ import Spinner from "@/components/ui/Spinner";
 import { INFINITE_PAGE_SIZE, INITIAL_PAGE } from "@/constants/common";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
-import PostCard from "../components/PostCard";
-import { getPostsInfiniteQueryOptions } from "../services/api/queries";
+import PinCard from "../components/PinCard";
+import { getPinsInfiniteQueryOptions } from "../services/api/queries";
 
 function IdeasPage() {
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQuery(
-    getPostsInfiniteQueryOptions({
+    getPinsInfiniteQueryOptions({
       page: INITIAL_PAGE,
       limit: INFINITE_PAGE_SIZE,
       sort: {
@@ -21,8 +21,8 @@ function IdeasPage() {
       select: {
         photoUrl: true,
         photoBlurHash: true,
-        postTitle: true,
-        postDescription: true,
+        pinTitle: true,
+        pinDescription: true,
       },
     })
   );
@@ -47,7 +47,7 @@ function IdeasPage() {
 
           <Masonry>
             {data.map((item) => (
-              <PostCard key={item._id} {...item} />
+              <PinCard key={item._id} {...item} />
             ))}
           </Masonry>
         </>

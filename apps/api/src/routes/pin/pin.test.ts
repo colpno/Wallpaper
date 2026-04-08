@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import type { PostKeys } from "@/types/common.js";
+import type { PinKeys } from "@/types/common.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 import { beforeEach, describe, expect, it } from "vitest";
@@ -11,25 +11,25 @@ import { createTestClient } from "@/utils/create-test-client.js";
 import { paginationPayloadSchema } from "@/utils/schemas.js";
 
 import { userSchema } from "../user/user.schemas.js";
-import * as routes from "./post.routes.js";
-import { postSchema, requestSchemas } from "./post.schemas.js";
+import * as routes from "./pin.routes.js";
+import { pinSchema, requestSchemas } from "./pin.schemas.js";
 
 let db: SeededDB;
-const getPostById = createTestClient(routes.getOneById);
-const getPosts = createTestClient(routes.getMany);
-const addPost = createTestClient(routes.addOne);
-const updatePostById = createTestClient(routes.updateOneById);
-const removePostById = createTestClient(routes.removeOneById);
-const removePosts = createTestClient(routes.removeMany);
+const getPinById = createTestClient(routes.getOneById);
+const getPins = createTestClient(routes.getMany);
+const addPin = createTestClient(routes.addOne);
+const updatePinById = createTestClient(routes.updateOneById);
+const removePinById = createTestClient(routes.removeOneById);
+const removePins = createTestClient(routes.removeMany);
 
-describe("Post routes", () => {
+describe("Pin routes", () => {
   beforeEach(async () => {
     db = await seedDatabase();
   });
 
   describe(`${routes.getOneById.method.toUpperCase()} ${routes.getOneById.path}`, () => {
     it("returns a successful response", async () => {
-      const response = await getPostById({ id: db.posts[0]!._id });
+      const response = await getPinById({ id: db.pins[0]!._id });
 
       expect(response.status).toBe(HttpStatusCodes.OK);
 
@@ -40,12 +40,12 @@ describe("Post routes", () => {
       expect(parseResult.success).toBe(true);
     });
 
-    it("returns a post with stripped properties", async () => {
-      const response = await getPostById({ id: db.posts[0]!._id }).query({
+    it("returns a pin with stripped properties", async () => {
+      const response = await getPinById({ id: db.pins[0]!._id }).query({
         select: {
           _id: 0,
-          postTitle: 1,
-          postOwner: 1,
+          pinTitle: 1,
+          pinOwner: 1,
         },
       });
 
@@ -53,18 +53,18 @@ describe("Post routes", () => {
 
       const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK]
         .pick({
-          postTitle: true,
-          postOwner: true,
+          pinTitle: true,
+          pinOwner: true,
         })
         .safeParse(response.body);
 
       expect(parseResult.success).toBe(true);
     });
 
-    it("returns a post with populated fields", async () => {
-      const embedKey: PostKeys = "postOwner";
+    it("returns a pin with populated fields", async () => {
+      const embedKey: PinKeys = "pinOwner";
 
-      const response = await getPostById({ id: db.posts[0]!._id }).query({ embed: embedKey });
+      const response = await getPinById({ id: db.pins[0]!._id }).query({ embed: embedKey });
 
       expect(response.status).toBe(HttpStatusCodes.OK);
 
@@ -81,7 +81,7 @@ describe("Post routes", () => {
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const response = await getPostById();
+      const response = await getPinById();
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
 
@@ -93,7 +93,7 @@ describe("Post routes", () => {
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const response = await getPostById({ id: "invalid-id" }).query({
+      const response = await getPinById({ id: "invalid-id" }).query({
         select: {
           // @ts-expect-error
           photoHeight: "invalid-select",
@@ -110,7 +110,7 @@ describe("Post routes", () => {
     });
 
     it("returns a not found error if id does not belong to any", async () => {
-      const response = await getPostById({ id: "68d817527719e9421cb63734" });
+      const response = await getPinById({ id: "68d817527719e9421cb63734" });
 
       expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
 
@@ -123,29 +123,29 @@ describe("Post routes", () => {
   });
 
   describe(`${routes.getMany.method.toUpperCase()} ${routes.getMany.path}`, () => {
-    it("Returns filtered posts", async () => {
-      const postOwnerId = db.users[0]!._id;
+    it("Returns filtered pins", async () => {
+      const pinOwnerId = db.users[0]!._id;
 
-      const response = await getPosts().query({
-        postOwner: postOwnerId,
+      const response = await getPins().query({
+        pinOwner: pinOwnerId,
       });
 
       expect(response.status).toBe(HttpStatusCodes.OK);
 
-      const parseResult = z.array(postSchema).safeParse(response.body);
+      const parseResult = z.array(pinSchema).safeParse(response.body);
 
       expect(parseResult.success).toBe(true);
-      for (const post of parseResult.data!) {
-        expect(post.postOwner).toBe(postOwnerId);
+      for (const pin of parseResult.data!) {
+        expect(pin.pinOwner).toBe(pinOwnerId);
       }
     });
 
-    it("returns a list of posts with stripped properties", async () => {
-      const response = await getPosts().query({
+    it("returns a list of pins with stripped properties", async () => {
+      const response = await getPins().query({
         select: {
           _id: 0,
-          postTitle: 1,
-          postOwner: 1,
+          pinTitle: 1,
+          pinOwner: 1,
         },
       });
 
@@ -153,9 +153,9 @@ describe("Post routes", () => {
 
       const parseResult = z
         .array(
-          postSchema.pick({
-            postTitle: true,
-            postOwner: true,
+          pinSchema.pick({
+            pinTitle: true,
+            pinOwner: true,
           })
         )
         .safeParse(response.body);
@@ -163,23 +163,23 @@ describe("Post routes", () => {
       expect(parseResult.success).toBe(true);
     });
 
-    it("returns a paginated list of posts", async () => {
+    it("returns a paginated list of pins", async () => {
       const page = 1;
       const limit = 1;
 
-      const response = await getPosts().query({ page, limit });
+      const response = await getPins().query({ page, limit });
 
       expect(response.status).toBe(HttpStatusCodes.OK);
 
-      const parseResult = paginationPayloadSchema(z.array(postSchema)).safeParse(response.body);
+      const parseResult = paginationPayloadSchema(z.array(pinSchema)).safeParse(response.body);
 
       expect(parseResult.success).toBe(true);
       expect(parseResult.data!.meta.currentPage).toBe(page);
       expect(parseResult.data!.meta.itemsPerPage).toBe(limit);
     });
 
-    it("returns a sorted list of posts", async () => {
-      const response = await getPosts().query({
+    it("returns a sorted list of pins", async () => {
+      const response = await getPins().query({
         sort: {
           photoWidth: "asc",
         },
@@ -187,7 +187,7 @@ describe("Post routes", () => {
 
       expect(response.status).toBe(HttpStatusCodes.OK);
 
-      const parseResult = z.array(postSchema).safeParse(response.body);
+      const parseResult = z.array(pinSchema).safeParse(response.body);
 
       expect(parseResult.success).toBe(true);
       expect(parseResult.data!.length).toBeGreaterThan(0);
@@ -198,10 +198,10 @@ describe("Post routes", () => {
       }
     });
 
-    it("returns a list of posts with populated fields", async () => {
-      const embedKey: PostKeys = "postOwner";
+    it("returns a list of pins with populated fields", async () => {
+      const embedKey: PinKeys = "pinOwner";
 
-      const response = await getPosts().query({
+      const response = await getPins().query({
         embed: embedKey,
       });
 
@@ -209,7 +209,7 @@ describe("Post routes", () => {
 
       const parseResult = z
         .array(
-          postSchema
+          pinSchema
             .omit({
               [embedKey]: true,
             })
@@ -223,7 +223,7 @@ describe("Post routes", () => {
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const response = await getPosts().query({
+      const response = await getPins().query({
         limit: -5,
         // @ts-expect-error
         page: "invalid",
@@ -241,11 +241,11 @@ describe("Post routes", () => {
 
   describe(`${routes.addOne.method.toUpperCase()} ${routes.addOne.path}`, () => {
     it("returns a successful response", async () => {
-      const response = await addPost()
+      const response = await addPin()
         .field({
-          postTitle: "New Post",
-          postDescription: "New post description",
-          postOwner: db.users[0]!._id,
+          pinTitle: "New Pin",
+          pinDescription: "New pin description",
+          pinOwner: db.users[0]!._id,
           photoBlurHash: "some-random-string",
           photo: "no-value",
         })
@@ -261,10 +261,10 @@ describe("Post routes", () => {
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const response = await addPost()
+      const response = await addPin()
         // @ts-expect-error
         .field({
-          postOwner: db.users[0]!._id,
+          pinOwner: db.users[0]!._id,
         })
         .attach("photo", testImages[0]!);
 
@@ -281,12 +281,12 @@ describe("Post routes", () => {
       const date = new Date();
       date.setDate(date.getDate() + 1);
 
-      const response = await addPost()
+      const response = await addPin()
         .field({
-          postTitle: "New Post",
-          postDescription: "This is a new post.",
+          pinTitle: "New Pin",
+          pinDescription: "This is a new pin.",
           // @ts-expect-error
-          postOwner: 12345,
+          pinOwner: 12345,
         })
         .attach("photo", testImages[0]!);
 
@@ -299,14 +299,14 @@ describe("Post routes", () => {
       expect(parseResult.success).toBe(true);
     });
 
-    it("returns a post without extra field", async () => {
+    it("returns a pin without extra field", async () => {
       const extraKey: string = "extraField";
 
-      const response = await addPost()
+      const response = await addPin()
         .field({
-          postTitle: "New Post",
-          postOwner: db.users[0]!._id,
-          postDescription: "This is a new post.",
+          pinTitle: "New Pin",
+          pinOwner: db.users[0]!._id,
+          pinDescription: "This is a new pin.",
           photoBlurHash: "New blur hash",
           photo: "no-value",
           [extraKey]: "extra",
@@ -326,11 +326,11 @@ describe("Post routes", () => {
 
   describe(`${routes.updateOneById.method.toUpperCase()} ${routes.updateOneById.path}`, () => {
     it("returns a successful response", async () => {
-      const oldPost = db.posts[0]!;
-      const newTitle = "Updated Test Post";
+      const oldPin = db.pins[0]!;
+      const newTitle = "Updated Test Pin";
 
-      const response = await updatePostById({ id: oldPost._id }).send({
-        postTitle: newTitle,
+      const response = await updatePinById({ id: oldPin._id }).send({
+        pinTitle: newTitle,
       });
 
       expect(response.status).toBe(HttpStatusCodes.OK);
@@ -340,12 +340,12 @@ describe("Post routes", () => {
       );
 
       expect(parseResult.success).toBe(true);
-      expect(parseResult.data).toHaveProperty("postTitle" as PostKeys, newTitle);
-      expect(parseResult.data!.postTitle !== oldPost.postTitle).toBe(true);
+      expect(parseResult.data).toHaveProperty("pinTitle" as PinKeys, newTitle);
+      expect(parseResult.data!.pinTitle !== oldPin.pinTitle).toBe(true);
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const response = await updatePostById();
+      const response = await updatePinById();
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
 
@@ -357,9 +357,9 @@ describe("Post routes", () => {
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const response = await updatePostById({ id: "invalid-id" }).send(
+      const response = await updatePinById({ id: "invalid-id" }).send(
         // @ts-expect-error
-        { postTitle: 12345 }
+        { pinTitle: 12345 }
       );
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
@@ -372,8 +372,8 @@ describe("Post routes", () => {
     });
 
     it("returns a not found error if id does not belong to any", async () => {
-      const response = await updatePostById({ id: "68d817527719e9421cb63734" }).send({
-        postTitle: "Updated Title",
+      const response = await updatePinById({ id: "68d817527719e9421cb63734" }).send({
+        pinTitle: "Updated Title",
       });
 
       expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
@@ -388,16 +388,16 @@ describe("Post routes", () => {
 
   describe(`${routes.removeOneById.method.toUpperCase()} ${routes.removeOneById.path}`, () => {
     it("returns a successful response", async () => {
-      const removePostResponse = await removePostById({ id: db.posts[0]!._id });
+      const removePinResponse = await removePinById({ id: db.pins[0]!._id });
 
-      expect(removePostResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
+      expect(removePinResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
 
-      const getPostResponse = await getPostById({ id: db.posts[0]!._id });
+      const getPinResponse = await getPinById({ id: db.pins[0]!._id });
 
-      expect(getPostResponse.status).toBe(HttpStatusCodes.OK);
+      expect(getPinResponse.status).toBe(HttpStatusCodes.OK);
 
       const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK].safeParse(
-        getPostResponse.body
+        getPinResponse.body
       );
 
       expect(parseResult.success).toBe(true);
@@ -405,7 +405,7 @@ describe("Post routes", () => {
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const response = await removePostById();
+      const response = await removePinById();
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
 
@@ -417,7 +417,7 @@ describe("Post routes", () => {
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const response = await removePostById({ id: "invalid" });
+      const response = await removePinById({ id: "invalid" });
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
 
@@ -429,7 +429,7 @@ describe("Post routes", () => {
     });
 
     it("returns a not found error if id does not belong to any", async () => {
-      const response = await removePostById({ id: "68d817527719e9421cb63734" });
+      const response = await removePinById({ id: "68d817527719e9421cb63734" });
 
       expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
 
@@ -443,27 +443,27 @@ describe("Post routes", () => {
 
   describe(`${routes.removeMany.method.toUpperCase()} ${routes.removeMany.path}`, () => {
     it("returns a successful response", async () => {
-      const ids = db.posts.slice(0, 2).map((post) => post._id);
+      const ids = db.pins.slice(0, 2).map((pin) => pin._id);
 
-      const removePostsResponse = await removePosts().send({ ids });
+      const removePinsResponse = await removePins().send({ ids });
 
-      expect(removePostsResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
+      expect(removePinsResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
 
-      const getPostsResponse = await getPosts().query({ _id: { in: ids } });
+      const getPinsResponse = await getPins().query({ _id: { in: ids } });
 
-      expect(getPostsResponse.status).toBe(HttpStatusCodes.OK);
+      expect(getPinsResponse.status).toBe(HttpStatusCodes.OK);
 
-      const parseResult = z.array(postSchema).safeParse(getPostsResponse.body);
+      const parseResult = z.array(pinSchema).safeParse(getPinsResponse.body);
 
       expect(parseResult.success).toBe(true);
       expect(parseResult.data?.length).toBe(ids.length);
-      for (const post of parseResult.data ?? []) {
-        expect(post.removedAt).toBeDefined();
+      for (const pin of parseResult.data ?? []) {
+        expect(pin.removedAt).toBeDefined();
       }
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const response = await removePosts();
+      const response = await removePins();
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
 
@@ -475,7 +475,7 @@ describe("Post routes", () => {
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const response = await removePosts().send({
+      const response = await removePins().send({
         ids: ["invalid-id"],
       });
 
@@ -489,7 +489,7 @@ describe("Post routes", () => {
     });
 
     it("returns a not found error if none of the ids belong to any", async () => {
-      const response = await removePosts().send({
+      const response = await removePins().send({
         ids: ["68d817527719e9421cb63734", "68d817527719e9421cb63735"],
       });
 

@@ -7,13 +7,13 @@ import type {
   Search,
   UndoRemoval,
   UpdateOneById,
-} from "./post.types.js";
+} from "./pin.types.js";
 import type { RequestSchemas, ZodObjectShapeMap } from "@/types/common.js";
 import type { Types } from "mongoose";
 import type { ZodType } from "zod";
 
 import { HttpStatusCodes } from "@repo/shared";
-import type { PostDB, UserDB } from "@repo/types";
+import type { PinDB, UserDB } from "@repo/types";
 
 import { z } from "@/lib/zod.js";
 import { createQueryFilterSchema } from "@/utils/create-query-filter-schema.js";
@@ -28,18 +28,18 @@ import {
   validationErrorSchema,
 } from "@/utils/schemas.js";
 
-import * as handlers from "./post.handlers.js";
+import * as handlers from "./pin.handlers.js";
 
-export const postSchema = z
+export const pinSchema = z
   .object({
     _id: objectIdSchema,
     __v: z.number(),
     createdAt: stringSchema,
     updatedAt: stringSchema,
     removedAt: stringSchema.optional(),
-    postTitle: stringSchema,
-    postOwner: objectIdSchema,
-    postDescription: stringSchema.optional(),
+    pinTitle: stringSchema,
+    pinOwner: objectIdSchema,
+    pinDescription: stringSchema.optional(),
     photoCloudinaryId: stringSchema.optional(),
     photoBlurHash: stringSchema,
     photoUrl: stringSchema,
@@ -48,22 +48,22 @@ export const postSchema = z
     photoAspectRatio: z.number(),
     photoDescription: stringSchema,
     descriptionEmbeddings: z.array(z.number()),
-  } satisfies ZodObjectShapeMap<PostDB>)
-  .openapi("Post");
+  } satisfies ZodObjectShapeMap<PinDB>)
+  .openapi("Pin");
 
-const queryFilterSchema = createQueryFilterSchema<PostDB<UserDB | string | Types.ObjectId>>()(
+const queryFilterSchema = createQueryFilterSchema<PinDB<UserDB | string | Types.ObjectId>>()(
   {
     removedAt: z.string(),
-    postTitle: z.string(),
-    postDescription: z.string(),
-    postOwner: z.string(),
+    pinTitle: z.string(),
+    pinDescription: z.string(),
+    pinOwner: z.string(),
     photoWidth: z.number(),
     photoHeight: z.number(),
     photoAspectRatio: z.number(),
   },
   {
-    embeddableFields: ["postOwner"],
-    selectableFields: Object.keys(postSchema.shape) as Array<keyof typeof postSchema.shape>,
+    embeddableFields: ["pinOwner"],
+    selectableFields: Object.keys(pinSchema.shape) as Array<keyof typeof pinSchema.shape>,
     sortableFields: [
       "createdAt",
       "updatedAt",
@@ -80,9 +80,9 @@ export const requestSchemas = {
     query: queryFilterSchema,
     responses: {
       [HttpStatusCodes.OK]: z.union([
-        z.array(postSchema),
+        z.array(pinSchema),
         z.object({
-          data: z.array(postSchema),
+          data: z.array(pinSchema),
           meta: metaPaginationSchema,
         }),
       ]) satisfies ZodType<GetMany["response"]>,
@@ -100,25 +100,25 @@ export const requestSchemas = {
       embed: true,
     } satisfies Record<keyof GetOneById["query"], true>),
     responses: {
-      [HttpStatusCodes.OK]: postSchema satisfies ZodType<GetOneById["response"]>,
+      [HttpStatusCodes.OK]: pinSchema satisfies ZodType<GetOneById["response"]>,
       [HttpStatusCodes.NOT_FOUND]: notFoundSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
     },
   },
 
   addOne: {
-    body: postSchema
+    body: pinSchema
       .pick({
-        postTitle: true,
-        postDescription: true,
-        postOwner: true,
+        pinTitle: true,
+        pinDescription: true,
+        pinOwner: true,
         photoBlurHash: true,
       })
       .extend({
         photo: placeholderFileSchema,
       }) satisfies ZodType<AddOne["body"]>,
     responses: {
-      [HttpStatusCodes.CREATED]: postSchema satisfies ZodType<AddOne["response"]>,
+      [HttpStatusCodes.CREATED]: pinSchema satisfies ZodType<AddOne["response"]>,
       [HttpStatusCodes.BAD_REQUEST]: errorSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
     },
@@ -128,10 +128,10 @@ export const requestSchemas = {
     params: z.object({
       id: objectIdSchema,
     }) satisfies ZodType<UpdateOneById["params"]>,
-    body: postSchema
+    body: pinSchema
       .pick({
-        postTitle: true,
-        postDescription: true,
+        pinTitle: true,
+        pinDescription: true,
         photoBlurHash: true,
       } satisfies Record<keyof Omit<Required<UpdateOneById["body"]>, "photo">, true>)
       .extend({
@@ -139,7 +139,7 @@ export const requestSchemas = {
       })
       .partial(),
     responses: {
-      [HttpStatusCodes.OK]: postSchema satisfies ZodType<UpdateOneById["response"]>,
+      [HttpStatusCodes.OK]: pinSchema satisfies ZodType<UpdateOneById["response"]>,
       [HttpStatusCodes.NOT_FOUND]: notFoundSchema,
       [HttpStatusCodes.BAD_REQUEST]: errorSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
@@ -189,7 +189,7 @@ export const requestSchemas = {
     responses: {
       [HttpStatusCodes.OK]: paginationPayloadSchema(
         z.array(
-          postSchema
+          pinSchema
             .omit({
               descriptionEmbeddings: true,
               photoCloudinaryId: true,

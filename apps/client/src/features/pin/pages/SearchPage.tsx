@@ -7,14 +7,14 @@ import Heading from "@/components/ui/Heading";
 import { INFINITE_PAGE_SIZE, INITIAL_PAGE } from "@/constants/common";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
-import PostCard from "../components/PostCard";
-import { searchPostsQueryOptions } from "../services/api/queries";
+import PinCard from "../components/PinCard";
+import { searchPinsQueryOptions } from "../services/api/queries";
 
 function SearchPage() {
   const [searchParams] = useSearchParams();
   const qParam = searchParams.get("q") || "";
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQuery({
-    ...searchPostsQueryOptions({ text: qParam }, { page: INITIAL_PAGE, limit: INFINITE_PAGE_SIZE }),
+    ...searchPinsQueryOptions({ text: qParam }, { page: INITIAL_PAGE, limit: INFINITE_PAGE_SIZE }),
     enabled: !!qParam,
   });
 
@@ -25,7 +25,7 @@ function SearchPage() {
       {data ? (
         <Masonry>
           {data.map((item) => (
-            <PostCard key={item._id} {...item} />
+            <PinCard key={item._id} {...item} />
           ))}
         </Masonry>
       ) : (

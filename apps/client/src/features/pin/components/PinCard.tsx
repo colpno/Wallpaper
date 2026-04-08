@@ -1,4 +1,4 @@
-import type { PostDB } from "@repo/types";
+import type { PinDB } from "@repo/types";
 import { cn } from "@repo/ui/lib";
 import { useState } from "react";
 import { BlurhashCanvas } from "react-blurhash";
@@ -7,9 +7,7 @@ import { BsThreeDots } from "react-icons/bs";
 import Button from "@/components/ui/Button";
 import Image from "@/components/ui/Image";
 
-function PostCard(
-  item: Pick<PostDB, "photoUrl" | "photoBlurHash" | "postTitle" | "postDescription">
-) {
+function PinCard(item: Pick<PinDB, "photoUrl" | "photoBlurHash" | "pinTitle" | "pinDescription">) {
   const [isImageLoading, setIsImageLoading] = useState(true);
   const odd = Math.random();
   const showTitle = odd > 0.6;
@@ -32,7 +30,7 @@ function PostCard(
 
         <Image
           src={item.photoUrl}
-          alt={item.postTitle}
+          alt={item.pinTitle}
           onLoad={handleImageLoaded}
           className={cn(
             `size-full rounded-xl bg-[#1116] transition-opacity duration-300`,
@@ -43,9 +41,9 @@ function PostCard(
 
       <div className="flex gap-x-1 px-1.5 text-sm leading-[17px]">
         <div className="flex-1 space-y-2">
-          {showTitle && <p className="line-clamp-1 font-medium">{item.postTitle}</p>}
+          {showTitle && <p className="line-clamp-1 font-medium">{item.pinTitle}</p>}
 
-          {showDescription && <p className="line-clamp-2">{item.postDescription}</p>}
+          {showDescription && <p className="line-clamp-2">{item.pinDescription}</p>}
         </div>
 
         <Button size="sm" variant="ghost-icon">
@@ -56,4 +54,4 @@ function PostCard(
   );
 }
 
-export default PostCard;
+export default PinCard;

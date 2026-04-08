@@ -13,7 +13,7 @@ type Route = Record<
 const BASE_PATH = {
   AUTH: "/auth",
   MEDIA: "/medias",
-  POST: "/posts",
+  POST: "/pins",
   USER: "/users",
 } as const;
 
@@ -34,7 +34,7 @@ export const API_ROUTES = {
       method: "delete",
     },
   },
-  POST: {
+  PIN: {
     getMany: {
       path: () => BASE_PATH.POST,
       method: "get",

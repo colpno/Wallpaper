@@ -6,20 +6,20 @@ import { jsonContent, multipartContent } from "@/utils/openapi.js";
 import { Router } from "@/utils/Router.js";
 import { atLeastOneField, fileSchema } from "@/utils/schemas.js";
 
-import * as handlers from "./post.handlers.js";
-import { requestSchemas } from "./post.schemas.js";
+import * as handlers from "./pin.handlers.js";
+import { requestSchemas } from "./pin.schemas.js";
 
-const tags = ["Post"];
+const tags = ["Pin"];
 const router = new Router();
 
-export const { router: postRouter } = router;
+export const { router: pinRouter } = router;
 
 export const getMany = router.register({
   tags,
   method: "get",
-  path: API_ROUTES.POST.getMany.path(),
-  summary: "Get multiple posts",
-  description: "Retrieve multiple posts.",
+  path: API_ROUTES.PIN.getMany.path(),
+  summary: "Get multiple pins",
+  description: "Retrieve multiple pins.",
   request: {
     query: requestSchemas.getMany.query,
   },
@@ -42,9 +42,9 @@ export const getMany = router.register({
 export const getOneById = router.register({
   tags,
   method: "get",
-  path: API_ROUTES.POST.getOneById.path("{id}"),
-  summary: "Get a post by ID",
-  description: "Retrieve a post by its ID.",
+  path: API_ROUTES.PIN.getOneById.path("{id}"),
+  summary: "Get a pin by ID",
+  description: "Retrieve a pin by its ID.",
   request: {
     params: requestSchemas.getOneById.params,
     query: requestSchemas.getOneById.query,
@@ -68,9 +68,9 @@ export const getOneById = router.register({
 export const addOne = router.register({
   tags,
   method: "post",
-  path: API_ROUTES.POST.addOne.path(),
-  summary: "Add a post",
-  description: "Create a new post.",
+  path: API_ROUTES.PIN.addOne.path(),
+  summary: "Add a pin",
+  description: "Create a new pin.",
   request: {
     body: multipartContent(requestSchemas.addOne.body),
   },
@@ -93,9 +93,9 @@ export const addOne = router.register({
 export const updateOneById = router.register({
   tags,
   method: "patch",
-  path: API_ROUTES.POST.updateOneById.path("{id}"),
-  summary: "Update a post by ID",
-  description: "Update an existing post using its unique ID.",
+  path: API_ROUTES.PIN.updateOneById.path("{id}"),
+  summary: "Update a pin by ID",
+  description: "Update an existing pin using its unique ID.",
   request: {
     params: requestSchemas.updateOneById.params,
     body: {
@@ -132,9 +132,9 @@ export const updateOneById = router.register({
 export const removeOneById = router.register({
   tags,
   method: "delete",
-  path: API_ROUTES.POST.removeOneById.path("{id}"),
-  summary: "Softly remove a post by ID",
-  description: "Softly remove a single post using its unique ID.",
+  path: API_ROUTES.PIN.removeOneById.path("{id}"),
+  summary: "Softly remove a pin by ID",
+  description: "Softly remove a single pin using its unique ID.",
   request: {
     params: requestSchemas.removeOneById.params,
   },
@@ -156,9 +156,9 @@ export const removeOneById = router.register({
 export const removeMany = router.register({
   tags,
   method: "delete",
-  path: API_ROUTES.POST.removeMany.path(),
-  summary: "Remove multiple posts",
-  description: "Remove multiple posts using its unique IDs.",
+  path: API_ROUTES.PIN.removeMany.path(),
+  summary: "Remove multiple pins",
+  description: "Remove multiple pins using its unique IDs.",
   request: {
     body: jsonContent(requestSchemas.removeMany.body),
   },
@@ -180,9 +180,9 @@ export const removeMany = router.register({
 export const undoRemoval = router.register({
   tags,
   method: "patch",
-  path: API_ROUTES.POST.undoRemoval.path(),
-  summary: "Undo removal of multiple posts",
-  description: "Undo removal of multiple posts.",
+  path: API_ROUTES.PIN.undoRemoval.path(),
+  summary: "Undo removal of multiple pins",
+  description: "Undo removal of multiple pins.",
   request: {
     body: jsonContent(requestSchemas.undoRemoval.body),
   },
@@ -204,9 +204,9 @@ export const undoRemoval = router.register({
 export const search = router.register({
   tags,
   method: "post",
-  path: API_ROUTES.POST.search.path(),
-  summary: "Search for similar posts",
-  description: "Search for similar posts using an image or text.",
+  path: API_ROUTES.PIN.search.path(),
+  summary: "Search for similar pins",
+  description: "Search for similar pins using an image or text.",
   request: {
     query: requestSchemas.search.query,
     body: {

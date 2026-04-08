@@ -1,19 +1,19 @@
 import type { Types } from "mongoose";
 
 import { faker } from "@faker-js/faker";
-import type { ExpiredMedia, ExpiredMediaDB, Post, PostDB, User, UserDB } from "@repo/types";
+import type { ExpiredMedia, ExpiredMediaDB, Pin, PinDB, User, UserDB } from "@repo/types";
 
 import { ExpiredMediaModel } from "@/routes/media/expired-media.model.js";
-import { PostModel } from "@/routes/post/post.model.js";
+import { PinModel } from "@/routes/pin/pin.model.js";
 import { UserModel } from "@/routes/user/user.model.js";
 
 import { testUserPassword } from "./variables.js";
 
 faker.seed(123);
 
-export const createPost = (): Readonly<Required<Omit<Post, "postOwner" | "removedAt">>> => ({
-  postTitle: faker.lorem.words({ min: 2, max: 5 }),
-  postDescription: faker.commerce.productDescription(),
+export const createPin = (): Readonly<Required<Omit<Pin, "pinOwner" | "removedAt">>> => ({
+  pinTitle: faker.lorem.words({ min: 2, max: 5 }),
+  pinDescription: faker.commerce.productDescription(),
   photoCloudinaryId: faker.string.alphanumeric({ length: 20, casing: "lower" }),
   photoBlurHash: faker.string.alphanumeric({ length: 28 }),
   photoUrl: faker.image.url(),
@@ -44,7 +44,7 @@ export const createExpiredMedia = (): Readonly<Required<ExpiredMedia>> => ({
 });
 
 export type SeededDB = Readonly<{
-  posts: Required<PostDB<Types.ObjectId>[]>;
+  pins: Required<PinDB<Types.ObjectId>[]>;
   users: Required<UserDB[]>;
   expiredMedias: Required<ExpiredMediaDB[]>;
 }>;
@@ -82,20 +82,20 @@ export const seedDatabase = async (): Promise<SeededDB> => {
 
     expiredMedias,
 
-    posts: (
-      await PostModel.insertMany(
+    pins: (
+      await PinModel.insertMany(
         faker.helpers.multiple(
           () =>
             ({
-              ...createPost(),
-              postOwner: faker.helpers.arrayElement(users)._id.toString(),
-            }) satisfies Post,
+              ...createPin(),
+              pinOwner: faker.helpers.arrayElement(users)._id.toString(),
+            }) satisfies Pin,
           { count: 10 }
         )
       )
     ).map((item) => ({
       ...item.toObject(),
       _id: item._id.toString(),
-    })) as unknown as SeededDB["posts"],
+    })) as unknown as SeededDB["pins"],
   };
 };
