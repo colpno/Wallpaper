@@ -8,12 +8,13 @@ import { INFINITE_PAGE_SIZE, INITIAL_PAGE } from "@/constants/common";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 import PinCard from "../components/PinCard";
+import PinCardSkeleton from "../components/PinCard/PinCardSkeleton";
 import { searchPinsQueryOptions } from "../services/api/queries";
 
 function SearchPage() {
   const [searchParams] = useSearchParams();
   const qParam = searchParams.get("q") || "";
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQuery({
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } = useInfiniteQuery({
     ...searchPinsQueryOptions({ text: qParam }, { page: INITIAL_PAGE, limit: INFINITE_PAGE_SIZE }),
     enabled: !!qParam,
   });
@@ -22,7 +23,14 @@ function SearchPage() {
 
   return (
     <Container as="section" className="pt-11">
-      {data ? (
+      {isLoading ? (
+        <Masonry>
+          {Array.from({ length: INFINITE_PAGE_SIZE }).map((_, i) => {
+            const height = Math.max(150, Math.ceil(Math.random() * 1000));
+            return <PinCardSkeleton key={`skeleton-${i}`} style={{ height: `${height}px` }} />;
+          })}
+        </Masonry>
+      ) : data ? (
         <Masonry>
           {data.map((item) => (
             <PinCard key={item._id} {...item} />

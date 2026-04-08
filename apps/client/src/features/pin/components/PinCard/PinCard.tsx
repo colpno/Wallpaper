@@ -19,23 +19,17 @@ function PinCard(item: Pick<PinDB, "photoUrl" | "photoBlurHash" | "pinTitle" | "
 
   return (
     <div className="space-y-2">
-      <div className="relative">
+      <div className="relative *:size-full *:rounded-xl *:transition-opacity *:duration-300">
         <BlurhashCanvas
           hash={item.photoBlurHash}
-          className={cn(
-            "absolute inset-0 size-full rounded-xl transition-opacity duration-300",
-            isImageLoading ? "opacity-100" : "opacity-0"
-          )}
+          className={cn("absolute inset-0", isImageLoading ? "opacity-100" : "opacity-0")}
         />
 
         <Image
           src={item.photoUrl}
           alt={item.pinTitle}
           onLoad={handleImageLoaded}
-          className={cn(
-            `size-full rounded-xl bg-[#1116] transition-opacity duration-300`,
-            isImageLoading ? "opacity-0" : "opacity-100"
-          )}
+          className={cn(isImageLoading ? "opacity-0" : "opacity-100")}
         />
       </div>
 

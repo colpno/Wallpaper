@@ -33,7 +33,7 @@ function IdeasPage() {
     <Container as="section" className="pt-11">
       {isLoading ? (
         <>
-          <Heading variant="h3" className="text-center">
+          <Heading variant="h3" className="mb-10 text-center">
             Loading today&apos;s picks...
           </Heading>
 
