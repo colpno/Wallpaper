@@ -1,3 +1,42 @@
 @import "tailwindcss";
 @import "@repo/ui/styles.css";
 @import "@repo/tailwind-config/themes.css";
+
+@theme {
+  --animate-scale-down: scale-down 1s ease-in-out infinite;
+  --animate-rainbow-color: rainbow-color 8s ease-in-out infinite;
+
+  @keyframes scale-down {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(0.7);
+    }
+  }
+
+  @keyframes rainbow-color {
+    0% {
+      background-color: red;
+    }
+    16% {
+      background-color: orange;
+    }
+    33% {
+      background-color: yellow;
+    }
+    50% {
+      background-color: green;
+    }
+    66% {
+      background-color: blue;
+    }
+    83% {
+      background-color: indigo;
+    }
+    100% {
+      background-color: violet;
+    }
+  }
+}

@@ -13,7 +13,7 @@ import { searchPostsQueryOptions } from "../services/api/queries";
 function SearchPage() {
   const [searchParams] = useSearchParams();
   const qParam = searchParams.get("q") || "";
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } = useInfiniteQuery({
+  const { data, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQuery({
     ...searchPostsQueryOptions({ text: qParam }, { page: INITIAL_PAGE, limit: INFINITE_PAGE_SIZE }),
     enabled: !!qParam,
   });
@@ -22,9 +22,7 @@ function SearchPage() {
 
   return (
     <Container as="section" className="pt-11">
-      {isLoading ? (
-        <div>Skeletons here</div>
-      ) : data ? (
+      {data ? (
         <Masonry>
           {data.map((item) => (
             <PostCard key={item._id} {...item} />

@@ -134,7 +134,7 @@ npm run dev
 - [ ] Pins management (client)
 - [ ] Member layout, pages for logged in users.
 - [x] Guess layout, home page, explore page
-- [ ] Improve loading states (skeletons/spinners)
+- [x] Improve loading states
 - [ ] Make layout fully responsive
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>

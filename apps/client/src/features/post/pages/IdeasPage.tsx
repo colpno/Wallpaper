@@ -3,6 +3,7 @@ import { useInfiniteQuery } from "@tanstack/react-query";
 import Masonry from "@/components/common/Masonry";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
+import Spinner from "@/components/ui/Spinner";
 import { INFINITE_PAGE_SIZE, INITIAL_PAGE } from "@/constants/common";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
@@ -31,9 +32,13 @@ function IdeasPage() {
   return (
     <Container as="section" className="pt-11">
       {isLoading ? (
-        <Heading variant="h2" className="text-center">
-          Loading today&apos;s picks...
-        </Heading>
+        <>
+          <Heading variant="h2" className="text-center">
+            Loading today&apos;s picks...
+          </Heading>
+
+          <Spinner className="mx-auto" />
+        </>
       ) : data ? (
         <>
           <Heading variant="h2">What&apos;s new on Pinterest</Heading>
