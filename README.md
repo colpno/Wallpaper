@@ -15,19 +15,20 @@ This project replicates some of Pinterest’s core features such as:
 - [Features](#-features)
 - [Tech Stack](#️-tech-stack)
 - [Project Structure](#-project-structure)
-- [Requisitions](#-requisitions)
+- [Requirements](#-requirements)
 - [Setup & Installation](#️-setup--installation)
-- [Screenshots](#-screenshots)
+- [Todos](#-todos)
 - [Contact](#-contact)
 
 ---
 
 ## ✨ Features
 
-- User-friendly image upload with cropping
-- Image search functionality
-- File management with cloud
-- Responsive grid-based UI (Pinterest-style layout)
+- Image upload with cropping
+- Images search functionality
+- Cloud-based file management
+- Pinterest-style grid layout
+- Pins, user management
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -65,7 +66,7 @@ This project replicates some of Pinterest’s core features such as:
 
 ---
 
-## 📦 Requisitions
+## 📦 Requirements
 
 - npm >= 11.6.1
 
@@ -95,6 +96,12 @@ cp apps/client/.env.example apps/client/.env
 npm install
 ```
 
+4. Build packages
+
+```bash
+npm run build
+```
+
 > **Optional**: Setup MongoDB using Docker Compose:
 >
 > ```sh
@@ -107,9 +114,7 @@ npm install
 
 ---
 
-## 🚀 Usage
-
-4. Start developing
+## 🚀 Developing
 
 ```bash
 npm run dev
@@ -119,7 +124,18 @@ npm run dev
 
 ---
 
-## 📸 Screenshots
+## 📋 TODOs
+
+- [x] Search images using a text
+- [ ] Search images using an image (client)
+- [ ] Image upload with cropping
+- [x] File management with cloud
+- [ ] User profile management (client)
+- [ ] Pins management (client)
+- [ ] Member layout, pages for logged in users.
+- [x] Guess layout, home page, explore page
+- [ ] Improve loading states (skeletons/spinners)
+- [ ] Make layout fully responsive
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
