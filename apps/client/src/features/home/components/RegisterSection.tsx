@@ -21,7 +21,7 @@ function RegisterSection(props: React.ComponentProps<"section">) {
       <Button
         variant="icon"
         size="xl"
-        className="absolute top-20 left-1/2 z-3 -translate-x-1/2 bg-[rgb(156,3,67)] text-2xl"
+        className="absolute top-20 left-1/2 z-3 -translate-x-1/2 bg-[rgb(156,3,67)]"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >
         <FaChevronUp />

@@ -21,6 +21,7 @@ const buttonVariants = cva(
         "ghost-icon": "hover:bg-accent hover:text-accent-foreground",
         "outline-icon":
           "border border-primary text-primary hover:border-[color-mix(in_srgb,var(--primary),black_10%)] hover:text-[color-mix(in_srgb,var(--primary),black_10%)]",
+        "secondary-icon": "bg-secondary text-secondary-foreground hover:bg-neutral-300",
       },
       size: {
         xs: "",
@@ -52,13 +53,13 @@ const buttonVariants = cva(
           },
           {
             size: "xl",
-            className: "size-12 rounded-xl text-lg",
+            className: "size-12 rounded-xl text-2xl",
           },
         ] as const
       ).map((config) => ({
         ...config,
-        variant: ["icon", "ghost-icon", "outline-icon"] as Array<
-          "icon" | "ghost-icon" | "outline-icon"
+        variant: ["icon", "ghost-icon", "outline-icon", "secondary-icon"] as Array<
+          "icon" | "ghost-icon" | "outline-icon" | "secondary-icon"
         >,
       })),
       // Others
