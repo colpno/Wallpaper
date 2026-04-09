@@ -1,4 +1,4 @@
-import { TooltipProvider } from "@repo/ui/components";
+import { Toaster, TooltipProvider } from "@repo/ui/components";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider } from "react-router";
 
@@ -11,6 +11,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <RouterProvider router={routes} />
+        <Toaster />
       </TooltipProvider>
     </QueryClientProvider>
   );
