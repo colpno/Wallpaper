@@ -1,6 +1,8 @@
 import type { ValidationError } from "./schemas.js";
 import type { ZodError } from "zod";
 
+import type { PaginationPayload } from "@repo/types";
+
 /**
  * Converts an OpenAPI path to Express path.
  * @param path An OpenAPI path.
@@ -40,5 +42,33 @@ export const createErrorObjectFromZod = <T>(error: ZodError<T>): ValidationError
       path: issue.path.filter((p) => typeof p !== "symbol").map((p) => p.toString()),
       message: issue.message,
     })),
+  };
+};
+
+type ToPaginationPayloadInput<T extends unknown[]> = {
+  data: T;
+  page: number;
+  perPage: number;
+  totalItems: number;
+};
+
+/**
+ * Create pagination payload from provided inputs.
+ * @param inputs Requirements to construct pagination payload.
+ * @returns Pagination payload object.
+ */
+export const toPaginationPayload = <T extends unknown[]>(
+  inputs: ToPaginationPayloadInput<T>
+): PaginationPayload<T> => {
+  const { data, page = 1, perPage, totalItems } = inputs;
+  return {
+    data,
+    meta: {
+      currentPage: page,
+      itemCount: data.length,
+      itemsPerPage: perPage,
+      totalItems,
+      totalPages: Math.ceil(totalItems / perPage),
+    },
   };
 };

@@ -11,12 +11,13 @@ import type {
 import type { File } from "@/utils/schemas.js";
 
 import { HttpStatusCodes } from "@repo/shared";
-import type { PaginationPayload, Pin, PinDB } from "@repo/types";
+import type { Pin, PinDB } from "@repo/types";
 
 import { env } from "@/configs/env.js";
 import { logger } from "@/lib/logger.js";
 import { describeImage, toEmbeddings } from "@/services/embedding.js";
 import { buildQueryWithOptions, organizeQueryInput } from "@/utils/build-query-with-options.js";
+import { toPaginationPayload } from "@/utils/converters.js";
 import { HttpError } from "@/utils/HttpError.js";
 import { PipelineBuilder } from "@/utils/PipelineBuilder.js";
 
@@ -38,16 +39,12 @@ export const getMany: GetMany["handler"] = async (req, res, next) => {
     const totalItems = await PinModel.countDocuments({});
     const itemsPerPage = req.query.limit;
 
-    const result: PaginationPayload<PinDB[]> = {
+    const result = toPaginationPayload({
       data: pins,
-      meta: {
-        currentPage: req.query.page ?? 1,
-        itemCount: pins.length,
-        itemsPerPage,
-        totalItems,
-        totalPages: Math.ceil(totalItems / itemsPerPage),
-      },
-    };
+      page: req.query.page ?? 1,
+      perPage: itemsPerPage,
+      totalItems,
+    });
 
     return res.status(HttpStatusCodes.OK).json(result);
   } catch (error) {
@@ -250,16 +247,12 @@ export const search: Search["handler"] = async (req, res, next) => {
 
     const totalItems = await PinModel.countDocuments({});
 
-    const result: PaginationPayload<typeof pins> = {
+    const result = toPaginationPayload({
       data: pins,
-      meta: {
-        currentPage: req.query.page ?? 1,
-        itemCount: pins.length,
-        itemsPerPage: limit,
-        totalItems,
-        totalPages: Math.ceil(totalItems / limit),
-      },
-    };
+      page: req.query.page ?? 1,
+      perPage: limit,
+      totalItems,
+    });
 
     return res.status(HttpStatusCodes.OK).json(result);
   } catch (error) {
