@@ -1,44 +1,55 @@
 import { InputGroup, InputGroupAddon, InputGroupInput } from "@repo/ui/components";
 import { cn } from "@repo/ui/lib";
-import { useImperativeHandle, useRef } from "react";
 
 export type InputProps = {
+  uppercase?: boolean;
   addons?: {
+    start?: React.ReactNode;
     end?: React.ReactNode;
   };
-  uppercase?: boolean;
+  slotProps?: {
+    container?: Omit<React.ComponentProps<typeof InputGroup>, "className">;
+    input?: Pick<React.ComponentProps<typeof InputGroupInput>, "className">;
+    start?: Omit<React.ComponentProps<typeof InputGroupAddon>, "align">;
+    end?: Omit<React.ComponentProps<typeof InputGroupAddon>, "align">;
+  };
 } & React.ComponentProps<typeof InputGroupInput>;
 
-function Input({ addons, uppercase, className, ...props }: InputProps) {
-  const ref = useRef<null | HTMLInputElement>(null);
-
+function Input({ addons, uppercase, className, slotProps, ...props }: InputProps) {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (uppercase) e.target.value = e.target.value.toUpperCase();
     props.onChange?.(e);
   };
 
-  useImperativeHandle(props.ref, () => {
-    if (!ref.current) throw new Error("Input not mounted");
-    return ref.current;
-  });
-
   return (
     <InputGroup
+      {...slotProps?.container}
       className={cn(
         "h-[inherit] overflow-hidden rounded-2xl border-gray-400 px-4 py-1.25 text-base focus-within:ring-1! focus-within:ring-blue-500!",
         props.disabled && "opacity-50",
         className
       )}
     >
+      <InputGroupAddon
+        {...slotProps?.start}
+        align="inline-start"
+        className={cn("p-0", !addons?.start && "hidden", slotProps?.start?.className)}
+      >
+        {addons?.start}
+      </InputGroupAddon>
+
       <InputGroupInput
-        onChange={handleInputChange}
         {...props}
-        ref={ref}
+        onChange={handleInputChange}
         value={props.value ?? ""}
-        className="peer/input p-0! text-base!"
+        className={cn("p-0! text-base!", slotProps?.input?.className)}
       />
 
-      <InputGroupAddon align="inline-end" className={cn("p-0", !addons?.end && "hidden")}>
+      <InputGroupAddon
+        {...slotProps?.end}
+        align="inline-end"
+        className={cn("p-0", !addons?.end && "hidden", slotProps?.end?.className)}
+      >
         {addons?.end}
       </InputGroupAddon>
     </InputGroup>
