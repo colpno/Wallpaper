@@ -107,7 +107,7 @@ export class Router {
         if (errorResults.length > 0) {
           return res
             .status(HttpStatusCodes.UNPROCESSABLE_ENTITY)
-            .json(errorResults.map(createErrorObjectFromZod));
+            .json(errorResults.flatMap(createErrorObjectFromZod));
         }
 
         // Override req object

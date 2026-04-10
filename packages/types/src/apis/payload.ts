@@ -9,7 +9,11 @@ export type PaginationPayload<D extends unknown[]> = {
   };
 };
 
-export type FailedPayload = {
+export type GeneralErrorPayload = {
   message: string;
   stack?: string;
 };
+
+export type ValidationErrorPayload = { path: string; message: string }[];
+
+export type FailedPayload = GeneralErrorPayload | ValidationErrorPayload;

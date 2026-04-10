@@ -34,15 +34,11 @@ export const fileToBase64 = (file: Pick<Express.Multer.File, "buffer" | "mimetyp
  * @param error ZodError object.
  * @returns Structured error object or null if no error is provided.
  */
-export const createErrorObjectFromZod = <T>(error: ZodError<T>): ValidationError[number] => {
-  return {
-    name: error.name,
-    issues: error.issues.map((issue) => ({
-      code: issue.code,
-      path: issue.path.filter((p) => typeof p !== "symbol").map((p) => p.toString()),
-      message: issue.message,
-    })),
-  };
+export const createErrorObjectFromZod = <T>(error: ZodError<T>): ValidationError => {
+  return error.issues.map((issue) => ({
+    path: issue.path.filter((p) => typeof p !== "symbol").join("."),
+    message: issue.message,
+  }));
 };
 
 type ToPaginationPayloadInput<T extends unknown[]> = {
