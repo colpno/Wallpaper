@@ -2,6 +2,8 @@ import type { FilterQuery, PipelineStage, SortOrder } from "mongoose";
 
 import type { EmbedOptions, KnownKeys, QueryFilter, Select, Sort } from "@repo/types";
 
+import { parseFilterOperators } from "./parse-filter-operators.js";
+
 type Options = {
   /**
    * Mapping of field to collection name
@@ -117,7 +119,7 @@ export class PipelineBuilder {
   }
 
   public match<T extends Record<string, unknown>>(filter: FilterQuery<T>): PipelineStage.Match {
-    return { $match: filter };
+    return { $match: parseFilterOperators(filter) };
   }
 
   public lookup<T extends Record<string, unknown>>(
