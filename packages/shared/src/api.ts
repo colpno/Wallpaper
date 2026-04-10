@@ -13,7 +13,7 @@ type Route = Record<
 const BASE_PATH = {
   AUTH: "/auth",
   MEDIA: "/medias",
-  POST: "/pins",
+  PIN: "/pins",
   USER: "/users",
 } as const;
 
@@ -36,36 +36,40 @@ export const API_ROUTES = {
   },
   PIN: {
     getMany: {
-      path: () => BASE_PATH.POST,
+      path: () => BASE_PATH.PIN,
       method: "get",
     },
     getOneById: {
-      path: (id: string) => `${BASE_PATH.POST}/${id}` as const,
+      path: (id: string) => `${BASE_PATH.PIN}/${id}` as const,
       method: "get",
     },
     addOne: {
-      path: () => BASE_PATH.POST,
+      path: () => BASE_PATH.PIN,
       method: "post",
     },
     updateOneById: {
-      path: (id: string) => `${BASE_PATH.POST}/${id}` as const,
+      path: (id: string) => `${BASE_PATH.PIN}/${id}` as const,
       method: "patch",
     },
     removeOneById: {
-      path: (id: string) => `${BASE_PATH.POST}/${id}` as const,
+      path: (id: string) => `${BASE_PATH.PIN}/${id}` as const,
       method: "delete",
     },
     removeMany: {
-      path: () => BASE_PATH.POST,
+      path: () => BASE_PATH.PIN,
       method: "delete",
     },
     undoRemoval: {
-      path: () => `${BASE_PATH.POST}/undo-removal` as const,
+      path: () => `${BASE_PATH.PIN}/undo-removal` as const,
       method: "patch",
     },
     search: {
-      path: () => `${BASE_PATH.POST}/search` as const,
+      path: () => `${BASE_PATH.PIN}/search` as const,
       method: "post",
+    },
+    searchManyById: {
+      path: (id: string) => `${BASE_PATH.PIN}/${id}/search` as const,
+      method: "get",
     },
   },
   USER: {
