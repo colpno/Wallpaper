@@ -1,4 +1,4 @@
-import type { Mode, Value } from "./DatePicker.types";
+import type { DatePickerValue,Mode } from "./DatePicker.types";
 
 import { format } from "date-fns";
 
@@ -6,7 +6,9 @@ export const dateFormat = "MM/dd/yyyy";
 
 const isObject = (value: unknown): value is object => typeof value === "object" && value !== null;
 
-export const formatDate = <TMode extends Mode = Mode>(date: Value<TMode> | undefined): string => {
+export const formatDate = <TMode extends Mode = Mode>(
+  date: DatePickerValue<TMode> | undefined
+): string => {
   if (!date) return "";
   if (Array.isArray(date)) {
     return date.map((d) => format(d, dateFormat)).join(", ");
@@ -19,7 +21,9 @@ export const formatDate = <TMode extends Mode = Mode>(date: Value<TMode> | undef
   return format(date, dateFormat);
 };
 
-export const isValidDate = <TMode extends Mode = Mode>(date: Value<TMode> | undefined): boolean => {
+export const isValidDate = <TMode extends Mode = Mode>(
+  date: DatePickerValue<TMode> | undefined
+): boolean => {
   if (!date) return false;
   if (Array.isArray(date)) {
     return date.every((d) => !isNaN(d.getTime()));
@@ -33,7 +37,7 @@ export const isValidDate = <TMode extends Mode = Mode>(date: Value<TMode> | unde
 };
 
 export const normalizeValue = <TMode extends Mode = Mode>(
-  date: Value<TMode> | undefined
+  date: DatePickerValue<TMode> | undefined
 ): Date | undefined => {
   if (!date) return undefined;
   if (Array.isArray(date)) {

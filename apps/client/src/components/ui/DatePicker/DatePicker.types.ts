@@ -11,13 +11,13 @@ export type DateRange = {
   to?: Date | undefined;
 };
 
-export type Value<TMode extends Mode = Mode> =
+export type DatePickerValue<TMode extends Mode = Mode> =
   | (TMode extends "single" ? Date : TMode extends "multiple" ? Date[] : DateRange)
   | "";
 
 export type DatePickerProps<TMode extends Mode = Mode> = {
-  value: Value<TMode>;
-  onChange: (date: Value<TMode>) => void;
+  value: DatePickerValue<TMode>;
+  onChange: (date: DatePickerValue<TMode>) => void;
   mode?: TMode;
   calendarProps?: Omit<CalendarProps, "required" | "mode">;
 } & Omit<InputProps, "value" | "onChange">;

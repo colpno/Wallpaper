@@ -1,4 +1,4 @@
-import type { DatePickerProps, DateRange, Mode, Value } from "./DatePicker.types";
+import type { DatePickerProps, DatePickerValue, DateRange, Mode } from "./DatePicker.types";
 
 import { Calendar, Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components";
 import { CalendarIcon } from "lucide-react";
@@ -24,7 +24,7 @@ function DatePicker<TMode extends Mode = "single">({
     setValue(value);
     const date = new Date(value);
     if (isValidDate(date) && /^\d{2}\/\d{2}\/\d{4}$/.test(value)) {
-      onChange?.(date as Value<TMode>);
+      onChange?.(date as DatePickerValue<TMode>);
       setMonth(date);
     }
   };
@@ -39,7 +39,7 @@ function DatePicker<TMode extends Mode = "single">({
 
   const handleCalendarSelect = (date: Date | Date[] | DateRange | undefined) => {
     if (date) {
-      onChange?.(date as Value<TMode>);
+      onChange?.(date as DatePickerValue<TMode>);
     }
     setValue(formatDate(date));
     setOpen(false);
