@@ -177,13 +177,24 @@ export const requestSchemas = {
   },
 
   search: {
-    query: queryFilterSchema,
+    query: queryFilterSchema
+      .pick({
+        limit: true,
+        page: true,
+        select: true,
+        sort: true,
+      })
+      .extend({
+        lastSmallestScore: z.coerce.number().openapi({
+          description: "The smallest score amongst the last search results, used in pagination.",
+        }),
+      }) satisfies ZodType<Search["query"]>,
     body: z.union([
       z.object({
         text: stringSchema,
       }),
       z.object({
-        image: placeholderFileSchema,
+        embedding: pinSchema.shape.descriptionEmbeddings,
       }),
     ]) satisfies ZodType<Search["body"]>,
     responses: {
@@ -198,7 +209,9 @@ export const requestSchemas = {
               score: z.number(),
             })
         )
-      ) satisfies ZodType<Search["response"]>,
+      ).extend({
+        message: z.string().optional(),
+      }) satisfies ZodType<Search["response"]>,
       [HttpStatusCodes.SERVICE_UNAVAILABLE]: errorSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
     },

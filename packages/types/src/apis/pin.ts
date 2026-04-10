@@ -65,9 +65,20 @@ export type UndoRemoval = {
 };
 
 export type Search = {
-  query: GetMany["query"];
-  body: { text: string } | { image: File };
-  response: PaginationPayload<
+  query: {
+    /**
+     * The smallest score amongst the last search results, used in pagination.
+     * The largest is 1 which means the same item.
+     */
+    lastSmallestScore: number;
+  } & Omit<GetMany["query"], "embed">;
+  body: { text: string } | { embedding: number[] };
+  /**
+   * Descending sorted list by score by default.
+   */
+  response: {
+    message?: string;
+  } & PaginationPayload<
     Array<
       Omit<PinDB, "descriptionEmbeddings" | "photoCloudinaryId"> & {
         score: number;

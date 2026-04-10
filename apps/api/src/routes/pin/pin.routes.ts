@@ -253,7 +253,6 @@ router
   .addHandler(removeMany, [handlers.removeMany])
   .addHandler(search, ({ validator }) => [
     rateLimiter({ limit: 2, windowMs: 10000 }),
-    multer("single", "image")(fileSchema.optional()),
     validator,
     handlers.search,
   ]);

@@ -19,12 +19,10 @@ import { describeImage, toEmbeddings } from "@/services/embedding.js";
 import { buildQueryWithOptions, organizeQueryInput } from "@/utils/build-query-with-options.js";
 import { toPaginationPayload } from "@/utils/converters.js";
 import { HttpError } from "@/utils/HttpError.js";
-import { PipelineBuilder } from "@/utils/PipelineBuilder.js";
 
 import { eraseMedia, uploadMedia } from "../media/media.handlers.js";
 import { PinModel } from "./pin.model.js";
-
-const pipelineBuilder = new PipelineBuilder();
+import { searchPinsByEmbedding } from "./pin.services.js";
 
 export const getMany: GetMany["handler"] = async (req, res, next) => {
   try {
@@ -204,54 +202,43 @@ export const undoRemoval: UndoRemoval["handler"] = async (req, res, next) => {
  * @see https://www.mongodb.com/company/blog/product-release-announcements/supercharge-self-managed-apps-search-vector-search-capabilities
  */
 export const search: Search["handler"] = async (req, res, next) => {
-  if (!env.MONGODB_URI && env.ENVIRONMENT === "test") {
-    return res
-      .status(HttpStatusCodes.SERVICE_UNAVAILABLE)
-      .json({ message: "This feature is not available" });
-  }
-
-  const { limit = 50, ...queries } = req.query;
-  /** @see https://www.mongodb.com/docs/atlas/atlas-vector-search/vector-search-stage/#fields */
-  const numCandidates = limit * 10 <= 10000 ? limit * 10 : 10000;
-
   try {
-    const embeddings = await toEmbeddings(
-      "text" in req.body ? req.body.text : await describeImage(req.file!)
-    );
+    if (!env.MONGODB_URI && env.ENVIRONMENT === "test") {
+      return res
+        .status(HttpStatusCodes.SERVICE_UNAVAILABLE)
+        .json({ message: "This feature is not available" });
+    }
 
-    const pins = await PinModel.aggregate<
-      Omit<PinDB, "descriptionEmbeddings" | "photoCloudinaryId"> & { score: number }
-    >([
-      {
-        $vectorSearch: {
-          index: "vector_index",
-          path: "descriptionEmbeddings",
-          queryVector: embeddings,
-          numCandidates,
-          limit,
-        },
-      },
-      {
-        $addFields: {
-          score: { $meta: "vectorSearchScore" },
-        },
-      },
-      {
-        $project: {
-          descriptionEmbeddings: 0,
-          photoCloudinaryId: 0,
-        },
-      },
-      ...pipelineBuilder.build(queries),
-    ]);
+    const { limit = 30, page = 1, lastSmallestScore, ...restQuery } = req.query;
+    const MAX_RESULTS = 500;
 
-    const totalItems = await PinModel.countDocuments({});
+    if (limit * page > MAX_RESULTS) {
+      return res.status(HttpStatusCodes.OK).json({
+        ...toPaginationPayload({
+          data: [],
+          page,
+          perPage: limit,
+          totalItems: MAX_RESULTS,
+        }),
+        message: "There are no more results",
+      });
+    }
+
+    const embeddings =
+      "embedding" in req.body ? req.body.embedding : await toEmbeddings(req.body.text);
+
+    const pins = await searchPinsByEmbedding(embeddings, {
+      ...restQuery,
+      limit,
+      page,
+      lastSmallestScore,
+    });
 
     const result = toPaginationPayload({
       data: pins,
-      page: req.query.page ?? 1,
+      page,
       perPage: limit,
-      totalItems,
+      totalItems: MAX_RESULTS,
     });
 
     return res.status(HttpStatusCodes.OK).json(result);
