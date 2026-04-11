@@ -127,7 +127,7 @@ npm run dev
 ## 📋 TODOs
 
 - [x] Search images using a text
-- [ ] Search images using an image (client)
+- [x] Search images using an image
 - [ ] Image upload with cropping
 - [x] File management with cloud
 - [ ] User profile management (client)

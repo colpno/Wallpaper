@@ -1,10 +1,10 @@
 import { useInfiniteQuery } from "@tanstack/react-query";
 
-import Masonry from "@/components/common/Masonry";
+import { Masonry, MasonryWrapper } from "@/components/common/Masonry";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
 import Spinner from "@/components/ui/Spinner";
-import { INFINITE_PAGE_SIZE, INITIAL_PAGE } from "@/constants/common";
+import { INFINITE_PAGE_SIZE } from "@/constants/common";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 import PinCard from "../components/PinCard";
@@ -13,21 +13,22 @@ import { getPinsInfiniteQueryOptions } from "../services/api/queries";
 function IdeasPage() {
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQuery(
     getPinsInfiniteQueryOptions({
-      page: INITIAL_PAGE,
       limit: INFINITE_PAGE_SIZE,
       sort: {
         createdAt: "asc",
       },
       select: {
-        photoUrl: true,
-        photoBlurHash: true,
         pinTitle: true,
         pinDescription: true,
+        photoUrl: true,
+        photoBlurHash: true,
+        photoAspectRatio: true,
+        photoWidth: true,
       },
     })
   );
 
-  useInfiniteScroll({ fetchNextPage, hasNextPage, isFetchingNextPage });
+  const { loadMoreRef } = useInfiniteScroll({ fetchNextPage, hasNextPage, isFetchingNextPage });
 
   return (
     <Container as="section" className="pt-11">
@@ -47,9 +48,14 @@ function IdeasPage() {
 
           <Masonry>
             {data.map((item) => (
-              <PinCard key={item._id} {...item} />
+              <MasonryWrapper key={item._id}>
+                <PinCard {...item} />
+              </MasonryWrapper>
             ))}
           </Masonry>
+
+          {isFetchingNextPage && <Spinner className="mx-auto mt-8" />}
+          <div ref={loadMoreRef} />
         </>
       ) : (
         <Heading variant="h3" className="text-center">

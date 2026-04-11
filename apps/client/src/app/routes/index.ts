@@ -14,6 +14,10 @@ export const routes = createBrowserRouter([
         Component: HomePage,
       },
       {
+        path: ROUTES.PIN(":pinId"),
+        Component: lazy(() => import("@/features/pin/pages/PinPage/PinPage")),
+      },
+      {
         path: ROUTES.SEARCH(),
         Component: lazy(() => import("@/features/pin/pages/SearchPage")),
       },
