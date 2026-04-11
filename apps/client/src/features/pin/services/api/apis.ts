@@ -65,8 +65,13 @@ export const undoPinsRemoval = (body: PinAPIs.UndoRemoval["body"]) =>
     data: body,
   });
 
-export const searchPins = (body: PinAPIs.Search["body"], query?: PinAPIs.Search["query"]) =>
+export const searchPins = (
+  body: PinAPIs.Search["body"],
+  query?: PinAPIs.Search["query"],
+  options?: Omit<AxiosRequestConfig<never>, "url" | "method" | "params">
+) =>
   request<PinAPIs.Search["response"], typeof body>({
+    ...options,
     url: API_ROUTES.PIN.search.path(),
     method: API_ROUTES.PIN.search.method,
     data: body,

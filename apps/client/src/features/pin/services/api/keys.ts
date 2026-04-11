@@ -6,5 +6,6 @@ export const PIN_KEYS = {
   list: (query: PinAPIs.GetMany["query"]) => [...PIN_KEYS.lists(), query],
   items: () => [...PIN_KEYS.all(), "item"],
   item: (params: PinAPIs.GetOneById["params"]) => [...PIN_KEYS.all(), "item", params],
-  search: (text: string) => [...PIN_KEYS.lists(), text],
+  searchLists: () => [...PIN_KEYS.lists(), "search"],
+  searchList: (input: PinAPIs.Search["body"]) => [...PIN_KEYS.searchLists(), input],
 } as const;
