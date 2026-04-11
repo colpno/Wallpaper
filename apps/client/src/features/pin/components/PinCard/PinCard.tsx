@@ -28,8 +28,9 @@ function PinCard(
 
   return (
     <div className="space-y-2">
-      <div
-        className="relative max-w-full *:size-full *:rounded-2xl *:transition-opacity *:duration-300"
+      <Link
+        href={ROUTES.PIN(item._id)}
+        className="relative block max-w-full *:size-full *:rounded-2xl *:transition-opacity *:duration-300"
         style={{
           width: item.photoWidth,
           aspectRatio: item.photoAspectRatio,
@@ -37,18 +38,16 @@ function PinCard(
       >
         <BlurhashCanvas
           hash={item.photoBlurHash}
-          className={cn("absolute inset-0", isImageLoading ? "opacity-100" : "-z-1 opacity-0")}
+          className={cn("absolute", isImageLoading ? "opacity-100" : "-z-1 opacity-0")}
         />
 
-        <Link href={ROUTES.PIN(item._id)} className="block overflow-hidden">
-          <Image
-            src={item.photoUrl}
-            alt={item.pinTitle}
-            onLoad={handleImageLoaded}
-            className={cn(isImageLoading ? "opacity-0" : "opacity-100")}
-          />
-        </Link>
-      </div>
+        <Image
+          src={item.photoUrl}
+          alt={item.pinTitle}
+          onLoad={handleImageLoaded}
+          className={cn(isImageLoading ? "opacity-0" : "opacity-100")}
+        />
+      </Link>
 
       <div className="flex justify-between gap-x-1 px-1.5">
         {showTitle && (
