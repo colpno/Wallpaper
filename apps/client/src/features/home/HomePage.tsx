@@ -1,8 +1,9 @@
 import { GroupBoards, SearchBySkinTone, VisualSearch } from "@/assets/images";
-import Dialog from "@/components/dialogs/Dialog";
+import FormDialog from "@/components/dialogs/FormDialog";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
+import Icon from "@/components/ui/Icon";
 import Image from "@/components/ui/Image";
 import Typography from "@/components/ui/Typography";
 
@@ -100,17 +101,13 @@ function HomePage() {
 
 function HomePageAuthForm() {
   return (
-    <Dialog
-      showFooter={false}
-      showCloseButton
+    <FormDialog
       trigger={<Button>Join Pinterest</Button>}
       slotProps={{ trigger: { asChild: true } }}
-      className="rounded-4xl"
     >
-      <Image src="/favicon.svg" className="m-[8px_auto_6px] size-10" />
-
+      <Icon variant="favicon" className="m-[8px_auto_6px]" />
       <AuthForm className="py-0" />
-    </Dialog>
+    </FormDialog>
   );
 }
 

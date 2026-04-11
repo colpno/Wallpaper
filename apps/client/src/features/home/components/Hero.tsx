@@ -4,10 +4,11 @@ import { FaPause, FaPlay } from "react-icons/fa6";
 import { TiPinOutline } from "react-icons/ti";
 import Slider from "react-slick";
 
-import Dialog from "@/components/dialogs/Dialog";
+import FormDialog from "@/components/dialogs/FormDialog";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
+import Icon from "@/components/ui/Icon";
 import Image from "@/components/ui/Image";
 import AuthForm from "@/features/auth/components/AuthForm";
 
@@ -102,29 +103,21 @@ function Hero(props: React.ComponentProps<"section">) {
         </div>
 
         <div className="mt-10 flex gap-2">
-          <Dialog
-            showFooter={false}
-            showCloseButton
+          <FormDialog
             trigger={<Button>Join Pinterest for free</Button>}
             slotProps={{ trigger: { asChild: true } }}
-            className="rounded-4xl"
           >
-            <Image src="/favicon.svg" className="m-[8px_auto_6px] size-10" />
-
+            <Icon variant="favicon" className="m-[8px_auto_6px]" />
             <AuthForm className="py-0" />
-          </Dialog>
+          </FormDialog>
 
-          <Dialog
-            showFooter={false}
-            showCloseButton
+          <FormDialog
             trigger={<Button variant="ghost">I already have an account</Button>}
             slotProps={{ trigger: { asChild: true } }}
-            className="rounded-4xl"
           >
-            <Image src="/favicon.svg" className="m-[8px_auto_6px] size-10" />
-
+            <Icon variant="favicon" className="m-[8px_auto_6px]" />
             <AuthForm defaultForm="login" className="py-0" />
-          </Dialog>
+          </FormDialog>
         </div>
       </div>
 

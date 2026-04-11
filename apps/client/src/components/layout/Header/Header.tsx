@@ -1,8 +1,7 @@
 import { Button } from "@repo/ui/components";
 
-import Dialog from "@/components/dialogs/Dialog";
+import FormDialog from "@/components/dialogs/FormDialog";
 import Icon from "@/components/ui/Icon";
-import Image from "@/components/ui/Image";
 import Link from "@/components/ui/Link";
 import { ROUTES } from "@/constants/common";
 import { headerHeight } from "@/constants/components";
@@ -20,7 +19,7 @@ function Header() {
     >
       <nav className="flex items-center gap-3">
         <Link href={ROUTES.HOME()}>
-          <Icon />
+          <Icon variant="default" />
         </Link>
 
         <ul className="space-y-2">
@@ -37,29 +36,18 @@ function Header() {
       <SearchBar className="flex-1" />
 
       <div className="space-x-2">
-        <Dialog
-          showFooter={false}
-          showCloseButton
-          trigger={<Button>Log In</Button>}
-          slotProps={{ trigger: { asChild: true } }}
-          className="rounded-4xl"
-        >
-          <Image src="/favicon.svg" className="m-[8px_auto_6px] size-10" />
-
+        <FormDialog trigger={<Button>Log In</Button>} slotProps={{ trigger: { asChild: true } }}>
+          <Icon variant="favicon" className="m-[8px_auto_6px] size-10" />
           <AuthForm defaultForm="login" className="py-0" />
-        </Dialog>
+        </FormDialog>
 
-        <Dialog
-          showFooter={false}
-          showCloseButton
+        <FormDialog
           trigger={<Button variant="secondary">Sign Up</Button>}
           slotProps={{ trigger: { asChild: true } }}
-          className="rounded-4xl"
         >
-          <Image src="/favicon.svg" className="m-[8px_auto_6px] size-10" />
-
+          <Icon variant="favicon" className="m-[8px_auto_6px] size-10" />
           <AuthForm className="py-0" />
-        </Dialog>
+        </FormDialog>
       </div>
     </header>
   );

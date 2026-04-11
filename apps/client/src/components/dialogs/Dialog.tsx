@@ -13,6 +13,7 @@ import { cn } from "@repo/ui/lib";
 import Button from "../ui/Button";
 
 type Props = {
+  title?: React.ReactNode;
   trigger?: React.ReactNode;
   slotProps?: {
     trigger?: React.ComponentProps<typeof DialogTrigger>;
@@ -21,7 +22,7 @@ type Props = {
     contentContainer?: React.ComponentProps<"div">;
   };
   showFooter?: boolean;
-} & React.ComponentProps<typeof DialogContent> &
+} & Omit<React.ComponentProps<typeof DialogContent>, "title"> &
   Pick<React.ComponentProps<typeof UIDialog>, "onOpenChange" | "open" | "modal" | "defaultOpen">;
 
 function Dialog({
