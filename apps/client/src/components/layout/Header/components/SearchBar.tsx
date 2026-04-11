@@ -1,94 +1,108 @@
-import { Button, Input } from "@repo/ui/components";
 import { cn } from "@repo/ui/lib";
-import { type KeyboardEvent, useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { LuSearch, LuX } from "react-icons/lu";
 import { useLocation, useNavigate, useSearchParams } from "react-router";
+import z from "zod";
 
+import TextField from "@/components/form/controls/TextField";
+import Form, { type FormProps } from "@/components/form/Form";
+import Button from "@/components/ui/Button";
 import { ROUTES } from "@/constants/common";
 import { useClickOutside } from "@/hooks/useClickOutside";
 
 type Props = {
   placeholder?: string;
-} & React.ComponentProps<"div">;
+} & Omit<FormProps<FormData>, "children" | "schema" | "onSubmit" | "showButtons" | "ref">;
+
+const schema = z.object({
+  q: z.string(),
+});
+type FormData = z.infer<typeof schema>;
 
 function SearchBar({ placeholder = "Search for easy dinners, fashion, etc.", ...props }: Props) {
-  const clickOutsideRef = useRef<null | HTMLInputElement>(null);
+  const clickOutsideRef = useRef<HTMLFormElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
   const navigate = useNavigate();
   const [searchParams, setSearchParams] = useSearchParams();
-  const qParam = searchParams.get("q") || "";
   const { pathname } = useLocation();
-  const [isSearching, setIsSearching] = useState(false);
-  const [isInputFocus, setIsInputFocus] = useState(false);
-  const [searchValue, setSearchValue] = useState(qParam);
+  const [isInputFocused, setIsInputFocused] = useState(false);
+  const defaultFormValues: FormData = {
+    q: searchParams.get("q") || "",
+  };
 
-  useEffect(() => {
-    if (qParam) setSearchValue(qParam);
-  }, [qParam]);
+  const handleSubmit = (formData: FormData): void => {
+    if (inputRef.current) {
+      inputRef.current.blur();
+    }
 
-  useClickOutside(clickOutsideRef, () => {
-    setIsSearching(false);
-  });
-
-  const handleInputKeyDown = (e: KeyboardEvent<HTMLInputElement>): void => {
-    if (e.code === "Enter" && searchValue) {
-      if (pathname.startsWith(ROUTES.SEARCH(""))) {
-        setSearchParams({ q: searchValue });
-      } else {
-        navigate(ROUTES.SEARCH(searchValue));
-      }
+    if (pathname.startsWith(ROUTES.SEARCH())) {
+      setSearchParams(formData);
+    } else {
+      const a = ROUTES.SEARCH(formData);
+      navigate(a);
     }
   };
 
-  const handleInputFocus = (): void => {
-    setIsInputFocus(true);
-    setIsSearching(true);
-  };
-
-  const handleInputBlur = (): void => {
-    setIsInputFocus(false);
-    setIsSearching(false);
-  };
+  useClickOutside(clickOutsideRef, () => setIsInputFocused(false));
 
   return (
-    <div
+    <Form
       {...props}
+      schema={schema}
+      onSubmit={handleSubmit}
+      showButtons={false}
       ref={clickOutsideRef}
-      className={cn(
-        "flex h-full items-center gap-2 overflow-hidden rounded-4xl bg-secondary px-4 py-0.5 text-gray-600 focus-within:ring-4 focus-within:ring-[rgba(0,132,255,0.5)] hover:bg-neutral-300",
-        props.className
-      )}
+      defaultValues={defaultFormValues}
+      className="h-full flex-1"
     >
-      {!isSearching && <LuSearch className="size-[18px]" />}
+      {({ getValues, setValue }) => (
+        <>
+          <TextField
+            ref={inputRef}
+            name="q"
+            autoComplete="off"
+            onFocus={() => setIsInputFocused(true)}
+            onBlur={() => setIsInputFocused(false)}
+            placeholder={placeholder}
+            slotProps={{
+              fieldContainer: {
+                className: cn("h-full"),
+              },
+            }}
+            className={cn(
+              "h-full! gap-2 border-none bg-secondary py-0",
+              "focus-within:ring-4! focus-within:ring-[rgba(0,132,255,0.5)]! hover:bg-neutral-300",
+              props.className
+            )}
+            addons={{
+              start: <LuSearch className={cn("size-[18px]", isInputFocused && "hidden")} />,
+              end: (
+                <Button
+                  variant="ghost-icon"
+                  onClick={() => setValue("q", "")}
+                  className={cn(
+                    "size-11 rounded-2xl hover:bg-gray-50",
+                    (!isInputFocused || !getValues("q")) && "hidden"
+                  )}
+                >
+                  <LuX
+                    strokeWidth={3}
+                    className="size-6 rounded-full border-3 border-black p-px text-black"
+                  />
+                </Button>
+              ),
+            }}
+          />
 
-      <Input
-        value={isSearching ? searchValue : placeholder}
-        onChange={(e) => setSearchValue(e.target.value)}
-        onKeyDown={handleInputKeyDown}
-        onFocus={handleInputFocus}
-        onBlur={handleInputBlur}
-        placeholder={placeholder}
-        className="flex-1 border-none p-0 text-base! shadow-none ring-0!"
-      />
-
-      {isInputFocus && !!searchValue && (
-        <div className="flex size-12 cursor-pointer items-center justify-center rounded-2xl hover:bg-gray-50">
-          <Button
-            variant="ghost-icon"
-            size="sm"
-            className="size-6 rounded-full border-3 border-black font-bold"
-          >
-            <LuX strokeWidth={3} />
-          </Button>
-        </div>
+          {isInputFocused &&
+            createPortal(
+              <div className="fixed top-0 right-0 bottom-0 left-0 z-9 bg-[#0006]" />,
+              document.body
+            )}
+        </>
       )}
-
-      {isSearching &&
-        createPortal(
-          <div className="fixed top-0 right-0 bottom-0 left-0 z-9 bg-[#0006]" />,
-          document.body
-        )}
-    </div>
+    </Form>
   );
 }
 
