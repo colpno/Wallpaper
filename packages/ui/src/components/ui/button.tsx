@@ -10,18 +10,15 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-primary text-primary-foreground hover:bg-[color-mix(in_srgb,var(--primary),black_10%)]",
-        destructive:
-          "bg-destructive text-white hover:bg-destructive/90 focus-visible:ring-destructive/20 dark:bg-destructive/60 dark:focus-visible:ring-destructive/40",
-        outline:
-          "border bg-background shadow-xs hover:bg-accent hover:text-accent-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+          "bg-primary text-primary-foreground hover:bg-primary-600 focus-visible:border-primary focus-visible:ring-primary/50",
         secondary: "bg-secondary text-secondary-foreground hover:bg-neutral-300",
+        outline: "border bg-background hover:bg-accent hover:text-accent-foreground",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-        icon: "bg-primary text-primary-foreground hover:bg-[color-mix(in_srgb,var(--primary),black_10%)]",
-        "ghost-icon": "hover:bg-accent hover:text-accent-foreground",
-        "outline-icon":
-          "border border-primary text-primary hover:border-[color-mix(in_srgb,var(--primary),black_10%)] hover:text-[color-mix(in_srgb,var(--primary),black_10%)]",
+
+        icon: "bg-primary text-primary-foreground hover:bg-primary-600 focus-visible:border-primary focus-visible:ring-primary/50",
         "secondary-icon": "bg-secondary text-secondary-foreground hover:bg-neutral-300",
+        "outline-icon": "border bg-background hover:bg-accent hover:text-accent-foreground",
+        "ghost-icon": "hover:bg-accent hover:text-accent-foreground",
       },
       size: {
         xs: "",
