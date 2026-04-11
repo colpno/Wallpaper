@@ -15,15 +15,15 @@ const menu = [{ label: "Explore", href: ROUTES.IDEAS() }];
 function Header() {
   return (
     <header
-      className="fixed top-0 right-0 left-0 z-10 flex items-center gap-4 bg-background p-4 shadow-[0_2px_1px_rgba(0,0,0,0.1)]"
+      className="fixed inset-x-0 top-0 z-10 flex gap-4 bg-background p-4 shadow-[0_2px_1px_rgba(0,0,0,0.05)]"
       style={{ height: headerHeight }}
     >
-      <nav className="flex items-center">
-        <Link href={ROUTES.HOME()} className="px-3">
+      <nav className="flex items-center gap-3">
+        <Link href={ROUTES.HOME()}>
           <Icon />
         </Link>
 
-        <ul className="flex gap-2 *:max-h-full">
+        <ul className="space-y-2">
           {menu.map((item) => (
             <li key={item.href}>
               <Link href={item.href} navbar button variant="ghost" className="font-bold">
@@ -36,7 +36,7 @@ function Header() {
 
       <SearchBar className="flex-1" />
 
-      <div className="flex items-center gap-2 *:max-h-full!">
+      <div className="space-x-2">
         <Dialog
           showFooter={false}
           showCloseButton
