@@ -5,6 +5,7 @@
 A **Pinterest-inspired clone** built with modern web technologies.  
 This project replicates some of Pinterest’s core features such as:
 
+- 🧱 **Pinterest-style layout** - flexible grid layout
 - 🔍 **Image searching** – find related images
 - ✂️ **Image cropping** – upload and crop images before saving
 
@@ -24,10 +25,10 @@ This project replicates some of Pinterest’s core features such as:
 
 ## ✨ Features
 
+- Pinterest-style grid layout
 - Image upload with cropping
 - Images search functionality
 - Cloud-based file management
-- Pinterest-style grid layout
 - Pins, user management
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
@@ -126,12 +127,13 @@ npm run dev
 
 ## 📋 TODOs
 
+- [x] Pinterest-style grid layout
 - [x] Search images using a text
 - [x] Search images using an image
 - [ ] Image upload with cropping
 - [x] File management with cloud
-- [ ] User profile management (client)
-- [ ] Pins management (client)
+- [ ] User profile management
+- [ ] Pins management
 - [ ] Member layout, pages for logged in users.
 - [x] Guess layout, home page, explore page
 - [x] Improve loading states
