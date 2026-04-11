@@ -1,4 +1,6 @@
 export const ROUTES = {
+  BOARDS: (username: string) => `/${username}`,
+  PIN_CREATION: () => "/pin-creation-tool",
   PIN: (id: string) => `/pin/${id}`,
   HOME: () => "/",
   IDEAS: () => "/ideas",

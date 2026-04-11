@@ -37,7 +37,7 @@ function Header() {
 
       <div className="space-x-2">
         <FormDialog trigger={<Button>Log In</Button>} slotProps={{ trigger: { asChild: true } }}>
-          <Icon variant="favicon" className="m-[8px_auto_6px] size-10" />
+          <Icon variant="favicon" className="m-[8px_auto_6px]" />
           <AuthForm defaultForm="login" className="py-0" />
         </FormDialog>
 
@@ -45,7 +45,7 @@ function Header() {
           trigger={<Button variant="secondary">Sign Up</Button>}
           slotProps={{ trigger: { asChild: true } }}
         >
-          <Icon variant="favicon" className="m-[8px_auto_6px] size-10" />
+          <Icon variant="favicon" className="m-[8px_auto_6px]" />
           <AuthForm className="py-0" />
         </FormDialog>
       </div>

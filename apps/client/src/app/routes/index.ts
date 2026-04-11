@@ -1,13 +1,13 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router";
 
+import MainLayout from "@/components/layout/MainLayout";
 import { ROUTES } from "@/constants/common";
 import HomePage from "@/features/home/HomePage";
-import GuessLayout from "@/layouts/GuessLayout";
 
 export const routes = createBrowserRouter([
   {
-    Component: GuessLayout,
+    Component: MainLayout,
     children: [
       {
         path: ROUTES.HOME(),
