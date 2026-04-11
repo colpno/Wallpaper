@@ -43,7 +43,7 @@ function PinPage() {
     hasNextPage,
     isFetchingNextPage,
     fetchNextPage,
-    isLoading,
+    isLoading: isLoadingSimilarPins,
   } = useInfiniteQuery({
     ...searchPinsInfiniteQueryOptions(
       { embedding: pin?.descriptionEmbeddings ?? [] },
@@ -70,12 +70,20 @@ function PinPage() {
   const { loadMoreRef } = useInfiniteScroll({ fetchNextPage, hasNextPage, isFetchingNextPage });
 
   const masonryItems = useMemo(() => {
-    if (isLoading && isFetchingPin) {
-      return Array.from({ length: INFINITE_PAGE_SIZE }).map((_, i) => (
-        <MasonryWrapper key={`skeleton-${i}`}>
-          <PinCardSkeleton />
-        </MasonryWrapper>
-      ));
+    if (isFetchingPin || isLoadingSimilarPins) {
+      return (
+        <>
+          <MasonryWrapper className="col-span-3">
+            <PinCardSkeleton />
+          </MasonryWrapper>
+
+          {Array.from({ length: INFINITE_PAGE_SIZE }).map((_, i) => (
+            <MasonryWrapper key={`skeleton-${i}`}>
+              <PinCardSkeleton />
+            </MasonryWrapper>
+          ))}
+        </>
+      );
     }
 
     if (!pin || !similarPins) {
@@ -98,7 +106,7 @@ function PinPage() {
         <div ref={loadMoreRef} />
       </>
     );
-  }, [isLoading, isFetchingPin, pin, similarPins]);
+  }, [isLoadingSimilarPins, isFetchingPin, pin, similarPins]);
 
   if (!pinId || (isPinFetched && !pin)) {
     toast.info("We can't find that idea! Try searching for one just like it.");
