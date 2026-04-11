@@ -97,7 +97,7 @@ function SearchBar({ placeholder = "Search for easy dinners, fashion, etc.", ...
 
           {isInputFocused &&
             createPortal(
-              <div className="fixed top-0 right-0 bottom-0 left-0 z-9 bg-[#0006]" />,
+              <div className="fixed top-0 right-0 bottom-0 left-0 z-header-search-overlay bg-[#0006]" />,
               document.body
             )}
         </>

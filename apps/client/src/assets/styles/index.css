@@ -6,37 +6,42 @@
   --animate-scale-down: scale-down 1s ease-in-out infinite;
   --animate-rainbow-color: rainbow-color 8s ease-in-out infinite;
 
-  @keyframes scale-down {
-    0%,
-    100% {
-      transform: scale(1);
-    }
-    50% {
-      transform: scale(0.7);
-    }
-  }
+  --z-index-header: 40;
+  --z-index-header-search-overlay: 39;
+  --z-index-sidebar: 30;
+  --z-index-pinpage-detail: 38;
+}
 
-  @keyframes rainbow-color {
-    0% {
-      background-color: red;
-    }
-    16% {
-      background-color: orange;
-    }
-    33% {
-      background-color: yellow;
-    }
-    50% {
-      background-color: green;
-    }
-    66% {
-      background-color: blue;
-    }
-    83% {
-      background-color: indigo;
-    }
-    100% {
-      background-color: violet;
-    }
+@keyframes scale-down {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(0.7);
+  }
+}
+
+@keyframes rainbow-color {
+  0% {
+    background-color: red;
+  }
+  16% {
+    background-color: orange;
+  }
+  33% {
+    background-color: yellow;
+  }
+  50% {
+    background-color: green;
+  }
+  66% {
+    background-color: blue;
+  }
+  83% {
+    background-color: indigo;
+  }
+  100% {
+    background-color: violet;
   }
 }

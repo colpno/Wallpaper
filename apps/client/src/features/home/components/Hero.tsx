@@ -162,7 +162,7 @@ function Hero(props: React.ComponentProps<"section">) {
 
         <div
           className={cn(
-            "absolute -top-[30px] right-0 z-2 grid size-20 rotate-5 place-items-center rounded-[28px] transition-all duration-300",
+            "absolute -top-[30px] right-0 grid size-20 rotate-5 place-items-center rounded-[28px] transition-all duration-300",
             showPinIcon ? "scale-100 opacity-100" : "scale-80 opacity-0",
             showPinIcon && currentIndex === 0 && "bg-(--color-1)",
             showPinIcon && currentIndex === 1 && "bg-(--color-2)",

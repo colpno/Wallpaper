@@ -14,7 +14,7 @@ const menu = [{ label: "Explore", href: ROUTES.IDEAS() }];
 function Header() {
   return (
     <header
-      className="fixed inset-x-0 top-0 z-10 flex gap-4 bg-background p-4 shadow-[0_2px_1px_rgba(0,0,0,0.05)]"
+      className="fixed inset-x-0 top-0 z-header flex gap-4 bg-background p-4 shadow-[0_2px_1px_rgba(0,0,0,0.05)]"
       style={{ height: headerHeight }}
     >
       <nav className="flex items-center gap-3">

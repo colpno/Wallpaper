@@ -12,7 +12,7 @@ function PinInfo(pin: Pick<Pin, "photoUrl" | "photoWidth" | "photoAspectRatio">)
   return (
     <div className="w-full overflow-clip rounded-2xl border border-gray-300">
       <div
-        className="sticky right-0 left-0 z-3 flex h-16 bg-background px-4 py-2"
+        className="sticky right-0 left-0 z-pinpage-detail flex h-16 bg-background px-4 py-2"
         style={{ top: headerHeight }}
       >
         <Button variant="ghost-icon" size="xl">

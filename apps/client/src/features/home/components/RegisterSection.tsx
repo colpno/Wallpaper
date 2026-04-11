@@ -11,35 +11,11 @@ import { dishImages } from "../constants";
 
 function RegisterSection(props: React.ComponentProps<"section">) {
   return (
-    <section
-      {...props}
-      className={cn(
-        "relative mb-0 h-screen overflow-hidden before:absolute before:inset-0 before:z-2 before:bg-black/60 before:content-['']",
-        props.className
-      )}
-    >
-      <Button
-        variant="icon"
-        size="xl"
-        className="absolute top-20 left-1/2 z-3 -translate-x-1/2 bg-[rgb(156,3,67)]"
-        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
-      >
-        <FaChevronUp />
-      </Button>
-
-      <Container className="relative z-3 grid h-full grid-cols-2 place-items-center gap-60">
-        <Heading variant="h2" className="text-[60px] text-white">
-          Sign up to get your ideas
-        </Heading>
-
-        <div className="relative size-full">
-          <AuthForm className="absolute top-20 right-0 py-8" />
-        </div>
-      </Container>
-
+    <section {...props} className={cn("relative mb-0 h-screen overflow-hidden", props.className)}>
+      {/* Dishes background */}
       <div
         className={cn(
-          "absolute top-0 left-1/2 z-1 grid w-[1750px] -translate-x-1/2 grid-cols-7 gap-x-2",
+          "absolute top-0 left-1/2 grid w-[1750px] -translate-x-1/2 grid-cols-7 gap-x-2",
           "*:nth-[2]:-translate-y-40",
           "*:nth-[3]:-translate-y-60",
           "*:nth-[4]:-translate-y-100",
@@ -55,6 +31,30 @@ function RegisterSection(props: React.ComponentProps<"section">) {
           </div>
         ))}
       </div>
+
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black/60" />
+
+      {/* Auth form */}
+      <Container className="relative grid h-full grid-cols-2 place-items-center gap-60">
+        <Heading variant="h2" className="text-[60px] text-white">
+          Sign up to get your ideas
+        </Heading>
+
+        <div className="relative size-full">
+          <AuthForm className="absolute top-20 right-0 py-8" />
+        </div>
+      </Container>
+
+      {/* To top button */}
+      <Button
+        variant="icon"
+        size="xl"
+        className="absolute top-20 left-1/2 -translate-x-1/2 bg-[rgb(156,3,67)]!"
+        onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      >
+        <FaChevronUp />
+      </Button>
     </section>
   );
 }
