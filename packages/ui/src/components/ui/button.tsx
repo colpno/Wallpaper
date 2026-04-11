@@ -34,23 +34,23 @@ const buttonVariants = cva(
         [
           {
             size: "xs",
-            className: "size-2 rounded-sm text-xs",
+            className: "size-2 rounded-sm text-xs [&>img]:size-3 [&>svg]:size-3",
           },
           {
             size: "sm",
-            className: "size-4 rounded-sm text-xs",
+            className: "size-4 rounded-sm text-xs [&>img]:size-3 [&>svg]:size-3",
           },
           {
             size: "md",
-            className: "size-6 rounded-md text-sm",
+            className: "size-6 rounded-md text-sm [&>img]:size-3.5 [&>svg]:size-3.5",
           },
           {
             size: "lg",
-            className: "size-9 rounded-lg text-base",
+            className: "size-9 rounded-lg text-base [&>img]:size-4 [&>svg]:size-4",
           },
           {
             size: "xl",
-            className: "size-12 rounded-xl text-2xl",
+            className: "size-12 rounded-xl text-2xl [&>img]:size-6 [&>svg]:size-6",
           },
         ] as const
       ).map((config) => ({
