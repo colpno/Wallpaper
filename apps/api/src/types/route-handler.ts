@@ -50,7 +50,7 @@ type TypedResponse<TConfig extends RouteConfig> = {
     code: TCode
   ) => TConfig["responses"] extends { [K in TCode]: { content: infer TContent } }
     ? TContent["application/json" & keyof TContent] extends { schema: infer TSchema }
-      ? TypedResponseMethod<TSchema>
+      ? TypedResponseMethod<TSchema> & Omit<Response, keyof TypedResponseMethod<TSchema>>
       : Omit<Response, "status" | keyof TypedResponseMethod<unknown>>
     : Omit<Response, "status">;
 } & Omit<Response, "status">;
