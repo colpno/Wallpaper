@@ -16,7 +16,7 @@ import { heroContents } from "../constants";
 function Hero(props: React.ComponentProps<"section">) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
-  const sliderRef = useRef<null | Slider>(null);
+  const sliderRef = useRef<Slider>(null);
   const [showPinIcon, setShowPinIcon] = useState(true);
 
   const handlePlayButtonClick = () => {

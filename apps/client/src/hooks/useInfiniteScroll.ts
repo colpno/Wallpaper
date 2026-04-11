@@ -18,7 +18,7 @@ export const useInfiniteScroll = ({
   isFetchingNextPage,
   fetchNextPage,
 }: Arguments) => {
-  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!loadMoreRef.current) return;
