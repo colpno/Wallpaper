@@ -57,16 +57,9 @@ describe("LoginForm", () => {
 
   it("submits values correctly", async () => {
     mockMutateAsync.mockResolvedValue({
-      __v: 0,
       _id: "mkijsd6q1nd8vjkwklds9",
-      birthdate: new Date().toISOString(),
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
       email: "asdsa@gmail.com",
-      password: "asdoiaj",
-      salt: "asd",
       username: "asd",
-      avatarCloudinaryId: "asd",
       avatarUrl: "http:asdas",
     } satisfies AuthAPIs.Login["response"]);
 
@@ -91,6 +84,7 @@ describe("LoginForm", () => {
         id: expect.any(String),
         username: expect.any(String),
         avatarUrl: expect.stringContaining("http"),
+        email: expect.stringContaining("@"),
       } satisfies State["user"]);
     });
   });

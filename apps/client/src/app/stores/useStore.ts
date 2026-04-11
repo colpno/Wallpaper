@@ -1,4 +1,4 @@
-import type { UserDB } from "@repo/types";
+import type { AuthAPIs } from "@repo/types";
 import { create, type StateCreator } from "zustand";
 import { persist, type PersistOptions } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
@@ -7,13 +7,13 @@ import { useShallow } from "zustand/react/shallow";
 export type State = {
   user:
     | ({
-        id: UserDB["_id"];
-      } & Pick<UserDB, "avatarUrl" | "username">)
+        id: AuthAPIs.Login["response"]["_id"];
+      } & Pick<AuthAPIs.Login["response"], "avatarUrl" | "username" | "email">)
     | null;
 };
 
 export type Actions = {
-  login: (user: Pick<UserDB, "_id" | "avatarUrl" | "username">) => void;
+  login: (user: AuthAPIs.Login["response"]) => void;
 };
 
 export type Store = State & Actions;
@@ -28,6 +28,7 @@ const state: ImmerStateCreator<Store> = (set) => ({
         id: user._id,
         username: user.username,
         avatarUrl: user.avatarUrl,
+        email: user.email,
       };
     }),
 });

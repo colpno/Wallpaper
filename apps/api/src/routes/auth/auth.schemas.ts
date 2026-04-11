@@ -16,7 +16,12 @@ export const requestSchemas = {
       password: true,
     }) satisfies ZodType<Omit<Login["body"], "photo">>,
     responses: {
-      [HttpStatusCodes.OK]: userSchema satisfies ZodType<Login["response"]>,
+      [HttpStatusCodes.OK]: userSchema.pick({
+        _id: true,
+        avatarUrl: true,
+        username: true,
+        email: true,
+      }) satisfies ZodType<Login["response"]>,
       [HttpStatusCodes.UNAUTHORIZED]: errorSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
     },
@@ -29,7 +34,12 @@ export const requestSchemas = {
       birthdate: true,
     }) satisfies ZodType<Register["body"]>,
     responses: {
-      [HttpStatusCodes.CREATED]: userSchema,
+      [HttpStatusCodes.CREATED]: userSchema.pick({
+        _id: true,
+        avatarUrl: true,
+        username: true,
+        email: true,
+      }) satisfies ZodType<Register["response"]>,
       [HttpStatusCodes.CONFLICT]: errorSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
     },
