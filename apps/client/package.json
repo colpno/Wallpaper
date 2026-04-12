@@ -4,10 +4,10 @@
   "scripts": {
     "dev": "vite --clearScreen false",
     "build": "vite build",
+    "check-types": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest --watch",
-    "test:coverage": "vitest --coverage",
-    "check-types": "tsc --noEmit"
+    "test:coverage": "vitest --coverage"
   },
   "dependencies": {
     "@repo/logger": "*",

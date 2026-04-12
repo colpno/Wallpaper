@@ -1,15 +1,8 @@
 {
   "extends": ["//"],
   "tasks": {
-    "dev": {
-      "with": ["@repo/shared#dev", "@repo/ui#dev"]
-    },
     "build": {
-      "outputs": ["dist/**"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"]
-    },
-    "test": {
-      "outputs": []
+      "env": ["VITE_API_URL"]
     }
   }
 }

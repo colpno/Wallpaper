@@ -1,28 +1,34 @@
 {
-  "$schema": "https://turborepo.com/schema.json",
   "ui": "tui",
   "tasks": {
     "dev": {
+      "with": ["@repo/ui#dev:components"],
       "dependsOn": ["^build"],
       "cache": false,
       "persistent": true
     },
     "build": {
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
-      "dependsOn": ["^build"],
-      "outputs": ["build/**", ".vercel/**", "dist/**"]
+      "outputs": ["dist/**"],
+      "dependsOn": ["^build"]
     },
     "check-types": {
-      "dependsOn": ["^build", "^check-types"]
+      "inputs": ["$TURBO_DEFAULT$"],
+      "dependsOn": ["^check-types"]
     },
     "test": {
-      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/vitest.config.ts"],
+      "inputs": ["$TURBO_DEFAULT$", "vitest.config.ts", ".env.test"],
       "dependsOn": ["@repo/vitest-config#build"]
     },
+    "test:watch": {
+      "dependsOn": ["^build", "@repo/vitest-config#build"],
+      "cache": false,
+      "persistent": true
+    },
     "test:coverage": {
-      "with": ["test"],
-      "dependsOn": ["@repo/vitest-config#view-report"],
-      "outputs": ["coverage.json"]
+      "inputs": ["$TURBO_DEFAULT$", "vitest.config.ts", ".env.test"],
+      "outputs": ["coverage.json"],
+      "dependsOn": ["@repo/vitest-config#view-report"]
     }
   }
 }

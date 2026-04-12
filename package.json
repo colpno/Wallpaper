@@ -4,10 +4,10 @@
   "scripts": {
     "dev": "turbo run dev",
     "build": "turbo run build",
-    "test": "turbo run test",
-    "test:watch": "vitest --watch",
-    "test:coverage": "turbo run test:coverage",
     "check-types": "turbo run check-types",
+    "test": "turbo run test",
+    "test:watch": "turbo run test:watch",
+    "test:coverage": "turbo run test:coverage",
     "prepare": "husky"
   },
   "devDependencies": {

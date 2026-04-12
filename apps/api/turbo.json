@@ -2,12 +2,21 @@
   "extends": ["//"],
   "tasks": {
     "build": {
-      "env": ["PORT", "NODE_ENV", "ENVIRONMENT", "CI"],
-      "outputs": ["dist/**"],
-      "inputs": ["$TURBO_DEFAULT$", ".env*"]
-    },
-    "test": {
-      "outputs": []
+      "env": [
+        "CORS_ORIGINS",
+        "MONGODB_URI",
+        "CLOUDINARY_FOLDER",
+        "CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET",
+        "HUGGING_FACE_TOKEN",
+        "ENVIRONMENT",
+        "PORT",
+        "BASE_ENDPOINT",
+        "LOG_LEVEL",
+        "RATE_LIMIT_TIME",
+        "RATE_LIMIT_MAX"
+      ]
     }
   }
 }

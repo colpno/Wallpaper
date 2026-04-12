@@ -2,20 +2,35 @@
   "extends": ["//"],
   "tasks": {
     "build": {
-      "outputs": ["dist/**"]
+      "env": [
+        "VITE_API_URL",
+        "CORS_ORIGINS",
+        "MONGODB_URI",
+        "CLOUDINARY_FOLDER",
+        "CLOUDINARY_CLOUD_NAME",
+        "CLOUDINARY_API_KEY",
+        "CLOUDINARY_API_SECRET",
+        "HUGGING_FACE_TOKEN",
+        "ENVIRONMENT",
+        "PORT",
+        "BASE_ENDPOINT",
+        "LOG_LEVEL",
+        "RATE_LIMIT_TIME",
+        "RATE_LIMIT_MAX"
+      ]
     },
     "collect-json-reports": {
       "cache": false
     },
     "merge-json-reports": {
-      "dependsOn": ["collect-json-reports"],
       "inputs": ["coverage/raw/**"],
-      "outputs": ["coverage/merged/**"]
+      "outputs": ["coverage/merged/**"],
+      "dependsOn": ["collect-json-reports"]
     },
     "report": {
-      "dependsOn": ["merge-json-reports"],
       "inputs": ["coverage/merge"],
-      "outputs": ["coverage/report/**"]
+      "outputs": ["coverage/report/**"],
+      "dependsOn": ["merge-json-reports"]
     },
     "view-report": {
       "dependsOn": ["report"],

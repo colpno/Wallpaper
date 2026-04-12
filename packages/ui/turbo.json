@@ -1,9 +1,6 @@
 {
   "extends": ["//"],
   "tasks": {
-    "dev": {
-      "with": ["dev:components"]
-    },
     "dev:styles": {
       "cache": false,
       "persistent": true
@@ -16,10 +13,14 @@
       "dependsOn": ["build:styles", "build:components"]
     },
     "build:styles": {
-      "outputs": ["dist/**"]
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputs": ["dist/**"],
+      "env": ["VITE_API_URL"]
     },
     "build:components": {
-      "outputs": ["dist/**"]
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputs": ["dist/**"],
+      "env": ["VITE_API_URL"]
     }
   }
 }
