@@ -2,7 +2,7 @@ import { cn } from "@repo/ui/lib";
 import { useRef, useState } from "react";
 import { FaPause, FaPlay } from "react-icons/fa6";
 import { TiPinOutline } from "react-icons/ti";
-import Slider from "react-slick";
+import SliderComponent from "react-slick";
 
 import FormDialog from "@/components/dialogs/FormDialog";
 import Button from "@/components/ui/Button";
@@ -14,10 +14,17 @@ import AuthForm from "@/features/auth/components/AuthForm";
 
 import { heroContents } from "../constants";
 
+// Workaround to fix: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object.
+const Slider = (
+  "default" in SliderComponent && !!SliderComponent.default
+    ? SliderComponent.default
+    : SliderComponent
+) as typeof SliderComponent;
+
 function Hero(props: React.ComponentProps<"section">) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
-  const sliderRef = useRef<Slider>(null);
+  const sliderRef = useRef<SliderComponent>(null);
   const [showPinIcon, setShowPinIcon] = useState(true);
 
   const handlePlayButtonClick = () => {
