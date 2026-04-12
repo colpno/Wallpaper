@@ -1,12 +1,4 @@
 {
-  "extends": "@repo/typescript-config/react-app",
-  "compilerOptions": {
-    "rootDir": "./src",
-    "outDir": "dist",
-    "paths": {
-      "@/*": ["./src/*"]
-    }
-  },
   "files": [],
   "references": [{ "path": "./tsconfig.app.json" }, { "path": "./tsconfig.node.json" }]
 }
