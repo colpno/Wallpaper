@@ -209,8 +209,10 @@ export const search: Search["handler"] = async (req, res, next) => {
         .json({ message: "This feature is not available" });
     }
 
-    const { limit = 30, page = 1, lastSmallestScore, ...restQuery } = req.query;
     const MAX_RESULTS = 500;
+
+    const { limit = 30, page = 1, lastSmallestScore, ...restQuery } = req.query;
+    const totalItems = limit * Math.floor(MAX_RESULTS / limit);
 
     if (limit * page > MAX_RESULTS) {
       return res.status(HttpStatusCodes.OK).json({
@@ -218,7 +220,7 @@ export const search: Search["handler"] = async (req, res, next) => {
           data: [],
           page,
           perPage: limit,
-          totalItems: MAX_RESULTS,
+          totalItems,
         }),
         message: "There are no more results",
       });
@@ -238,7 +240,7 @@ export const search: Search["handler"] = async (req, res, next) => {
       data: pins,
       page,
       perPage: limit,
-      totalItems: MAX_RESULTS,
+      totalItems,
     });
 
     return res.status(HttpStatusCodes.OK).json(result);
