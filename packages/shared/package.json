@@ -15,6 +15,9 @@
     "dev": "tsc --watch",
     "check-types": "tsc --noEmit"
   },
+  "peerDependencies": {
+    "zod": "^4"
+  },
   "devDependencies": {
     "@repo/eslint-config": "*",
     "@repo/prettier-config": "*",

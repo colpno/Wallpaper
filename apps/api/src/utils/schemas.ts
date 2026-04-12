@@ -1,43 +1,33 @@
 import type { ZodType } from "zod";
 
-import { HttpStatusPhrases } from "@repo/shared";
+import {
+  httpErrorSchema as sharedHttpErrorSchema,
+  HttpStatusPhrases,
+  httpValidationErrorSchema as sharedHttpValidationErrorSchema,
+} from "@repo/shared";
 import type { GeneralErrorPayload, PaginationPayload, ValidationErrorPayload } from "@repo/types";
 import { isObjectIdOrHexString, Types } from "mongoose";
 
 import { z } from "@/lib/zod.js";
 
-function createMessageObjectSchema(message?: string) {
-  const schema = z.object({
+export const httpErrorSchema = z
+  .object(sharedHttpErrorSchema.shape)
+  .openapi("HTTPError") satisfies ZodType<GeneralErrorPayload>;
+export type Error = z.infer<typeof httpErrorSchema>;
+
+export const httpValidationErrorSchema = z
+  .array(z.object(sharedHttpValidationErrorSchema.element.shape))
+  .openapi("HTTPValidationError") satisfies ZodType<ValidationErrorPayload>;
+export type ValidationError = z.infer<typeof httpValidationErrorSchema>;
+
+export const httpNotFoundSchema = z
+  .object({
     message: z.string(),
-  });
-
-  const example: z.infer<typeof schema> | undefined = message ? { message } : undefined;
-
-  return schema.openapi({ example });
-}
+  })
+  .openapi("HTTPNotFoundError", { example: HttpStatusPhrases.NOT_FOUND });
 
 export const atLeastOneField = (obj: Record<string, unknown>): boolean =>
   Object.keys(obj).length > 0;
-
-export const errorSchema = createMessageObjectSchema().extend({
-  stack: z
-    .string()
-    .optional()
-    .openapi({ description: "Available only in non-production environments" }),
-}) satisfies ZodType<GeneralErrorPayload>;
-export type Error = z.infer<typeof errorSchema>;
-
-export const validationErrorSchema = z
-  .array(
-    z.object({
-      path: z.string(),
-      message: z.string(),
-    })
-  )
-  .openapi("ValidationError") satisfies ZodType<ValidationErrorPayload>;
-export type ValidationError = z.infer<typeof validationErrorSchema>;
-
-export const notFoundSchema = createMessageObjectSchema(HttpStatusPhrases.NOT_FOUND);
 
 export const objectIdSchema = z
   .union([z.string(), z.instanceof(Types.ObjectId)])
@@ -58,7 +48,7 @@ export const fileSchema = z.object({
 export type File = z.infer<typeof fileSchema>;
 
 /**
- * Placeholder schema, Multer must handle this.
+ * Placeholder schema, to show in openapi documentation.
  */
 export const placeholderFileSchema = z.any().openapi({ type: "string", format: "binary" });
 
@@ -82,7 +72,7 @@ export const metaPaginationSchema = z
     totalPages: z.number().int().nonnegative().openapi({ description: "Total number of pages" }),
     currentPage: z.number().int().nonnegative().openapi({ description: "Current page number" }),
   })
-  .openapi("MetaPagination") satisfies ZodType<PaginationPayload<unknown[]>["meta"]>;
+  .openapi("Pagination") satisfies ZodType<PaginationPayload<unknown[]>["meta"]>;
 
 export const paginationPayloadSchema = <T extends z.ZodArray>(dataSchema: T) =>
   z.object({

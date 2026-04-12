@@ -1,13 +1,13 @@
 import type { ValidationErrorPayload } from "@repo/types";
 
 type Props = {
-  errors: ValidationErrorPayload;
+  issues: ValidationErrorPayload;
 };
 
-function ValidationErrorList({ errors }: Props) {
+function ValidationErrorList({ issues }: Props) {
   return (
     <div className="space-y-1">
-      {errors.map((error) => (
+      {issues.map((error) => (
         <div key={error.path} className="leading-5">
           <strong>{error.path}:</strong>{" "}
           {error.message.endsWith(".") ? error.message : `${error.message}.`}

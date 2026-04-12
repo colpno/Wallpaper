@@ -18,14 +18,14 @@ import type { PinDB, UserDB } from "@repo/types";
 import { z } from "@/lib/zod.js";
 import { createQueryFilterSchema } from "@/utils/create-query-filter-schema.js";
 import {
-  errorSchema,
+  httpErrorSchema,
+  httpNotFoundSchema,
+  httpValidationErrorSchema,
   metaPaginationSchema,
-  notFoundSchema,
   objectIdSchema,
   paginationPayloadSchema,
   placeholderFileSchema,
   stringSchema,
-  validationErrorSchema,
 } from "@/utils/schemas.js";
 
 import * as handlers from "./pin.handlers.js";
@@ -86,8 +86,8 @@ export const requestSchemas = {
           meta: metaPaginationSchema,
         }),
       ]) satisfies ZodType<GetMany["response"]>,
-      [HttpStatusCodes.NOT_FOUND]: notFoundSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
+      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },
 
@@ -101,8 +101,8 @@ export const requestSchemas = {
     } satisfies Record<keyof GetOneById["query"], true>),
     responses: {
       [HttpStatusCodes.OK]: pinSchema satisfies ZodType<GetOneById["response"]>,
-      [HttpStatusCodes.NOT_FOUND]: notFoundSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
+      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },
 
@@ -119,8 +119,8 @@ export const requestSchemas = {
       }) satisfies ZodType<AddOne["body"]>,
     responses: {
       [HttpStatusCodes.CREATED]: pinSchema satisfies ZodType<AddOne["response"]>,
-      [HttpStatusCodes.BAD_REQUEST]: errorSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
+      [HttpStatusCodes.BAD_REQUEST]: httpErrorSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },
 
@@ -140,9 +140,9 @@ export const requestSchemas = {
       .partial(),
     responses: {
       [HttpStatusCodes.OK]: pinSchema satisfies ZodType<UpdateOneById["response"]>,
-      [HttpStatusCodes.NOT_FOUND]: notFoundSchema,
-      [HttpStatusCodes.BAD_REQUEST]: errorSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
+      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
+      [HttpStatusCodes.BAD_REQUEST]: httpErrorSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },
 
@@ -151,8 +151,8 @@ export const requestSchemas = {
       id: objectIdSchema,
     }) satisfies ZodType<RemoveOneById["params"]>,
     responses: {
-      [HttpStatusCodes.NOT_FOUND]: notFoundSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
+      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },
 
@@ -161,8 +161,8 @@ export const requestSchemas = {
       ids: z.array(objectIdSchema).min(1),
     }) satisfies ZodType<RemoveMany["body"]>,
     responses: {
-      [HttpStatusCodes.NOT_FOUND]: notFoundSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
+      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },
 
@@ -171,8 +171,8 @@ export const requestSchemas = {
       ids: z.array(objectIdSchema).min(1),
     }) satisfies ZodType<UndoRemoval["body"]>,
     responses: {
-      [HttpStatusCodes.NOT_FOUND]: notFoundSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
+      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },
 
@@ -212,8 +212,8 @@ export const requestSchemas = {
       ).extend({
         message: z.string().optional(),
       }) satisfies ZodType<Search["response"]>,
-      [HttpStatusCodes.SERVICE_UNAVAILABLE]: errorSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
+      [HttpStatusCodes.SERVICE_UNAVAILABLE]: httpErrorSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },
 } satisfies RequestSchemas<keyof typeof handlers>;

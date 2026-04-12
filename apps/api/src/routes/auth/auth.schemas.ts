@@ -4,7 +4,7 @@ import type { ZodType } from "zod";
 
 import { HttpStatusCodes } from "@repo/shared";
 
-import { errorSchema, validationErrorSchema } from "@/utils/schemas.js";
+import { httpErrorSchema, httpValidationErrorSchema } from "@/utils/schemas.js";
 
 import { userSchema } from "../user/user.schemas.js";
 import * as handlers from "./auth.handlers.js";
@@ -22,8 +22,8 @@ export const requestSchemas = {
         username: true,
         email: true,
       }) satisfies ZodType<Login["response"]>,
-      [HttpStatusCodes.UNAUTHORIZED]: errorSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
+      [HttpStatusCodes.UNAUTHORIZED]: httpErrorSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },
 
@@ -40,8 +40,8 @@ export const requestSchemas = {
         username: true,
         email: true,
       }) satisfies ZodType<Register["response"]>,
-      [HttpStatusCodes.CONFLICT]: errorSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
+      [HttpStatusCodes.CONFLICT]: httpErrorSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },
 } satisfies RequestSchemas<keyof typeof handlers>;

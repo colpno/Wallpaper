@@ -7,11 +7,11 @@ import type { UserDB } from "@repo/types";
 
 import { z } from "@/lib/zod.js";
 import {
-  notFoundSchema,
+  httpNotFoundSchema,
+  httpValidationErrorSchema,
   objectIdSchema,
   placeholderFileSchema,
   stringSchema,
-  validationErrorSchema,
 } from "@/utils/schemas.js";
 
 import * as handlers from "./user.handlers.js";
@@ -49,8 +49,8 @@ export const requestSchemas = {
       }) satisfies ZodType<UpdateOneById["body"]>,
     responses: {
       [HttpStatusCodes.OK]: userSchema satisfies ZodType<UpdateOneById["response"]>,
-      [HttpStatusCodes.NOT_FOUND]: notFoundSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
+      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },
 
@@ -59,8 +59,8 @@ export const requestSchemas = {
       id: objectIdSchema,
     }) satisfies ZodType<DeleteOneById["params"]>,
     responses: {
-      [HttpStatusCodes.NOT_FOUND]: notFoundSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: validationErrorSchema,
+      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },
 } satisfies RequestSchemas<keyof typeof handlers>;
