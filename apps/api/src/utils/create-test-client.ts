@@ -1,6 +1,6 @@
-import type { z } from "@/lib/zod.js";
 import type { RouteConfig } from "@/types/route-handler.js";
 import type { Types } from "mongoose";
+import type z from "zod";
 
 import type { FilterOperators } from "@repo/types";
 import express from "express";

@@ -1,8 +1,7 @@
 import type { Level } from "@repo/logger";
 import type { Environment } from "@repo/types";
 import { config } from "dotenv";
-
-import { z } from "@/lib/zod.js";
+import z from "zod";
 
 config({
   quiet: true,

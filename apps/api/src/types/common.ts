@@ -1,13 +1,13 @@
-import type { Pin, User } from "@repo/types";
+import type { ZodOptional, ZodType } from "zod";
 
-import { z } from "@/lib/zod.js";
+import type { Pin, User } from "@repo/types";
 
 export type NonOptionalKeys<T> = { [k in keyof T]-?: undefined extends T[k] ? never : k }[keyof T];
 
 export type ZodObjectShapeMap<T> = {
-  [K in NonOptionalKeys<T>]: z.ZodType<T[K]>;
+  [K in NonOptionalKeys<T>]: ZodType<T[K]>;
 } & {
-  [K in Exclude<keyof T, NonOptionalKeys<T>>]?: z.ZodOptional<z.ZodType<Exclude<T[K], undefined>>>;
+  [K in Exclude<keyof T, NonOptionalKeys<T>>]?: ZodOptional<ZodType<Exclude<T[K], undefined>>>;
 };
 
 export type KnownKeys<T> = {
@@ -20,6 +20,6 @@ export type UserKeys = keyof User;
 export type RequestSchemas<K extends string> = Record<
   K,
   Partial<
-    Record<"params" | "query" | "body", z.ZodType> & Record<"responses", Record<number, z.ZodType>>
+    Record<"params" | "query" | "body", ZodType> & Record<"responses", Record<number, ZodType>>
   >
 >;

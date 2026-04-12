@@ -1,6 +1,6 @@
 import type { KnownKeys } from "./common.js";
-import type { z } from "@/lib/zod.js";
 import type { RequestHandler, Response } from "express";
+import type { z, ZodType } from "zod";
 
 import type {
   RouteConfig as BaseRouteConfig,
@@ -20,13 +20,13 @@ export type RouteConfig = Omit<BaseRouteConfig, "request"> & {
         Record<
           Exclude<RequestContentType, MultipartContentType>,
           Omit<ZodMediaTypeObject, "schema"> & {
-            schema: z.ZodType;
+            schema: ZodType;
           }
         > &
           Record<
             MultipartContentType,
             Omit<ZodMediaTypeObject, "schema"> & {
-              schema: z.ZodType;
+              schema: ZodType;
             }
           >
       >;
@@ -34,7 +34,7 @@ export type RouteConfig = Omit<BaseRouteConfig, "request"> & {
   };
 };
 
-type TypedResponseMethod<T> = T extends z.ZodType
+type TypedResponseMethod<T> = T extends ZodType
   ? {
       json: (body: z.infer<T>) => void;
       send: (body: z.infer<T>) => void;

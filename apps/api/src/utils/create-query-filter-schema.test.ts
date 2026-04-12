@@ -1,6 +1,5 @@
 import { expect, test } from "vitest";
-
-import { z } from "@/lib/zod.js";
+import z from "zod";
 
 import { createQueryFilterSchema } from "./create-query-filter-schema.js";
 
