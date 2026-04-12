@@ -2,6 +2,7 @@ import type { AxiosRequestConfig } from "axios";
 
 import { API_ROUTES } from "@repo/shared";
 import type { PinAPIs } from "@repo/types";
+import { toast } from "@repo/ui/components";
 
 import { request } from "@/lib/axios/client";
 
@@ -65,15 +66,22 @@ export const undoPinsRemoval = (body: PinAPIs.UndoRemoval["body"]) =>
     data: body,
   });
 
-export const searchPins = (
+export const searchPins = async (
   body: PinAPIs.Search["body"],
   query?: PinAPIs.Search["query"],
   options?: Omit<AxiosRequestConfig<never>, "url" | "method" | "params">
-) =>
-  request<PinAPIs.Search["response"], typeof body>({
+) => {
+  const response = await request<PinAPIs.Search["response"], typeof body>({
     ...options,
     url: API_ROUTES.PIN.search.path(),
     method: API_ROUTES.PIN.search.method,
     data: body,
     params: query,
   });
+
+  if (response.message) {
+    toast.info(response.message);
+  }
+
+  return response;
+};
