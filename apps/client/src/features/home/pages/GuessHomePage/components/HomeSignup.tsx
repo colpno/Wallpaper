@@ -9,7 +9,7 @@ import AuthForm from "@/features/auth/components/AuthForm";
 
 import { dishImages } from "../constants";
 
-function RegisterSection(props: React.ComponentProps<"section">) {
+function HomeSignup(props: React.ComponentProps<"section">) {
   return (
     <section {...props} className={cn("relative mb-0 h-screen overflow-hidden", props.className)}>
       {/* Dishes background */}
@@ -59,4 +59,4 @@ function RegisterSection(props: React.ComponentProps<"section">) {
   );
 }
 
-export default RegisterSection;
+export default HomeSignup;

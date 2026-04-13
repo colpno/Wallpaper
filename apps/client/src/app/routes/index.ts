@@ -3,7 +3,7 @@ import { createBrowserRouter } from "react-router";
 
 import MainLayout from "@/components/layout/MainLayout";
 import { ROUTES } from "@/constants/common";
-import HomePage from "@/features/home/HomePage";
+import HomePage from "@/features/home/pages/HomePage";
 
 export const routes = createBrowserRouter([
   {

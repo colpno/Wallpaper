@@ -6,13 +6,13 @@ import Heading from "@/components/ui/Heading";
 import Icon from "@/components/ui/Icon";
 import Image from "@/components/ui/Image";
 import Typography from "@/components/ui/Typography";
+import AuthForm from "@/features/auth/components/AuthForm";
 
-import AuthForm from "../auth/components/AuthForm";
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
-import RegisterSection from "./components/RegisterSection";
+import HomeSignup from "./components/HomeSignup";
 
-function HomePage() {
+function GuessHomePage() {
   return (
     <div className="space-y-25">
       <Hero className="mb-20" />
@@ -92,7 +92,7 @@ function HomePage() {
         </div>
       </Container>
 
-      <RegisterSection />
+      <HomeSignup />
 
       <Footer />
     </div>
@@ -111,4 +111,4 @@ function HomePageAuthForm() {
   );
 }
 
-export default HomePage;
+export default GuessHomePage;
