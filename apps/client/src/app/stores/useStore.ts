@@ -11,7 +11,7 @@ export type State = {
   user:
     | ({
         id: AuthAPIs.Login["response"]["_id"];
-      } & Pick<AuthAPIs.Login["response"], "avatarUrl" | "username" | "email">)
+      } & Omit<AuthAPIs.Login["response"], "_id">)
     | null;
 };
 
@@ -25,14 +25,9 @@ export type ImmerStateCreator<T> = StateCreator<Store, [["zustand/immer", never]
 
 const state: ImmerStateCreator<Store> = (set) => ({
   user: null,
-  login: (user) =>
+  login: ({ _id, ...rest }) =>
     set((state) => {
-      state.user = {
-        id: user._id,
-        username: user.username,
-        avatarUrl: user.avatarUrl,
-        email: user.email,
-      };
+      state.user = { ...rest, id: _id };
     }),
 });
 

@@ -29,15 +29,22 @@ export const createPin = (): Readonly<Required<Omit<Pin, "pinOwner" | "removedAt
   ),
 });
 
-export const createUser = (): Readonly<Required<User>> => ({
-  username: faker.string.alphanumeric({ length: 6 }),
-  email: faker.internet.email(),
-  birthdate: faker.date.birthdate().toISOString(),
-  password: testUserPassword,
-  salt: faker.string.alphanumeric({ length: 3 }),
-  avatarUrl: faker.image.url(),
-  avatarCloudinaryId: faker.string.alphanumeric({ length: 20, casing: "lower" }),
-});
+export const createUser = (): Readonly<Required<User>> => {
+  const firstName = faker.person.firstName();
+  const lastName = faker.person.lastName();
+
+  return {
+    firstName,
+    lastName,
+    username: `${firstName}${lastName}`,
+    email: faker.internet.email(),
+    birthdate: faker.date.birthdate().toISOString(),
+    password: testUserPassword,
+    salt: faker.string.alphanumeric({ length: 3 }),
+    avatarUrl: faker.image.url(),
+    avatarCloudinaryId: faker.string.alphanumeric({ length: 20, casing: "lower" }),
+  };
+};
 
 export const createExpiredMedia = (): Readonly<Required<ExpiredMedia>> => ({
   publicId: faker.string.alphanumeric({ length: 20, casing: "lower" }),

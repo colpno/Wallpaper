@@ -11,8 +11,15 @@ export const login: Login["handler"] = async (req, res, next) => {
     const user = await UserModel.findOne({ email: req.body.email }).lean<UserDB>();
 
     if (user && user.password === hash(req.body.password, user.salt).hashedValue) {
-      const { username, email, avatarUrl, _id } = user;
-      const result: AuthAPIs.Login["response"] = { username, email, avatarUrl, _id };
+      const { username, email, avatarUrl, _id, firstName, lastName } = user;
+      const result: AuthAPIs.Login["response"] = {
+        username,
+        email,
+        avatarUrl,
+        _id,
+        firstName,
+        lastName,
+      };
 
       return res.status(HttpStatusCodes.OK).json(result);
     }
@@ -31,9 +38,18 @@ export const register: Register["handler"] = async (req, res, next) => {
       return res.status(HttpStatusCodes.CONFLICT).json({ message: "User already exists" });
     }
 
-    const { _id, username, email, avatarUrl } = await UserModel.create(req.body);
+    const { username, email, avatarUrl, _id, firstName, lastName } = await UserModel.create(
+      req.body
+    );
 
-    const result: Register["response"] = { _id: _id.toString(), username, email, avatarUrl };
+    const result: Register["response"] = {
+      _id: _id.toString(),
+      username,
+      email,
+      avatarUrl,
+      firstName,
+      lastName,
+    };
 
     return res.status(HttpStatusCodes.CREATED).json(result);
   } catch (error) {

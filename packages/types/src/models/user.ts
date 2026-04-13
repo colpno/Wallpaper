@@ -1,6 +1,8 @@
 import type { DefaultModelProps } from "@/common.js";
 
 export type User = {
+  firstName: string;
+  lastName: string;
   username: string;
   email: string;
   birthdate: string;
