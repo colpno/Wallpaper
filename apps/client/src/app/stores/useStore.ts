@@ -17,6 +17,7 @@ export type State = {
 
 export type Actions = {
   login: (user: AuthAPIs.Login["response"]) => void;
+  logout: () => void;
 };
 
 export type Store = State & Actions;
@@ -28,6 +29,10 @@ const state: ImmerStateCreator<Store> = (set) => ({
   login: ({ _id, ...rest }) =>
     set((state) => {
       state.user = { ...rest, id: _id };
+    }),
+  logout: () =>
+    set((state) => {
+      state.user = null;
     }),
 });
 
