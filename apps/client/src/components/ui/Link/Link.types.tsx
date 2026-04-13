@@ -4,30 +4,28 @@ import { buttonVariants } from "@repo/ui/components";
 import { type LinkProps as RouterLinkProps, type NavLinkProps } from "react-router";
 
 type BaseProps = {
-  href: string;
+  to: string;
   external?: boolean;
-  navbar?: boolean;
+  navlink?: boolean;
   button?: boolean;
 } & VariantProps<typeof buttonVariants>;
 
 export type LinkAsLinkProps = {
   external?: false;
-  navbar?: false;
+  navlink?: false;
 } & Omit<RouterLinkProps, "to"> &
-  Omit<BaseProps, "external" | "navbar">;
+  Omit<BaseProps, "external" | "navlink">;
 
 export type LinkAsNavLinkProps = {
   external?: false;
-  /** Indicates that the link is used in a navbar context. */
-  navbar: boolean;
+  navlink: boolean;
 } & Omit<NavLinkProps, "to"> &
-  Omit<BaseProps, "external" | "navbar">;
+  Omit<BaseProps, "external" | "navlink">;
 
 export type LinkAsAnchorProps = {
-  /** Indicates that the link is external and should open in a new tab. */
   external: boolean;
-  navbar?: false;
+  navlink?: false;
 } & React.AnchorHTMLAttributes<HTMLAnchorElement> &
-  Omit<BaseProps, "external" | "navbar">;
+  Omit<BaseProps, "external" | "navlink">;
 
 export type LinkProps = LinkAsLinkProps | LinkAsNavLinkProps | LinkAsAnchorProps;

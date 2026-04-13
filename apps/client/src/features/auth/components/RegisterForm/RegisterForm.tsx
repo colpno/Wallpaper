@@ -80,15 +80,15 @@ function RegisterForm({ slotProps, ...props }: Props) {
 
         <Typography size="xs" className="mt-2 px-4 text-center font-extralight">
           By continuing, you agree to Pinterest&apos;s{" "}
-          <Link href="#" className="underline">
+          <Link to="#" className="underline">
             Terms of Service
           </Link>{" "}
           and acknowledge you&apos;ve read our
-          <Link href="#" className="underline">
+          <Link to="#" className="underline">
             Privacy Policy
           </Link>
           .{" "}
-          <Link href="#" className="underline">
+          <Link to="#" className="underline">
             Notice at collection
           </Link>
           .

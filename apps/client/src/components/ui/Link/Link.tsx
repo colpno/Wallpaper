@@ -9,7 +9,7 @@ import { buttonVariants } from "@repo/ui/components";
 import { cn } from "@repo/ui/lib";
 import { Link as RouterLink, NavLink } from "react-router";
 
-function Link({ external, navbar, button, size, variant, ...props }: LinkProps) {
+function Link({ external, navlink, button, size, variant, to, ...props }: LinkProps) {
   const className: string = cn(button && buttonVariants({ size, variant }));
 
   if (external) {
@@ -18,16 +18,17 @@ function Link({ external, navbar, button, size, variant, ...props }: LinkProps) 
         target="_blank"
         rel="noopener noreferrer"
         {...(props as LinkAsAnchorProps)}
+        href={to}
         className={cn(className, props.className)}
       />
     );
   }
 
-  if (navbar) {
+  if (navlink) {
     return (
       <NavLink
         {...(props as LinkAsNavLinkProps)}
-        to={props.href}
+        to={to}
         className={(state) =>
           cn(
             className,
@@ -41,7 +42,7 @@ function Link({ external, navbar, button, size, variant, ...props }: LinkProps) 
   return (
     <RouterLink
       {...(props as LinkAsLinkProps)}
-      to={props.href}
+      to={to}
       className={cn(className, props.className)}
     />
   );

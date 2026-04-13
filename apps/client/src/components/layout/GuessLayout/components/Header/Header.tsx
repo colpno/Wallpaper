@@ -18,14 +18,14 @@ function Header() {
       style={{ height: headerHeight }}
     >
       <nav className="flex items-center gap-3">
-        <Link href={ROUTES.HOME()}>
+        <Link to={ROUTES.HOME()}>
           <Icon variant="default" />
         </Link>
 
         <ul className="space-y-2">
           {menu.map((item) => (
             <li key={item.href}>
-              <Link href={item.href} navbar button variant="ghost" className="font-bold">
+              <Link to={item.href} navlink button variant="ghost" className="font-bold">
                 {item.label}
               </Link>
             </li>

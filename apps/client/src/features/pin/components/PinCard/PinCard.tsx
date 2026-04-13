@@ -29,7 +29,7 @@ function PinCard(
   return (
     <div className="space-y-2">
       <Link
-        href={ROUTES.PIN(item._id)}
+        to={ROUTES.PIN(item._id)}
         className="relative block max-w-full *:size-full *:rounded-2xl *:transition-opacity *:duration-300"
         style={{
           width: item.photoWidth,

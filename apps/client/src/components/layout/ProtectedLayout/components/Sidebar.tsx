@@ -27,7 +27,7 @@ function Sidebar() {
       {
         label: "Home",
         element: (
-          <Link href={ROUTES.HOME()} button variant="ghost-icon" size="xl">
+          <Link to={ROUTES.HOME()} button variant="ghost-icon" size="xl">
             <Icon variant="favicon" className="size-8.5!" />
           </Link>
         ),
@@ -35,7 +35,7 @@ function Sidebar() {
       {
         label: "Home",
         element: (
-          <Link href={ROUTES.HOME()} navbar button variant="ghost-icon" size="xl">
+          <Link to={ROUTES.HOME()} navlink button variant="ghost-icon" size="xl">
             {({ isActive }) => (isActive ? <PiHouseFill /> : <PiHouseBold />)}
           </Link>
         ),
@@ -43,7 +43,7 @@ function Sidebar() {
       {
         label: "Your boards",
         element: (
-          <Link href={ROUTES.BOARDS(user.username)} navbar button variant="ghost-icon" size="xl">
+          <Link to={ROUTES.BOARDS(user.username)} navlink button variant="ghost-icon" size="xl">
             {({ isActive }) => (isActive ? <MdSpaceDashboard /> : <MdOutlineSpaceDashboard />)}
           </Link>
         ),
@@ -51,7 +51,7 @@ function Sidebar() {
       {
         label: "Create",
         element: (
-          <Link href={ROUTES.PIN_CREATION()} navbar button variant="ghost-icon" size="xl">
+          <Link to={ROUTES.PIN_CREATION()} navlink button variant="ghost-icon" size="xl">
             {({ isActive }) => (isActive ? <FaSquarePlus /> : <FaRegSquarePlus />)}
           </Link>
         ),

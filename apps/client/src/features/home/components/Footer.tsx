@@ -15,7 +15,7 @@ function Footer(props: React.ComponentProps<"footer">) {
       className={cn("grid grid-cols-2 bg-black p-[100px_150px] text-white", props.className)}
     >
       <nav>
-        <Link href={ROUTES.HOME()}>
+        <Link to={ROUTES.HOME()}>
           <Icon variant="text" className="h-10 w-[165px]" />
         </Link>
       </nav>
@@ -26,7 +26,7 @@ function Footer(props: React.ComponentProps<"footer">) {
             <Typography className="font-bold">{col.label}</Typography>
 
             {col.items.map((item) => (
-              <Link key={item.label} href={item.link} className="hover:underline">
+              <Link key={item.label} to={item.link} className="hover:underline">
                 {item.label}
               </Link>
             ))}
