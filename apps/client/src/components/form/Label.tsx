@@ -1,12 +1,8 @@
-import {
-  FormLabel as UIFormLabel,
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@repo/ui/components";
+import { FormLabel as UIFormLabel } from "@repo/ui/components";
 import { cn } from "@repo/ui/lib";
 import { AiOutlineExclamationCircle } from "react-icons/ai";
 
+import Tooltip from "../common/Tooltip";
 import Button from "../ui/Button";
 
 type Props = {
@@ -18,13 +14,18 @@ function Label({ children, hint, ...props }: Props) {
     return (
       <UIFormLabel {...props} className={cn("flex items-end", props.className)}>
         {children}{" "}
-        <Tooltip>
-          <TooltipTrigger asChild>
+        <Tooltip
+          trigger={
             <Button variant="ghost-icon" size="sm" className="text-base">
               <AiOutlineExclamationCircle />
             </Button>
-          </TooltipTrigger>
-          <TooltipContent className="max-w-xs">{hint}</TooltipContent>
+          }
+          slotProps={{
+            trigger: { asChild: true },
+            content: { className: cn("max-w-xs") },
+          }}
+        >
+          {hint}
         </Tooltip>
       </UIFormLabel>
     );
