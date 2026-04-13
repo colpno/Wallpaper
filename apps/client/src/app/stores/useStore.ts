@@ -4,6 +4,9 @@ import { persist, type PersistOptions } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
 import { useShallow } from "zustand/react/shallow";
 
+import { env } from "@/configs/env";
+import { decrypt, encrypt } from "@/features/auth/services/crypto";
+
 export type State = {
   user:
     | ({
@@ -38,6 +41,19 @@ const persistOptions: PersistOptions<State> = {
   partialize: (state) => ({
     user: state.user,
   }),
+  storage: {
+    getItem: (name) => {
+      const value = localStorage.getItem(name);
+      return value ? decrypt(value, env.VITE_LOCAL_STORAGE_SECRET_KEY) : null;
+    },
+    setItem: (name, value) => {
+      const encrypted = encrypt(value, env.VITE_LOCAL_STORAGE_SECRET_KEY);
+      localStorage.setItem(name, encrypted);
+    },
+    removeItem: (name) => {
+      localStorage.removeItem(name);
+    },
+  },
 };
 
 export const store = create(
