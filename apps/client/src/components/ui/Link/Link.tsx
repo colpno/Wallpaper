@@ -7,7 +7,7 @@ import type {
 
 import { buttonVariants } from "@repo/ui/components";
 import { cn } from "@repo/ui/lib";
-import { Link as RouterLink, NavLink } from "react-router";
+import { Link as InternalLink, NavLink } from "react-router";
 
 function Link({ external, navlink, button, size, variant, to, ...props }: LinkProps) {
   const className: string = cn(button && buttonVariants({ size, variant }));
@@ -40,7 +40,7 @@ function Link({ external, navlink, button, size, variant, to, ...props }: LinkPr
   }
 
   return (
-    <RouterLink
+    <InternalLink
       {...(props as LinkAsLinkProps)}
       to={to}
       className={cn(className, props.className)}

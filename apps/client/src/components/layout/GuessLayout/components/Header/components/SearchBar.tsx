@@ -76,7 +76,7 @@ function SearchBar({ placeholder = "Search for easy dinners, fashion, etc.", ...
               props.className
             )}
             addons={{
-              start: <LuSearch className={cn("size-[18px]", isInputFocused && "hidden")} />,
+              start: <LuSearch className={cn("size-4.5", isInputFocused && "hidden")} />,
               end: (
                 <Button
                   variant="ghost-icon"

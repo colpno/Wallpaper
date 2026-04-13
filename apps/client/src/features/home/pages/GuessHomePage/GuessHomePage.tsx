@@ -19,7 +19,7 @@ function GuessHomePage() {
 
       <section className="space-y-3 bg-[linear-gradient(to_bottom,rgb(246,246,243),transparent)] px-12 pt-25 *:text-center">
         <Heading variant="h2">Bring your favorite ideas to life</Heading>
-        <Typography size="lg" className="mx-auto max-w-[700px]">
+        <Typography size="lg" className="mx-auto max-w-175">
           With Pinterest, you can unlock tools that spark your creativity and help you find more
           inspiration.
         </Typography>
@@ -30,7 +30,7 @@ function GuessHomePage() {
           <Image
             src={SearchBySkinTone}
             alt="Search by skin tone"
-            className="size-[550px] rounded-4xl"
+            className="size-137.5 rounded-4xl"
           />
         </div>
 
@@ -65,7 +65,7 @@ function GuessHomePage() {
           <Image
             src={GroupBoards}
             alt="Collaborate with group boards"
-            className="size-[550px] rounded-4xl"
+            className="size-137.5 rounded-4xl"
           />
         </div>
       </Container>
@@ -75,7 +75,7 @@ function GuessHomePage() {
           <Image
             src={VisualSearch}
             alt="Search visually with images"
-            className="size-[550px] rounded-4xl"
+            className="size-137.5 rounded-4xl"
           />
         </div>
 

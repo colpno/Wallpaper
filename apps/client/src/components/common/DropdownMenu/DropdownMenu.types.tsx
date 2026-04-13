@@ -10,7 +10,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@repo/ui/components";
-import React from "react";
 
 import { type LinkAsNavLinkProps } from "@/components/ui/Link";
 
@@ -49,8 +48,10 @@ export type DropdownMenuGroup = {
   group: DropdownMenuItem[];
 };
 
+export type DropdownMenuData = (DropdownMenuItem | DropdownMenuGroup)[];
+
 export type DropdownMenuProps = {
-  data: (DropdownMenuItem | DropdownMenuGroup)[];
+  data: DropdownMenuData;
   trigger?: React.ReactNode;
   slotProps?: {
     container?: React.ComponentProps<typeof UIDropdownMenu>;

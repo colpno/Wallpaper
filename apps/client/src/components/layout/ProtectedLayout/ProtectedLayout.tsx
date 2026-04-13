@@ -1,6 +1,6 @@
 import { SidebarProvider } from "@repo/ui/components";
 
-import { headerHeight, sidebarWidth } from "@/constants/components";
+import { HEADER_HEIGHT, SIDEBAR_WIDTH } from "@/constants/components";
 
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
@@ -11,8 +11,8 @@ function ProtectedLayout({ children }: Pick<React.ComponentProps<"div">, "childr
       open={false}
       style={
         {
-          "--sidebar-width": sidebarWidth,
-          "--sidebar-width-icon": sidebarWidth,
+          "--sidebar-width": SIDEBAR_WIDTH,
+          "--sidebar-width-icon": SIDEBAR_WIDTH,
         } as React.CSSProperties
       }
     >
@@ -20,7 +20,7 @@ function ProtectedLayout({ children }: Pick<React.ComponentProps<"div">, "childr
 
       <Sidebar />
 
-      <main className="w-full" style={{ paddingTop: headerHeight }}>
+      <main className="w-full" style={{ paddingTop: HEADER_HEIGHT }}>
         {children}
       </main>
     </SidebarProvider>

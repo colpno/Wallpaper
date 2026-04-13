@@ -59,27 +59,27 @@ export const footerMenu = [
   {
     label: "Get the app",
     items: [
-      { label: "IOS", link: "#" },
-      { label: "Android", link: "#" },
+      { label: "iOS", url: "#" },
+      { label: "Android", url: "#" },
     ],
   },
   {
     label: "Quick links",
     items: [
-      { label: "Explore", link: ROUTES.IDEAS() },
-      { label: "Shop", link: "#" },
-      { label: "Users", link: "#" },
-      { label: "Collections", link: "#" },
-      { label: "Shopping", link: "#" },
-      { label: "Help Center", link: "#" },
+      { label: "Explore", url: ROUTES.IDEAS() },
+      { label: "Shop", url: "#" },
+      { label: "Users", url: "#" },
+      { label: "Collections", url: "#" },
+      { label: "Shopping", url: "#" },
+      { label: "Help Center", url: "#" },
     ],
   },
   {
     label: "Policies",
     items: [
-      { label: "Terms of service", link: "#" },
-      { label: "Privacy policy", link: "#" },
-      { label: "Non-user notice", link: "#" },
+      { label: "Terms of service", url: "#" },
+      { label: "Privacy policy", url: "#" },
+      { label: "Non-user notice", url: "#" },
     ],
   },
 ];

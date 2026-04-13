@@ -4,7 +4,7 @@ import { LuDownload } from "react-icons/lu";
 
 import Button from "@/components/ui/Button";
 import Image from "@/components/ui/Image";
-import { headerHeight } from "@/constants/components";
+import { HEADER_HEIGHT } from "@/constants/components";
 
 import ZoomOutButton from "./ZoomOutButton";
 
@@ -13,7 +13,7 @@ function PinInfo(pin: Pick<Pin, "photoUrl" | "photoWidth" | "photoAspectRatio">)
     <div className="w-full overflow-clip rounded-2xl border border-gray-300">
       <div
         className="sticky right-0 left-0 z-pinpage-detail flex h-16 bg-background px-4 py-2"
-        style={{ top: headerHeight }}
+        style={{ top: HEADER_HEIGHT }}
       >
         <Button variant="ghost-icon" size="xl">
           <LuDownload />

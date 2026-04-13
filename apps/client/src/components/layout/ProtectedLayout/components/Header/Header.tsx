@@ -1,6 +1,6 @@
 import { cn } from "@repo/ui/lib";
 
-import { headerHeight, sidebarWidth } from "@/constants/components";
+import { HEADER_HEIGHT, SIDEBAR_WIDTH } from "@/constants/components";
 
 import Account from "./components/Account";
 import SearchBar from "./components/SearchBar";
@@ -15,8 +15,8 @@ function Header(props: React.ComponentProps<"header">) {
       )}
       style={{
         ...props.style,
-        height: headerHeight,
-        left: sidebarWidth,
+        height: HEADER_HEIGHT,
+        left: SIDEBAR_WIDTH,
       }}
     >
       <SearchBar className="flex-1" />

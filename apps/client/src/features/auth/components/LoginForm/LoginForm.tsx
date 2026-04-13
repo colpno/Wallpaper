@@ -39,7 +39,7 @@ function LoginForm({ slotProps, ...props }: Props) {
   return (
     <div
       className={cn(
-        "min-h-100 w-[450px] overflow-clip rounded-4xl bg-background px-2.5 py-8",
+        "min-h-100 w-112.5 overflow-clip rounded-4xl bg-background px-2.5 py-8",
         props.className
       )}
     >
@@ -47,7 +47,7 @@ function LoginForm({ slotProps, ...props }: Props) {
         Welcome to Pinterest
       </Heading>
 
-      <div className="mx-auto w-[268px]">
+      <div className="mx-auto w-67">
         <Form
           {...slotProps?.form}
           slotProps={slotProps}

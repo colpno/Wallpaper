@@ -4,18 +4,18 @@ import FormDialog from "@/components/dialogs/FormDialog";
 import Icon from "@/components/ui/Icon";
 import Link from "@/components/ui/Link";
 import { ROUTES } from "@/constants/common";
-import { headerHeight } from "@/constants/components";
+import { HEADER_HEIGHT } from "@/constants/components";
 import AuthForm from "@/features/auth/components/AuthForm";
 
 import SearchBar from "./components/SearchBar";
 
-const menu = [{ label: "Explore", href: ROUTES.IDEAS() }];
+const menu = [{ label: "Explore", url: ROUTES.IDEAS() }];
 
 function Header() {
   return (
     <header
       className="fixed inset-x-0 top-0 z-header flex gap-4 bg-background p-4 shadow-[0_2px_1px_rgba(0,0,0,0.05)]"
-      style={{ height: headerHeight }}
+      style={{ height: HEADER_HEIGHT }}
     >
       <nav className="flex items-center gap-3">
         <Link to={ROUTES.HOME()}>
@@ -24,8 +24,8 @@ function Header() {
 
         <ul className="space-y-2">
           {menu.map((item) => (
-            <li key={item.href}>
-              <Link to={item.href} navlink button variant="ghost" className="font-bold">
+            <li key={item.url}>
+              <Link to={item.url} navlink button variant="ghost" className="font-bold">
                 {item.label}
               </Link>
             </li>

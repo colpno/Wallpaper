@@ -64,7 +64,7 @@ function PinPage() {
   });
 
   if (similarPins?.[similarPins.length - 1]) {
-    lastSmallestScore.current = similarPins[similarPins.length - 1].score;
+    lastSmallestScore.current = similarPins[similarPins.length - 1]!.score;
   }
 
   const { loadMoreRef } = useInfiniteScroll({ fetchNextPage, hasNextPage, isFetchingNextPage });

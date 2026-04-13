@@ -5,6 +5,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@repo/ui/components";
+import { cn } from "@repo/ui/lib";
 
 import Group from "./components/Group";
 import Item from "./components/Item";
@@ -16,7 +17,10 @@ function DropdownMenu({ data, trigger, slotProps, ...props }: DropdownMenuProps)
       <UIDropdownMenu {...props}>
         {trigger && <DropdownMenuTrigger {...slotProps?.trigger}>{trigger}</DropdownMenuTrigger>}
 
-        <DropdownMenuContent {...slotProps?.content}>
+        <DropdownMenuContent
+          {...slotProps?.content}
+          className={cn("p-3", slotProps?.content?.className)}
+        >
           {data.map((itemOrGroup) =>
             "group" in itemOrGroup ? (
               <Group {...itemOrGroup} key={itemOrGroup.key} />

@@ -15,7 +15,7 @@ function HomeSignup(props: React.ComponentProps<"section">) {
       {/* Dishes background */}
       <div
         className={cn(
-          "absolute top-0 left-1/2 grid w-[1750px] -translate-x-1/2 grid-cols-7 gap-x-2",
+          "absolute top-0 left-1/2 grid w-437.5 -translate-x-1/2 grid-cols-7 gap-x-2",
           "*:nth-[2]:-translate-y-40",
           "*:nth-[3]:-translate-y-60",
           "*:nth-[4]:-translate-y-100",
@@ -26,7 +26,7 @@ function HomeSignup(props: React.ComponentProps<"section">) {
         {dishImages.map((imagesColumn, index) => (
           <div key={`image-dish-column-${index}`} className="space-y-4">
             {imagesColumn.map((link) => (
-              <Image key={link} src={link} className="h-[350px] w-[236px] rounded-2xl" />
+              <Image key={link} src={link} className="h-87.5 w-59 rounded-2xl" />
             ))}
           </div>
         ))}

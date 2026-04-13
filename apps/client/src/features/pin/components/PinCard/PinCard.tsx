@@ -18,9 +18,9 @@ function PinCard(
     Partial<Pick<PinDB, "pinTitle">>
 ) {
   const [isImageLoading, setIsImageLoading] = useState(true);
-  const odd = useRef<number>(Math.random()).current;
-  const showTitle = odd > 0.6 && !!item.pinTitle;
-  const showDescription = odd > 0.7 && !!item.pinDescription;
+  const odd = useRef<number>(Math.random());
+  const showTitle = odd.current > 0.6 && !!item.pinTitle;
+  const showDescription = odd.current > 0.7 && !!item.pinDescription;
 
   const handleImageLoaded = () => {
     setIsImageLoading(false);

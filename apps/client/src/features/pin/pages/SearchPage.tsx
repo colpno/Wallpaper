@@ -71,7 +71,7 @@ function SearchPage() {
   }, [isLoading, data]);
 
   if (data?.[data.length - 1]) {
-    lastSmallestScore.current = data[data.length - 1].score;
+    lastSmallestScore.current = data[data.length - 1]!.score;
   }
 
   return <section className="px-4 pt-11">{masonryItems}</section>;

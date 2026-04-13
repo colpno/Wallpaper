@@ -1,3 +1,3 @@
-export const headerHeight = "80px";
+export const HEADER_HEIGHT = "80px";
 
-export const sidebarWidth = "72px";
+export const SIDEBAR_WIDTH = "72px";
