@@ -6,8 +6,8 @@ import type { User, UserDB } from "@repo/types";
 
 import { logger } from "@/lib/logger.js";
 import { HttpError } from "@/utils/HttpError.js";
+import { deleteMedia, uploadMedia } from "@/utils/media.js";
 
-import { eraseMedia, uploadMedia } from "../media/media.handlers.js";
 import { UserModel } from "./user.model.js";
 
 export const updateOneById: UpdateOneById["handler"] = async (req, res, next) => {
@@ -28,7 +28,7 @@ export const updateOneById: UpdateOneById["handler"] = async (req, res, next) =>
       const addedMedia = await uploadMedia(avatar as File);
       updateData.avatarUrl = addedMedia.secure_url;
 
-      if (user.avatarUrl) await eraseMedia(user.avatarUrl);
+      if (user.avatarUrl) await deleteMedia(user.avatarUrl);
     }
 
     const updatedUser = await UserModel.findByIdAndUpdate(id, updateData, {

@@ -1,9 +1,8 @@
 import type { Types } from "mongoose";
 
 import { faker } from "@faker-js/faker";
-import type { ExpiredMedia, ExpiredMediaDB, Pin, PinDB, User, UserDB } from "@repo/types";
+import type { Pin, PinDB, User, UserDB } from "@repo/types";
 
-import { ExpiredMediaModel } from "@/routes/media/expired-media.model.js";
 import { PinModel } from "@/routes/pin/pin.model.js";
 import { UserModel } from "@/routes/user/user.model.js";
 
@@ -46,14 +45,9 @@ export const createUser = (): Readonly<Required<User>> => {
   };
 };
 
-export const createExpiredMedia = (): Readonly<Required<ExpiredMedia>> => ({
-  publicId: faker.string.alphanumeric({ length: 20, casing: "lower" }),
-});
-
 export type SeededDB = Readonly<{
   pins: Required<PinDB<Types.ObjectId>[]>;
   users: Required<UserDB[]>;
-  expiredMedias: Required<ExpiredMediaDB[]>;
 }>;
 
 export const seedDatabase = async (): Promise<SeededDB> => {
@@ -64,30 +58,8 @@ export const seedDatabase = async (): Promise<SeededDB> => {
     _id: item._id.toString(),
   })) as unknown as SeededDB["users"];
 
-  const expiredMedias = (
-    await ExpiredMediaModel.insertMany([
-      ...faker.helpers.multiple(() => createExpiredMedia(), { count: 2 }),
-      ...faker.helpers.multiple(
-        () => {
-          const now = new Date();
-          const monthsAgo = faker.number.int({ min: 2, max: 10 });
-          return {
-            ...createExpiredMedia(),
-            createdAt: new Date(now.setMonth(now.getMonth() - monthsAgo)),
-          };
-        },
-        { count: 3 }
-      ),
-    ])
-  ).map((item) => ({
-    ...item.toObject(),
-    _id: item._id.toString(),
-  })) as unknown as SeededDB["expiredMedias"];
-
   return {
     users,
-
-    expiredMedias,
 
     pins: (
       await PinModel.insertMany(

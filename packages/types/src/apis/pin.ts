@@ -43,23 +43,9 @@ export type UpdateOneById = {
   response: PinDB;
 };
 
-export type RemoveOneById = {
+export type DeleteOneById = {
   params: {
     id: string;
-  };
-  response: never;
-};
-
-export type RemoveMany = {
-  body: {
-    ids: string[];
-  };
-  response: never;
-};
-
-export type UndoRemoval = {
-  body: {
-    ids: string[];
   };
   response: never;
 };

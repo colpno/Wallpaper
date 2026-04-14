@@ -1,11 +1,9 @@
 import type {
   AddOne,
+  DeleteOneById,
   GetMany,
   GetOneById,
-  RemoveMany,
-  RemoveOneById,
   Search,
-  UndoRemoval,
   UpdateOneById,
 } from "./pin.types.js";
 import type { RequestSchemas, ZodObjectShapeMap } from "@/types/common.js";
@@ -146,30 +144,10 @@ export const requestSchemas = {
     },
   },
 
-  removeOneById: {
+  deleteOneById: {
     params: z.object({
       id: objectIdSchema,
-    }) satisfies ZodType<RemoveOneById["params"]>,
-    responses: {
-      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
-    },
-  },
-
-  removeMany: {
-    body: z.object({
-      ids: z.array(objectIdSchema).min(1),
-    }) satisfies ZodType<RemoveMany["body"]>,
-    responses: {
-      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
-      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
-    },
-  },
-
-  undoRemoval: {
-    body: z.object({
-      ids: z.array(objectIdSchema).min(1),
-    }) satisfies ZodType<UndoRemoval["body"]>,
+    }) satisfies ZodType<DeleteOneById["params"]>,
     responses: {
       [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,

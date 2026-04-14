@@ -1,11 +1,9 @@
 import type {
   AddOne,
+  DeleteOneById,
   GetMany,
   GetOneById,
-  RemoveMany,
-  RemoveOneById,
   Search,
-  UndoRemoval,
   UpdateOneById,
 } from "./pin.types.js";
 import type { File } from "@/utils/schemas.js";
@@ -19,8 +17,8 @@ import { describeImage, toEmbeddings } from "@/services/embedding.js";
 import { buildQueryWithOptions, organizeQueryInput } from "@/utils/build-query-with-options.js";
 import { toPaginationPayload } from "@/utils/converters.js";
 import { HttpError } from "@/utils/HttpError.js";
+import { deleteMedia, uploadMedia } from "@/utils/media.js";
 
-import { eraseMedia, uploadMedia } from "../media/media.handlers.js";
 import { PinModel } from "./pin.model.js";
 import { searchPinsByEmbedding } from "./pin.services.js";
 
@@ -111,7 +109,7 @@ export const updateOneById: UpdateOneById["handler"] = async (req, res, next) =>
       const addedMedia = await uploadMedia(photo as File);
       updateData.photoCloudinaryId = addedMedia.public_id;
 
-      if (pin.photoCloudinaryId) await eraseMedia(pin.photoCloudinaryId);
+      if (pin.photoCloudinaryId) await deleteMedia(pin.photoCloudinaryId);
     }
 
     const updatedPin = await PinModel.findByIdAndUpdate(id, updateData, {
@@ -131,59 +129,15 @@ export const updateOneById: UpdateOneById["handler"] = async (req, res, next) =>
   }
 };
 
-export const removeOneById: RemoveOneById["handler"] = async (req, res, next) => {
+export const deleteOneById: DeleteOneById["handler"] = async (req, res, next) => {
   try {
     const { id } = req.params;
 
-    const pin = await PinModel.findByIdAndUpdate(id, { removedAt: new Date() });
+    const pin = await PinModel.findByIdAndDelete(id);
 
     if (!pin) {
       logger.debug(`Pin with id ${id.toString()} not found`);
       return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Pin not found" });
-    }
-
-    return res.status(HttpStatusCodes.NO_CONTENT).end();
-  } catch (error) {
-    return next(error);
-  }
-};
-
-export const removeMany: RemoveMany["handler"] = async (req, res, next) => {
-  try {
-    const { ids } = req.body;
-
-    const result = await PinModel.updateMany({ _id: { $in: ids } }, { removedAt: new Date() });
-
-    if (result.matchedCount === 0) {
-      logger.debug(
-        `No pins found to delete with ids: ${ids.map((id) => id.toString()).join(", ")}`
-      );
-      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "No pins found to delete" });
-    }
-
-    return res.status(HttpStatusCodes.NO_CONTENT).end();
-  } catch (error) {
-    return next(error);
-  }
-};
-
-export const undoRemoval: UndoRemoval["handler"] = async (req, res, next) => {
-  try {
-    const { ids } = req.body;
-
-    const result = await PinModel.updateMany(
-      {
-        _id: { $in: ids },
-        removedAt: { $exists: true },
-      },
-      { $unset: { removedAt: "" } }
-    );
-
-    if (result.matchedCount === 0) {
-      logger.debug(
-        `No pins found to delete with ids: ${ids.map((id) => id.toString()).join(", ")}`
-      );
-      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "No pins found to delete" });
     }
 
     return res.status(HttpStatusCodes.NO_CONTENT).end();

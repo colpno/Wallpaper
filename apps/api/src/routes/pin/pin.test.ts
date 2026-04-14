@@ -19,8 +19,7 @@ const getPinById = createTestClient(routes.getOneById);
 const getPins = createTestClient(routes.getMany);
 const addPin = createTestClient(routes.addOne);
 const updatePinById = createTestClient(routes.updateOneById);
-const removePinById = createTestClient(routes.removeOneById);
-const removePins = createTestClient(routes.removeMany);
+const deletePinById = createTestClient(routes.deleteOneById);
 
 describe("Pin routes", () => {
   beforeEach(async () => {
@@ -386,30 +385,31 @@ describe("Pin routes", () => {
     });
   });
 
-  describe(`${routes.removeOneById.method.toUpperCase()} ${routes.removeOneById.path}`, () => {
+  describe(`${routes.deleteOneById.method.toUpperCase()} ${routes.deleteOneById.path}`, () => {
     it("returns a successful response", async () => {
-      const removePinResponse = await removePinById({ id: db.pins[0]!._id });
+      const pin = db.pins[0]!;
 
-      expect(removePinResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
+      const deletePinResponse = await deletePinById({ id: pin._id });
 
-      const getPinResponse = await getPinById({ id: db.pins[0]!._id });
+      expect(deletePinResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
 
-      expect(getPinResponse.status).toBe(HttpStatusCodes.OK);
+      const getPinResponse = await getPinById({ id: pin._id });
 
-      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK].safeParse(
+      expect(getPinResponse.status).toBe(HttpStatusCodes.NOT_FOUND);
+
+      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.NOT_FOUND].safeParse(
         getPinResponse.body
       );
 
       expect(parseResult.success).toBe(true);
-      expect(parseResult.data?.removedAt).toBeDefined();
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const response = await removePinById();
+      const response = await deletePinById();
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
 
-      const parseResult = requestSchemas.removeOneById.responses[
+      const parseResult = requestSchemas.deleteOneById.responses[
         HttpStatusCodes.UNPROCESSABLE_ENTITY
       ].safeParse(response.body);
 
@@ -417,11 +417,11 @@ describe("Pin routes", () => {
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const response = await removePinById({ id: "invalid" });
+      const response = await deletePinById({ id: "invalid" });
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
 
-      const parseResult = requestSchemas.removeOneById.responses[
+      const parseResult = requestSchemas.deleteOneById.responses[
         HttpStatusCodes.UNPROCESSABLE_ENTITY
       ].safeParse(response.body);
 
@@ -429,75 +429,13 @@ describe("Pin routes", () => {
     });
 
     it("returns a not found error if id does not belong to any", async () => {
-      const response = await removePinById({ id: "68d817527719e9421cb63734" });
+      const response = await deletePinById({ id: "68d817527719e9421cb63734" });
 
       expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
 
-      const parseResult = requestSchemas.removeOneById.responses[
+      const parseResult = requestSchemas.deleteOneById.responses[
         HttpStatusCodes.NOT_FOUND
       ].safeParse(response.body);
-
-      expect(parseResult.success).toBe(true);
-    });
-  });
-
-  describe(`${routes.removeMany.method.toUpperCase()} ${routes.removeMany.path}`, () => {
-    it("returns a successful response", async () => {
-      const ids = db.pins.slice(0, 2).map((pin) => pin._id);
-
-      const removePinsResponse = await removePins().send({ ids });
-
-      expect(removePinsResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
-
-      const getPinsResponse = await getPins().query({ _id: { in: ids } });
-
-      expect(getPinsResponse.status).toBe(HttpStatusCodes.OK);
-
-      const parseResult = z.array(pinSchema).safeParse(getPinsResponse.body);
-
-      expect(parseResult.success).toBe(true);
-      expect(parseResult.data?.length).toBe(ids.length);
-      for (const pin of parseResult.data ?? []) {
-        expect(pin.removedAt).toBeDefined();
-      }
-    });
-
-    it("returns a validation error if missing required fields", async () => {
-      const response = await removePins();
-
-      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-
-      const parseResult = requestSchemas.removeMany.responses[
-        HttpStatusCodes.UNPROCESSABLE_ENTITY
-      ].safeParse(response.body);
-
-      expect(parseResult.success).toBe(true);
-    });
-
-    it("returns a validation error if payload is invalid", async () => {
-      const response = await removePins().send({
-        ids: ["invalid-id"],
-      });
-
-      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-
-      const parseResult = requestSchemas.removeMany.responses[
-        HttpStatusCodes.UNPROCESSABLE_ENTITY
-      ].safeParse(response.body);
-
-      expect(parseResult.success).toBe(true);
-    });
-
-    it("returns a not found error if none of the ids belong to any", async () => {
-      const response = await removePins().send({
-        ids: ["68d817527719e9421cb63734", "68d817527719e9421cb63735"],
-      });
-
-      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
-
-      const parseResult = requestSchemas.removeMany.responses[HttpStatusCodes.NOT_FOUND].safeParse(
-        response.body
-      );
 
       expect(parseResult.success).toBe(true);
     });

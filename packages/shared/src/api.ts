@@ -1,15 +1,3 @@
-type Route = Record<
-  string,
-  Record<
-    string,
-    {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      path: (...args: any[]) => string;
-      method: "get" | "post" | "patch" | "delete";
-    }
-  >
->;
-
 const BASE_PATH = {
   AUTH: "/auth",
   MEDIA: "/medias",
@@ -51,7 +39,7 @@ export const API_ROUTES = {
       path: (id: string) => `${BASE_PATH.PIN}/${id}` as const,
       method: "patch",
     },
-    removeOneById: {
+    deleteOneById: {
       path: (id: string) => `${BASE_PATH.PIN}/${id}` as const,
       method: "delete",
     },
@@ -82,4 +70,14 @@ export const API_ROUTES = {
       method: "delete",
     },
   },
-} as const satisfies Route;
+} as const satisfies Record<
+  keyof typeof BASE_PATH,
+  Record<
+    string,
+    {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      path: (...args: any[]) => string;
+      method: "get" | "post" | "patch" | "delete";
+    }
+  >
+>;

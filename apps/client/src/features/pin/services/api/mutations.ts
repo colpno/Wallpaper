@@ -3,7 +3,7 @@ import { mutationOptions } from "@tanstack/react-query";
 
 import { queryClient } from "@/lib/react-query/client";
 
-import { addPin, removePinById, removePins, undoPinsRemoval, updatePinById } from "./apis";
+import { addPin, deletePinById, updatePinById } from "./apis";
 import { PIN_KEYS } from "./keys";
 
 export const addPinMutationOptions = () =>
@@ -26,28 +26,11 @@ export const updatePinByIdMutationOptions = () =>
     },
   });
 
-export const removePinByIdMutationOptions = () =>
+export const deletePinByIdMutationOptions = () =>
   mutationOptions({
-    mutationFn: (params: PinAPIs.RemoveOneById["params"]) => removePinById(params),
+    mutationFn: (params: PinAPIs.DeleteOneById["params"]) => deletePinById(params),
     onSuccess: (_, vars) => {
       queryClient.invalidateQueries({ queryKey: PIN_KEYS.lists() });
       queryClient.removeQueries({ queryKey: PIN_KEYS.item(vars) });
-    },
-  });
-
-export const removePinsMutationOptions = () =>
-  mutationOptions({
-    mutationFn: (body: PinAPIs.RemoveMany["body"]) => removePins(body),
-    onSuccess: (_, vars) => {
-      queryClient.invalidateQueries({ queryKey: PIN_KEYS.lists() });
-      vars.ids.forEach((id) => queryClient.removeQueries({ queryKey: PIN_KEYS.item({ id }) }));
-    },
-  });
-
-export const undoPinsRemovalMutationOptions = () =>
-  mutationOptions({
-    mutationFn: (body: PinAPIs.UndoRemoval["body"]) => undoPinsRemoval(body),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: PIN_KEYS.lists() });
     },
   });

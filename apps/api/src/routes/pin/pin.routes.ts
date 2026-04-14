@@ -129,73 +129,25 @@ export const updateOneById = router.register({
   },
 } as const);
 
-export const removeOneById = router.register({
+export const deleteOneById = router.register({
   tags,
   method: "delete",
-  path: API_ROUTES.PIN.removeOneById.path("{id}"),
-  summary: "Softly remove a pin by ID",
-  description: "Softly remove a single pin using its unique ID.",
+  path: API_ROUTES.PIN.deleteOneById.path("{id}"),
+  summary: "Delete a pin by ID",
+  description: "Delete a single pin using its unique ID.",
   request: {
-    params: requestSchemas.removeOneById.params,
+    params: requestSchemas.deleteOneById.params,
   },
   responses: {
     [HttpStatusCodes.NO_CONTENT]: {
       description: "No Content",
     },
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
-      requestSchemas.removeOneById.responses[HttpStatusCodes.NOT_FOUND],
+      requestSchemas.deleteOneById.responses[HttpStatusCodes.NOT_FOUND],
       HttpStatusPhrases.NOT_FOUND
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
-      requestSchemas.removeOneById.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
-      "Validation Error"
-    ),
-  },
-} as const);
-
-export const removeMany = router.register({
-  tags,
-  method: "delete",
-  path: API_ROUTES.PIN.removeMany.path(),
-  summary: "Remove multiple pins",
-  description: "Remove multiple pins using its unique IDs.",
-  request: {
-    body: jsonContent(requestSchemas.removeMany.body),
-  },
-  responses: {
-    [HttpStatusCodes.NO_CONTENT]: {
-      description: "No Content",
-    },
-    [HttpStatusCodes.NOT_FOUND]: jsonContent(
-      requestSchemas.removeMany.responses[HttpStatusCodes.NOT_FOUND],
-      HttpStatusPhrases.NOT_FOUND
-    ),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
-      requestSchemas.removeMany.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
-      "Validation Error"
-    ),
-  },
-} as const);
-
-export const undoRemoval = router.register({
-  tags,
-  method: "patch",
-  path: API_ROUTES.PIN.undoRemoval.path(),
-  summary: "Undo removal of multiple pins",
-  description: "Undo removal of multiple pins.",
-  request: {
-    body: jsonContent(requestSchemas.undoRemoval.body),
-  },
-  responses: {
-    [HttpStatusCodes.NO_CONTENT]: {
-      description: "No Content",
-    },
-    [HttpStatusCodes.NOT_FOUND]: jsonContent(
-      requestSchemas.undoRemoval.responses[HttpStatusCodes.NOT_FOUND],
-      HttpStatusPhrases.NOT_FOUND
-    ),
-    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
-      requestSchemas.undoRemoval.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      requestSchemas.deleteOneById.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
       "Validation Error"
     ),
   },
@@ -249,8 +201,7 @@ router
     validator,
     handlers.updateOneById,
   ])
-  .addHandler(removeOneById, [handlers.removeOneById])
-  .addHandler(removeMany, [handlers.removeMany])
+  .addHandler(deleteOneById, [handlers.deleteOneById])
   .addHandler(search, ({ validator }) => [
     rateLimiter({ limit: 2, windowMs: 10000 }),
     validator,

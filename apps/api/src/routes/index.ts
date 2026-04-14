@@ -5,12 +5,11 @@ import { env } from "@/configs/env.js";
 import { serveAPIDocument } from "@/lib/openapi.js";
 
 import { authRouter } from "./auth/auth.routes.js";
-import { mediaRouter } from "./media/media.routes.js";
 import { pinRouter } from "./pin/pin.routes.js";
 import { userRouter } from "./user/user.routes.js";
 
 export const router = Router();
-const routes: Router[] = [mediaRouter, userRouter, pinRouter, authRouter];
+const routes: Router[] = [userRouter, pinRouter, authRouter];
 
 serveAPIDocument(router, "/docs");
 
