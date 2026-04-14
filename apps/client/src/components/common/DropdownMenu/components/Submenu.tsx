@@ -11,8 +11,7 @@ import {
 import Typography from "@/components/ui/Typography";
 
 import { useDropdownMenuContext } from "../context";
-import Group from "./Group";
-import Item from "./Item";
+import Content from "./Content";
 
 function Submenu(item: DropdownMenuSubMenu) {
   const { slotProps } = useDropdownMenuContext();
@@ -37,13 +36,7 @@ function Submenu(item: DropdownMenuSubMenu) {
 
       <DropdownMenuPortal>
         <DropdownMenuSubContent {...slotProps?.submenuContent}>
-          {item.data.map((itemOrGroup) =>
-            "group" in itemOrGroup ? (
-              <Group {...itemOrGroup} key={itemOrGroup.key} />
-            ) : (
-              <Item {...itemOrGroup} key={itemOrGroup.key} />
-            )
-          )}
+          <Content data={item.data} />
         </DropdownMenuSubContent>
       </DropdownMenuPortal>
     </DropdownMenuSub>

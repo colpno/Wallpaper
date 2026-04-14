@@ -4,6 +4,8 @@ import {
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
   DropdownMenuShortcut,
   DropdownMenuSub,
   DropdownMenuSubContent,
@@ -27,6 +29,11 @@ export type DropdownMenuItemLinkContent = {
   className?: LinkAsNavLinkProps["className"];
 } & Partial<Omit<React.ComponentProps<typeof DropdownMenuItem>, "children" | "className">>;
 
+export type DropdownMenuRadioItem = {
+  value: string;
+} & Pick<DropdownMenuItemBaseContent, "icon" | "label" | "shortcut"> &
+  Partial<Omit<React.ComponentProps<typeof DropdownMenuRadioItem>, "children" | "value">>;
+
 export type DropdownMenuSubMenu = {
   trigger: DropdownMenuItemBaseContent;
   data: DropdownMenuProps["data"];
@@ -48,7 +55,18 @@ export type DropdownMenuGroup = {
   group: DropdownMenuItem[];
 };
 
-export type DropdownMenuData = (DropdownMenuItem | DropdownMenuGroup)[];
+export type DropdownMenuRadioGroup = {
+  /**
+   * An unique identity of the group.
+   */
+  key: string;
+  label?: React.ReactNode;
+  radios: DropdownMenuRadioItem[];
+  value?: string;
+  onChange?: (value: string) => void;
+};
+
+export type DropdownMenuData = (DropdownMenuItem | DropdownMenuGroup | DropdownMenuRadioGroup)[];
 
 export type DropdownMenuProps = {
   data: DropdownMenuData;
@@ -69,5 +87,7 @@ export type ContextState = {
     submenu?: React.ComponentProps<typeof DropdownMenuSub>;
     submenuTrigger?: React.ComponentProps<typeof DropdownMenuSubTrigger>;
     submenuContent?: React.ComponentProps<typeof DropdownMenuSubContent>;
+    radioGroup?: React.ComponentProps<typeof DropdownMenuRadioGroup>;
+    radioItem?: React.ComponentProps<typeof DropdownMenuRadioItem>;
   };
 };

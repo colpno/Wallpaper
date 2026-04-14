@@ -7,8 +7,7 @@ import {
 } from "@repo/ui/components";
 import { cn } from "@repo/ui/lib";
 
-import Group from "./components/Group";
-import Item from "./components/Item";
+import Content from "./components/Content";
 import { DropdownMenuContext } from "./context";
 
 function DropdownMenu({ data, trigger, slotProps, ...props }: DropdownMenuProps) {
@@ -21,13 +20,7 @@ function DropdownMenu({ data, trigger, slotProps, ...props }: DropdownMenuProps)
           {...slotProps?.content}
           className={cn("p-3", slotProps?.content?.className)}
         >
-          {data.map((itemOrGroup) =>
-            "group" in itemOrGroup ? (
-              <Group {...itemOrGroup} key={itemOrGroup.key} />
-            ) : (
-              <Item {...itemOrGroup} key={itemOrGroup.key} />
-            )
-          )}
+          <Content data={data} />
         </DropdownMenuContent>
       </UIDropdownMenu>
     </DropdownMenuContext>
