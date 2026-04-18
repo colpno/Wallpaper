@@ -6,10 +6,11 @@ import { serveAPIDocument } from "@/lib/openapi.js";
 
 import { authRouter } from "./auth/auth.routes.js";
 import { pinRouter } from "./pin/pin.routes.js";
+import { savedIdeaRouter } from "./saved-idea/saved-idea.routes.js";
 import { userRouter } from "./user/user.routes.js";
 
 export const router = Router();
-const routes: Router[] = [userRouter, pinRouter, authRouter];
+const routes: Router[] = [userRouter, pinRouter, authRouter, savedIdeaRouter];
 
 serveAPIDocument(router, "/docs");
 

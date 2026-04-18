@@ -43,7 +43,7 @@ function ZoomOutButton({ pin, zoomOptions = defaultZoomOptions, ...props }: Prop
     <Dialog
       open={open}
       trigger={
-        <Button variant="icon" size="xl" {...props} onClick={() => setOpen(true)}>
+        <Button variant="secondary-icon" size="xl" {...props} onClick={() => setOpen(true)}>
           <MdOutlineZoomOutMap />
         </Button>
       }

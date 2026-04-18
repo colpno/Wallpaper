@@ -1,9 +1,10 @@
 import type { Types } from "mongoose";
 
 import { faker } from "@faker-js/faker";
-import type { Pin, PinDB, User, UserDB } from "@repo/types";
+import type { Pin, PinDB, SavedIdea, SavedIdeaDB, User, UserDB } from "@repo/types";
 
 import { PinModel } from "@/routes/pin/pin.model.js";
+import { SavedIdeaModel } from "@/routes/saved-idea/saved-idea.model.js";
 import { UserModel } from "@/routes/user/user.model.js";
 
 import { testUserPassword } from "./variables.js";
@@ -48,6 +49,7 @@ export const createUser = (): Readonly<Required<User>> => {
 export type SeededDB = Readonly<{
   pins: Required<PinDB<Types.ObjectId>[]>;
   users: Required<UserDB[]>;
+  savedIdeas: Required<SavedIdeaDB[]>;
 }>;
 
 export const seedDatabase = async (): Promise<SeededDB> => {
@@ -58,23 +60,43 @@ export const seedDatabase = async (): Promise<SeededDB> => {
     _id: item._id.toString(),
   })) as unknown as SeededDB["users"];
 
+  const pins = (
+    await PinModel.insertMany(
+      faker.helpers.multiple(
+        () =>
+          ({
+            ...createPin(),
+            pinOwner: faker.helpers.arrayElement(users)._id.toString(),
+          }) satisfies Pin,
+        { count: 10 }
+      )
+    )
+  ).map((item) => ({
+    ...item.toObject(),
+    _id: item._id.toString(),
+  })) as unknown as SeededDB["pins"];
+
+  const savedIdeas = (
+    await SavedIdeaModel.insertMany(
+      faker.helpers.multiple(
+        () =>
+          ({
+            savedBy: faker.helpers.arrayElement(users.map((u) => u._id)),
+            pin: faker.helpers.arrayElement(pins.map((p) => p._id)),
+          }) satisfies SavedIdea,
+        { count: 10 }
+      )
+    )
+  ).map((item) => ({
+    ...item.toObject(),
+    _id: item._id.toString(),
+    savedBy: item.savedBy.toString(),
+    pin: item.pin.toString(),
+  })) as unknown as SeededDB["savedIdeas"];
+
   return {
     users,
-
-    pins: (
-      await PinModel.insertMany(
-        faker.helpers.multiple(
-          () =>
-            ({
-              ...createPin(),
-              pinOwner: faker.helpers.arrayElement(users)._id.toString(),
-            }) satisfies Pin,
-          { count: 10 }
-        )
-      )
-    ).map((item) => ({
-      ...item.toObject(),
-      _id: item._id.toString(),
-    })) as unknown as SeededDB["pins"],
+    pins,
+    savedIdeas,
   };
 };

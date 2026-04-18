@@ -1,10 +1,12 @@
 export * as AuthAPIs from "./apis/auth.js";
 export * from "./apis/payload.js";
 export * as PinAPIs from "./apis/pin.js";
+export * as SavedIdeaAPIs from "./apis/saved-idea.js";
 export * as UserAPIs from "./apis/user.js";
 export * from "./common.js";
 export * from "./helpers.js";
 export * from "./models/pin.js";
+export * from "./models/saved-idea.js";
 export * from "./models/user.js";
 export * from "./query.js";
 export * from "./zod-types.js";

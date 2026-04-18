@@ -98,7 +98,7 @@ function PinPage() {
 
         {similarPins.map((item) => (
           <MasonryWrapper key={item._id}>
-            <PinCard {...item} />
+            <PinCard item={item} />
           </MasonryWrapper>
         ))}
 

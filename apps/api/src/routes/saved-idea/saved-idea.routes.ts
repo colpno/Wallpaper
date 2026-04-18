@@ -1,0 +1,68 @@
+import { API_ROUTES, HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
+
+import { jsonContent } from "@/utils/openapi.js";
+import { Router } from "@/utils/Router.js";
+
+import * as handlers from "./saved-idea.handlers.js";
+import { requestSchemas } from "./saved-idea.schemas.js";
+
+const tags = ["Saved Idea"];
+const router = new Router();
+
+export const { router: savedIdeaRouter } = router;
+
+export const checkSaved = router.register({
+  tags,
+  method: "get",
+  path: API_ROUTES.SAVED_IDEA.checkSaved.path(),
+  summary: "Is pin saved?",
+  description: "Check if a pin is saved.",
+  request: {
+    query: requestSchemas.checkSaved.query,
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      requestSchemas.checkSaved.responses[HttpStatusCodes.OK],
+      "Successful Response"
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.checkSaved.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.checkSaved.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
+  },
+} as const);
+
+export const addOne = router.register({
+  tags,
+  method: "post",
+  path: API_ROUTES.SAVED_IDEA.addOne.path(),
+  summary: "Save an idea.",
+  description: "Create a new idea.",
+  request: {
+    body: jsonContent(requestSchemas.addOne.body),
+  },
+  responses: {
+    [HttpStatusCodes.CREATED]: jsonContent(
+      requestSchemas.addOne.responses[HttpStatusCodes.CREATED],
+      "Successful Response (resource was updated)"
+    ),
+    [HttpStatusCodes.CONFLICT]: jsonContent(
+      requestSchemas.addOne.responses[HttpStatusCodes.CONFLICT],
+      "Conflict Error"
+    ),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      requestSchemas.addOne.responses[HttpStatusCodes.BAD_REQUEST],
+      "Bad Request"
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.addOne.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
+  },
+} as const);
+
+router.addHandler(checkSaved, [handlers.checkSaved]).addHandler(addOne, [handlers.addOne]);

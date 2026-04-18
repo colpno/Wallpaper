@@ -1,23 +1,66 @@
-import type { Pin } from "@repo/types";
+import type { PinDB } from "@repo/types";
 import { cn } from "@repo/ui/lib";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { LuDownload } from "react-icons/lu";
 
+import { useStore } from "@/app/stores/useStore";
+import SavePinButton from "@/components/common/SavePinButton";
 import Button from "@/components/ui/Button";
 import Image from "@/components/ui/Image";
+import Link from "@/components/ui/Link";
+import { ROUTES } from "@/constants/common";
 import { HEADER_HEIGHT } from "@/constants/components";
+import { checkSavedQueryOptions } from "@/features/saved-idea/services/api/queries";
 
 import ZoomOutButton from "./ZoomOutButton";
 
-function PinInfo(pin: Pick<Pin, "photoUrl" | "photoWidth" | "photoAspectRatio">) {
+function PinInfo(pin: Pick<PinDB, "_id" | "photoUrl" | "photoWidth" | "photoAspectRatio">) {
+  const user = useStore((state) => state.user);
+  const [isSavePinSuccess, setIsSavePinSuccess] = useState(false);
+  const { data } = useQuery({
+    ...checkSavedQueryOptions({ userId: user?.id || "", pinId: pin._id }),
+    enabled: !!user?.id,
+  });
+  const isSaved = data?.saved;
+
+  if (!user) {
+    throw new Error("Must be logged in to use this feature");
+  }
+
   return (
     <div className="w-full overflow-clip rounded-2xl border border-gray-300">
       <div
-        className="sticky right-0 left-0 z-pinpage-detail flex h-16 bg-background px-4 py-2"
+        className="sticky right-0 left-0 z-pinpage-detail flex h-16 items-center justify-between bg-background px-4 py-2"
         style={{ top: HEADER_HEIGHT }}
       >
-        <Button variant="ghost-icon" size="xl">
-          <LuDownload />
-        </Button>
+        <div>
+          <Button variant="ghost-icon" size="xl">
+            <LuDownload />
+          </Button>
+        </div>
+
+        <div className="flex gap-2">
+          {isSavePinSuccess ||
+            (isSaved && (
+              <Link
+                to={ROUTES.PROFILE(user.username)}
+                button
+                variant="ghost"
+                size="sm"
+                className="hover:underline"
+              >
+                Profile
+              </Link>
+            ))}
+
+          <SavePinButton
+            pinId={pin._id}
+            pinPhoto={pin.photoUrl}
+            saved={data?.saved}
+            onSuccess={setIsSavePinSuccess}
+          />
+        </div>
       </div>
 
       <div className="px-4 pb-3">

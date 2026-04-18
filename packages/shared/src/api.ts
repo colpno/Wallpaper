@@ -3,6 +3,7 @@ const BASE_PATH = {
   MEDIA: "/medias",
   PIN: "/pins",
   USER: "/users",
+  SAVED_IDEA: "/saved-ideas",
 } as const;
 
 export const API_ROUTES = {
@@ -16,12 +17,14 @@ export const API_ROUTES = {
       method: "post",
     },
   },
+
   MEDIA: {
     deleteExpiredMedias: {
       path: () => `${BASE_PATH.MEDIA}/expired` as const,
       method: "delete",
     },
   },
+
   PIN: {
     getMany: {
       path: () => BASE_PATH.PIN,
@@ -60,6 +63,7 @@ export const API_ROUTES = {
       method: "get",
     },
   },
+
   USER: {
     updateOneById: {
       path: (id: string) => `${BASE_PATH.USER}/${id}` as const,
@@ -68,6 +72,17 @@ export const API_ROUTES = {
     deleteOneById: {
       path: (id: string) => `${BASE_PATH.USER}/${id}` as const,
       method: "delete",
+    },
+  },
+
+  SAVED_IDEA: {
+    checkSaved: {
+      path: () => `${BASE_PATH.SAVED_IDEA}/check` as const,
+      method: "get",
+    },
+    addOne: {
+      path: () => BASE_PATH.SAVED_IDEA,
+      method: "post",
     },
   },
 } as const satisfies Record<
