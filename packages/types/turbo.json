@@ -1,6 +1,9 @@
 {
   "extends": ["//"],
   "tasks": {
+    "dev:packages": {
+      "with": ["dev"]
+    },
     "build": {
       "env": [
         "VITE_API_URL",

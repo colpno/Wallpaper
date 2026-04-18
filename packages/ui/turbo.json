@@ -1,6 +1,12 @@
 {
   "extends": ["//"],
   "tasks": {
+    "dev": {
+      "with": ["@repo/ui#dev:components"]
+    },
+    "dev:packages": {
+      "with": ["dev"]
+    },
     "dev:styles": {
       "cache": false,
       "persistent": true
