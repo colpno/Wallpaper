@@ -11,7 +11,7 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <RouterProvider router={routes} />
-        <Toaster />
+        <Toaster position="bottom-center" />
       </TooltipProvider>
     </QueryClientProvider>
   );
