@@ -1,7 +1,7 @@
 import type { PinAPIs } from "@repo/types";
 
 export const PIN_KEYS = {
-  all: () => ["posts"],
+  all: () => ["pins"],
   lists: () => [...PIN_KEYS.all(), "list"],
   list: (query: PinAPIs.GetMany["query"]) => [...PIN_KEYS.lists(), query],
   items: () => [...PIN_KEYS.all(), "item"],
