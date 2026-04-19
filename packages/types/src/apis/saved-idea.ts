@@ -36,3 +36,10 @@ export type AddOne = {
   } & Pick<SavedIdea, "savedBy">;
   response: SavedIdeaDB;
 };
+
+export type DeleteOneById = {
+  params: {
+    id: string;
+  };
+  response: never;
+};

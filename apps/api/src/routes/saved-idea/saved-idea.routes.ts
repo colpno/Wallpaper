@@ -90,7 +90,32 @@ export const addOne = router.register({
   },
 } as const);
 
+export const deleteOneById = router.register({
+  tags,
+  method: "delete",
+  path: API_ROUTES.SAVED_IDEA.deleteOneById.path("{id}"),
+  summary: "Delete an idea by ID",
+  description: "Delete a single idea using its unique ID.",
+  request: {
+    params: requestSchemas.deleteOneById.params,
+  },
+  responses: {
+    [HttpStatusCodes.NO_CONTENT]: {
+      description: "No Content",
+    },
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.deleteOneById.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.deleteOneById.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
+  },
+} as const);
+
 router
   .addHandler(checkSaved, [handlers.checkSaved])
   .addHandler(getMany, [handlers.getMany])
-  .addHandler(addOne, [handlers.addOne]);
+  .addHandler(addOne, [handlers.addOne])
+  .addHandler(deleteOneById, [handlers.deleteOneById]);

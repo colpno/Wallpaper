@@ -33,3 +33,9 @@ export const addSavedIdea = (body: SavedIdeaAPIs.AddOne["body"]) =>
     method: API_ROUTES.SAVED_IDEA.addOne.method,
     data: body,
   });
+
+export const deleteSavedIdeaById = (params: SavedIdeaAPIs.DeleteOneById["params"]) =>
+  request<SavedIdeaAPIs.DeleteOneById["response"]>({
+    url: API_ROUTES.SAVED_IDEA.deleteOneById.path(params.id),
+    method: API_ROUTES.SAVED_IDEA.deleteOneById.method,
+  });

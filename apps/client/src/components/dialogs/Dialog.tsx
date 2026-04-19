@@ -15,10 +15,12 @@ import Button from "../ui/Button";
 type Props = {
   title?: React.ReactNode;
   trigger?: React.ReactNode;
+  footer?: React.ReactNode;
   slotProps?: {
     trigger?: React.ComponentProps<typeof DialogTrigger>;
     header?: React.ComponentProps<typeof DialogHeader>;
     footer?: React.ComponentProps<typeof DialogFooter>;
+    title?: React.ComponentProps<typeof DialogTitle>;
     contentContainer?: React.ComponentProps<"div">;
   };
   showFooter?: boolean;
@@ -35,6 +37,7 @@ function Dialog({
   trigger,
   slotProps,
   showFooter = true,
+  footer,
   ...props
 }: Props) {
   return (
@@ -49,7 +52,7 @@ function Dialog({
           {...slotProps?.header}
           className={cn(!title && "sr-only", slotProps?.header?.className)}
         >
-          <DialogTitle>{title}</DialogTitle>
+          <DialogTitle {...slotProps?.title}>{title}</DialogTitle>
 
           {!!title && <Separator />}
         </DialogHeader>
@@ -61,14 +64,18 @@ function Dialog({
           {children}
         </div>
 
-        {showFooter && (
+        {(footer || showFooter) && (
           <DialogFooter
             {...slotProps?.footer}
             className={cn("justify-center", slotProps?.footer?.className)}
           >
-            <DialogClose asChild>
-              <Button className="w-full">Close</Button>
-            </DialogClose>
+            {footer ? (
+              footer
+            ) : (
+              <DialogClose asChild>
+                <Button className="w-full">Close</Button>
+              </DialogClose>
+            )}
           </DialogFooter>
         )}
       </DialogContent>

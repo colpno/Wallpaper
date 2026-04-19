@@ -1,4 +1,4 @@
-import type { AddOne, CheckSaved, GetMany } from "./saved-idea.types.js";
+import type { AddOne, CheckSaved, DeleteOneById, GetMany } from "./saved-idea.types.js";
 import type { RequestSchemas } from "@/types/common.js";
 import type { ZodType } from "zod";
 
@@ -112,6 +112,16 @@ export const requestSchemas = {
       [HttpStatusCodes.CREATED]: savedIdeaSchema satisfies ZodType<AddOne["response"]>,
       [HttpStatusCodes.CONFLICT]: httpErrorSchema,
       [HttpStatusCodes.BAD_REQUEST]: httpErrorSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
+    },
+  },
+
+  deleteOneById: {
+    params: z.object({
+      id: objectIdSchema,
+    }) satisfies ZodType<DeleteOneById["params"]>,
+    responses: {
+      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },
   },

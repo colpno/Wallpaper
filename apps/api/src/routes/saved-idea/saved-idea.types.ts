@@ -15,3 +15,7 @@ export type CheckSaved = {
 export type AddOne = {
   handler: RouteHandler<typeof routes.addOne>;
 } & SavedIdeaAPIs.AddOne;
+
+export type DeleteOneById = {
+  handler: RouteHandler<typeof routes.deleteOneById>;
+} & SavedIdeaAPIs.DeleteOneById;

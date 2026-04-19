@@ -88,6 +88,10 @@ export const API_ROUTES = {
       path: () => BASE_PATH.SAVED_IDEA,
       method: "post",
     },
+    deleteOneById: {
+      path: (id: string) => `${BASE_PATH.SAVED_IDEA}/${id}` as const,
+      method: "delete",
+    },
   },
 } as const satisfies Record<
   keyof typeof BASE_PATH,

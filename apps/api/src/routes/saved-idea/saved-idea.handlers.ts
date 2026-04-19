@@ -1,8 +1,9 @@
-import type { AddOne, CheckSaved, GetMany } from "./saved-idea.types.js";
+import type { AddOne, CheckSaved, DeleteOneById, GetMany } from "./saved-idea.types.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 import type { SavedIdeaDB } from "@repo/types";
 
+import { logger } from "@/lib/logger.js";
 import { buildQueryWithOptions, organizeQueryInput } from "@/utils/build-query-with-options.js";
 import { toPaginationPayload } from "@/utils/converters.js";
 
@@ -62,6 +63,23 @@ export const addOne: AddOne["handler"] = async (req, res, next) => {
       return res.status(HttpStatusCodes.CONFLICT).json({ message: "This pin is already saved" });
     }
 
+    return next(error);
+  }
+};
+
+export const deleteOneById: DeleteOneById["handler"] = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+
+    const idea = await SavedIdeaModel.findByIdAndDelete(id);
+
+    if (!idea) {
+      logger.debug(`Saved idea with id ${id.toString()} not found`);
+      return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Saved idea not found" });
+    }
+
+    return res.status(HttpStatusCodes.NO_CONTENT).end();
+  } catch (error) {
     return next(error);
   }
 };

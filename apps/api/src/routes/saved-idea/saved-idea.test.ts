@@ -8,6 +8,7 @@ import { seedDatabase, type SeededDB } from "@/test/samples.js";
 import { createTestClient } from "@/utils/create-test-client.js";
 
 import { userSchema } from "../user/user.schemas.js";
+import { SavedIdeaModel } from "./saved-idea.model.js";
 import * as routes from "./saved-idea.routes.js";
 import { requestSchemas, savedIdeaSchema } from "./saved-idea.schemas.js";
 
@@ -15,6 +16,7 @@ let db: SeededDB;
 const getSavedIdeas = createTestClient(routes.getMany);
 const checkSaved = createTestClient(routes.checkSaved);
 const addSavedIdea = createTestClient(routes.addOne);
+const deleteSavedIdeaById = createTestClient(routes.deleteOneById);
 
 describe("Saved idea routes", () => {
   beforeEach(async () => {
@@ -232,6 +234,56 @@ describe("Saved idea routes", () => {
 
       expect(parseResult.success).toBe(true);
       expect(parseResult.data).not.toHaveProperty(extraKey);
+    });
+  });
+
+  describe(`${routes.deleteOneById.method.toUpperCase()} ${routes.deleteOneById.path}`, () => {
+    it("returns a successful response", async () => {
+      const savedIdea = db.savedIdeas[0]!;
+
+      const deleteSavedIdeaResponse = await deleteSavedIdeaById({ id: savedIdea._id });
+
+      expect(deleteSavedIdeaResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
+
+      const ideas = await SavedIdeaModel.findById(savedIdea._id);
+
+      expect(ideas).toBe(null);
+    });
+
+    it("returns a validation error if missing required fields", async () => {
+      const response = await deleteSavedIdeaById();
+
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.deleteOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a validation error if payload is invalid", async () => {
+      const response = await deleteSavedIdeaById({ id: "invalid" });
+
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.deleteOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a not found error if id does not belong to any", async () => {
+      const response = await deleteSavedIdeaById({ id: "68d817527719e9421cb63734" });
+
+      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
+
+      const parseResult = requestSchemas.deleteOneById.responses[
+        HttpStatusCodes.NOT_FOUND
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
     });
   });
 });
