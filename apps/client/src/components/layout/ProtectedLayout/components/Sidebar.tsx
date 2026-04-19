@@ -27,7 +27,7 @@ function Sidebar() {
       {
         label: "Home",
         element: (
-          <Link to={ROUTES.HOME()} button variant="ghost-icon" size="xl">
+          <Link to={ROUTES.HOME()} button variant="ghost" size="icon-xl">
             <Icon variant="favicon" className="size-8.5!" />
           </Link>
         ),
@@ -35,7 +35,7 @@ function Sidebar() {
       {
         label: "Home",
         element: (
-          <Link to={ROUTES.HOME()} navlink button variant="ghost-icon" size="xl">
+          <Link to={ROUTES.HOME()} navlink button variant="ghost" size="icon-xl">
             {({ isActive }) => (isActive ? <PiHouseFill /> : <PiHouseBold />)}
           </Link>
         ),
@@ -43,7 +43,7 @@ function Sidebar() {
       {
         label: "Your boards",
         element: (
-          <Link to={ROUTES.PROFILE(user.username)} navlink button variant="ghost-icon" size="xl">
+          <Link to={ROUTES.PROFILE(user.username)} navlink button variant="ghost" size="icon-xl">
             {({ isActive }) => (isActive ? <MdSpaceDashboard /> : <MdOutlineSpaceDashboard />)}
           </Link>
         ),
@@ -51,7 +51,7 @@ function Sidebar() {
       {
         label: "Create",
         element: (
-          <Link to={ROUTES.PIN_CREATION()} navlink button variant="ghost-icon" size="xl">
+          <Link to={ROUTES.PIN_CREATION()} navlink button variant="ghost" size="icon-xl">
             {({ isActive }) => (isActive ? <FaSquarePlus /> : <FaRegSquarePlus />)}
           </Link>
         ),
@@ -61,7 +61,7 @@ function Sidebar() {
       {
         label: "Settings & Support",
         element: (
-          <Button variant="ghost-icon" size="xl" className="mt-auto">
+          <Button variant="ghost" size="icon-xl" className="mt-auto">
             <IoSettingsOutline />
           </Button>
         ),

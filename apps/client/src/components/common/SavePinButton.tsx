@@ -55,9 +55,7 @@ function SavePinButton({ pinId, pinPhoto, onSuccess, saved, ...props }: Props) {
             </Link>
           </div>
 
-          <Button size="sm" className="">
-            Undo
-          </Button>
+          <Button size="sm">Undo</Button>
         </div>,
         { style: { width: "fit-content" } }
       );

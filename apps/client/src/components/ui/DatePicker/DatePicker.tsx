@@ -55,7 +55,7 @@ function DatePicker<TMode extends Mode = "single">({
         end: (
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-              <Button variant="ghost-icon" aria-label="Select date">
+              <Button variant="ghost" size="icon-md" aria-label="Select date">
                 <CalendarIcon className="size-4.5" />
 
                 <span className="sr-only">Select date</span>

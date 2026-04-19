@@ -35,7 +35,7 @@ function PinInfo(pin: Pick<PinDB, "_id" | "photoUrl" | "photoWidth" | "photoAspe
         style={{ top: HEADER_HEIGHT }}
       >
         <div>
-          <Button variant="ghost-icon" size="xl">
+          <Button variant="ghost" size="icon-xl">
             <LuDownload />
           </Button>
         </div>

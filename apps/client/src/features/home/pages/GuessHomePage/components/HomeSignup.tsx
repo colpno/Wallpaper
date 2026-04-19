@@ -48,8 +48,8 @@ function HomeSignup(props: React.ComponentProps<"section">) {
 
       {/* To top button */}
       <Button
-        variant="icon"
-        size="xl"
+        variant="default"
+        size="icon-xl"
         className="absolute top-20 left-1/2 -translate-x-1/2 bg-[rgb(156,3,67)]!"
         onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
       >

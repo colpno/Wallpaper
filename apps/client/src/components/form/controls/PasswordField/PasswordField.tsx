@@ -65,7 +65,8 @@ function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
                 addons={{
                   end: (
                     <Button
-                      variant="ghost-icon"
+                      variant="ghost"
+                      size="icon-md"
                       onClick={handleEyeClick}
                       aria-label="Reveal password"
                       className="text-lg"

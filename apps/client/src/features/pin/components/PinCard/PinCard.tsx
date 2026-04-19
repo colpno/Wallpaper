@@ -66,7 +66,7 @@ function PinCard(
           </div>
         )}
 
-        <Button size="sm" variant="ghost-icon" className="ml-auto">
+        <Button size="icon-sm" variant="ghost" className="ml-auto">
           <BsThreeDots />
         </Button>
       </div>

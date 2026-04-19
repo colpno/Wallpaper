@@ -12,84 +12,25 @@ const buttonVariants = cva(
         default:
           "bg-primary text-primary-foreground hover:bg-primary-600 focus-visible:border-primary focus-visible:ring-primary/50",
         secondary: "bg-secondary text-secondary-foreground hover:bg-neutral-300",
+        tertiary: "bg-background text-foreground hover:bg-background/80",
         outline: "border bg-background hover:bg-accent hover:text-accent-foreground",
         ghost: "hover:bg-accent hover:text-accent-foreground",
-
-        icon: "bg-primary text-primary-foreground hover:bg-primary-600 focus-visible:border-primary focus-visible:ring-primary/50",
-        "secondary-icon": "bg-secondary text-secondary-foreground hover:bg-neutral-300",
-        "outline-icon": "border bg-background hover:bg-accent hover:text-accent-foreground",
-        "ghost-icon": "hover:bg-accent hover:text-accent-foreground",
+        active:
+          "bg-selected-background text-selected-foreground hover:bg-selected-hover-background",
       },
       size: {
-        xs: "",
-        sm: "",
-        md: "",
-        lg: "",
-        xl: "",
+        xs: "gap-0.5 px-2 py-1 text-xs",
+        sm: "gap-1 px-3 py-2 text-sm",
+        md: "px-3.5 py-3 text-base",
+        lg: "px-4 py-2 text-sm",
+        xl: "px-5 py-3 text-base",
+        "icon-xs": "size-2 rounded-sm text-xs *:size-3",
+        "icon-sm": "size-4 rounded-sm text-xs *:size-3",
+        "icon-md": "size-6 rounded-md text-sm *:size-3.5",
+        "icon-lg": "size-9 rounded-lg text-base *:size-4",
+        "icon-xl": "size-12 rounded-xl text-2xl *:size-6",
       },
     },
-    compoundVariants: [
-      // Icon
-      ...(
-        [
-          {
-            size: "xs",
-            className: "size-2 rounded-sm text-xs *:size-3",
-          },
-          {
-            size: "sm",
-            className: "size-4 rounded-sm text-xs *:size-3",
-          },
-          {
-            size: "md",
-            className: "size-6 rounded-md text-sm *:size-3.5",
-          },
-          {
-            size: "lg",
-            className: "size-9 rounded-lg text-base *:size-4",
-          },
-          {
-            size: "xl",
-            className: "size-12 rounded-xl text-2xl *:size-6",
-          },
-        ] as const
-      ).map((config) => ({
-        ...config,
-        variant: ["icon", "ghost-icon", "outline-icon", "secondary-icon"] as Array<
-          "icon" | "ghost-icon" | "outline-icon" | "secondary-icon"
-        >,
-      })),
-      // Others
-      ...(
-        [
-          {
-            size: "xs",
-            className: "gap-0.5 px-1 py-1 text-xs",
-          },
-          {
-            size: "sm",
-            className: "gap-1 px-2 py-2 text-sm",
-          },
-          {
-            size: "md",
-            className: "px-3.5 py-3 text-base",
-          },
-          {
-            size: "lg",
-            className: "px-4 py-2 text-sm",
-          },
-          {
-            size: "xl",
-            className: "px-5 py-3 text-base",
-          },
-        ] as const
-      ).map((config) => ({
-        ...config,
-        variant: ["default", "outline", "secondary", "ghost"] as Array<
-          "default" | "outline" | "secondary" | "ghost"
-        >,
-      })),
-    ],
     defaultVariants: {
       variant: "default",
       size: "md",

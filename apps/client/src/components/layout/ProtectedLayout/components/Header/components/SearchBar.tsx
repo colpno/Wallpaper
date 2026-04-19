@@ -79,7 +79,8 @@ function SearchBar({ placeholder = "Search for easy dinners, fashion, etc.", ...
               start: <LuSearch className={cn("size-4.5", isInputFocused && "hidden")} />,
               end: (
                 <Button
-                  variant="ghost-icon"
+                  variant="ghost"
+                  size="icon-md"
                   onClick={() => setValue("q", "")}
                   className={cn(
                     "size-11 rounded-2xl hover:bg-gray-50",

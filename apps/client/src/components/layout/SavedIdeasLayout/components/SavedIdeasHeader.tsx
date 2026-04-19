@@ -117,7 +117,7 @@ function PageActions() {
             },
           ]}
           trigger={
-            <Button variant="ghost-icon" size="xl">
+            <Button variant="ghost" size="icon-xl">
               <PiSlidersHorizontal />
             </Button>
           }

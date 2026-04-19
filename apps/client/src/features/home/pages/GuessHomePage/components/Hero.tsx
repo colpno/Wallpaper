@@ -184,8 +184,7 @@ function Hero(props: React.ComponentProps<"section">) {
 
       {/* Play button */}
       <Button
-        variant="icon"
-        size="lg"
+        size="icon-lg"
         className="absolute right-5 bottom-5 bg-secondary text-foreground"
         onClick={handlePlayButtonClick}
       >
