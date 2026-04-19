@@ -76,6 +76,10 @@ export const API_ROUTES = {
   },
 
   SAVED_IDEA: {
+    getMany: {
+      path: () => BASE_PATH.SAVED_IDEA,
+      method: "get",
+    },
     checkSaved: {
       path: () => `${BASE_PATH.SAVED_IDEA}/check` as const,
       method: "get",

@@ -10,6 +10,7 @@
   --z-index-header-search-overlay: 39;
   --z-index-sidebar: 30;
   --z-index-pinpage-detail: 38;
+  --z-index-saved-ideas-header: 38;
 }
 
 @keyframes scale-down {

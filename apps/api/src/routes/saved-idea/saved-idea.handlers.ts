@@ -1,9 +1,39 @@
-import type { AddOne, CheckSaved } from "./saved-idea.types.js";
+import type { AddOne, CheckSaved, GetMany } from "./saved-idea.types.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 import type { SavedIdeaDB } from "@repo/types";
 
+import { buildQueryWithOptions, organizeQueryInput } from "@/utils/build-query-with-options.js";
+import { toPaginationPayload } from "@/utils/converters.js";
+
 import { SavedIdeaModel } from "./saved-idea.model.js";
+
+export const getMany: GetMany["handler"] = async (req, res, next) => {
+  try {
+    const { options, queryFilters } = organizeQueryInput(req.query);
+
+    const savedIdeas = await buildQueryWithOptions(SavedIdeaModel.find(queryFilters), options).lean<
+      SavedIdeaDB[]
+    >();
+
+    if (!req.query.limit) {
+      return res.status(HttpStatusCodes.OK).json(savedIdeas);
+    }
+
+    const totalItems = await SavedIdeaModel.countDocuments({ user: req.query.userId });
+
+    const result = toPaginationPayload({
+      data: savedIdeas,
+      page: req.query.page ?? 1,
+      perPage: req.query.limit,
+      totalItems,
+    });
+
+    return res.status(HttpStatusCodes.OK).json(result);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 export const checkSaved: CheckSaved["handler"] = async (req, res, next) => {
   try {

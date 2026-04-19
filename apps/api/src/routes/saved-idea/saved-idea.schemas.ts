@@ -1,4 +1,4 @@
-import type { AddOne, CheckSaved } from "./saved-idea.types.js";
+import type { AddOne, CheckSaved, GetMany } from "./saved-idea.types.js";
 import type { RequestSchemas } from "@/types/common.js";
 import type { ZodType } from "zod";
 
@@ -11,6 +11,7 @@ import {
   httpErrorSchema,
   httpNotFoundSchema,
   httpValidationErrorSchema,
+  metaPaginationSchema,
   objectIdSchema,
   stringSchema,
 } from "@/utils/schemas.js";
@@ -60,6 +61,31 @@ export const queryFilterSchema = createQueryFilterSchema<SavedIdeaDB<UserDB, Pin
 );
 
 export const requestSchemas = {
+  getMany: {
+    query: queryFilterSchema
+      .pick({
+        embed: true,
+        select: true,
+        limit: true,
+        page: true,
+        sort: true,
+      })
+      .extend({
+        userId: objectIdSchema,
+      }),
+    responses: {
+      [HttpStatusCodes.OK]: z.union([
+        z.array(savedIdeaSchema),
+        z.object({
+          data: z.array(savedIdeaSchema),
+          meta: metaPaginationSchema,
+        }),
+      ]) satisfies ZodType<GetMany["response"]>,
+      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
+    },
+  },
+
   checkSaved: {
     query: z.object({
       userId: objectIdSchema,

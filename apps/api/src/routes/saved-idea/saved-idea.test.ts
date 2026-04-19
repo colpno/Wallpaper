@@ -1,20 +1,105 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { HttpStatusCodes } from "@repo/shared";
+import type { SavedIdeaAPIs } from "@repo/types";
 import { beforeEach, describe, expect, it } from "vitest";
+import z from "zod";
 
 import { seedDatabase, type SeededDB } from "@/test/samples.js";
 import { createTestClient } from "@/utils/create-test-client.js";
 
+import { userSchema } from "../user/user.schemas.js";
 import * as routes from "./saved-idea.routes.js";
-import { requestSchemas } from "./saved-idea.schemas.js";
+import { requestSchemas, savedIdeaSchema } from "./saved-idea.schemas.js";
 
 let db: SeededDB;
+const getSavedIdeas = createTestClient(routes.getMany);
 const checkSaved = createTestClient(routes.checkSaved);
 const addSavedIdea = createTestClient(routes.addOne);
 
 describe("Saved idea routes", () => {
   beforeEach(async () => {
     db = await seedDatabase();
+  });
+
+  describe(`${routes.getMany.method.toUpperCase()} ${routes.getMany.path}`, () => {
+    it("Returns a filtered list", async () => {
+      const userId = db.savedIdeas[0]!.savedBy;
+
+      const response = await getSavedIdeas().query({
+        userId,
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z.array(savedIdeaSchema).safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+      for (const savedIdea of parseResult.data!) {
+        expect(savedIdea.savedBy).toBe(userId);
+      }
+    });
+
+    it("returns a list with stripped properties", async () => {
+      const response = await getSavedIdeas().query({
+        userId: db.users[0]!._id,
+        select: {
+          _id: 0,
+          savedBy: 1,
+        },
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z
+        .array(
+          savedIdeaSchema.pick({
+            savedBy: true,
+          })
+        )
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a list with populated fields", async () => {
+      const embedKey: SavedIdeaAPIs.EmbeddableFields = "savedBy";
+
+      const response = await getSavedIdeas().query({
+        userId: db.users[0]!._id,
+        embed: embedKey,
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z
+        .array(
+          savedIdeaSchema
+            .omit({
+              [embedKey]: true,
+            })
+            .extend({
+              [embedKey]: userSchema,
+            })
+        )
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a validation error if payload is invalid", async () => {
+      const response = await getSavedIdeas().query({
+        // @ts-expect-error
+        userId: 123,
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.getMany.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
   });
 
   describe(`${routes.checkSaved.method.toUpperCase()} ${routes.checkSaved.path}`, () => {

@@ -43,7 +43,7 @@ function Sidebar() {
       {
         label: "Your boards",
         element: (
-          <Link to={ROUTES.BOARDS(user.username)} navlink button variant="ghost-icon" size="xl">
+          <Link to={ROUTES.PROFILE(user.username)} navlink button variant="ghost-icon" size="xl">
             {({ isActive }) => (isActive ? <MdSpaceDashboard /> : <MdOutlineSpaceDashboard />)}
           </Link>
         ),

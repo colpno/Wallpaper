@@ -40,6 +40,7 @@ export { default as Fashion2 } from "./fashion-2.jpg";
 export { default as Food1 } from "./food-1.jpg";
 export { default as Food2 } from "./food-2.jpg";
 export { default as GroupBoards } from "./group-boards.png";
+export { default as PinJar } from "./ill.pinjar.spot.light.svg.webp";
 export { default as Nail1 } from "./nail-1.jpg";
 export { default as Nail2 } from "./nail-2.jpg";
 export { default as SearchBySkinTone } from "./search-by-skin-tone.png";

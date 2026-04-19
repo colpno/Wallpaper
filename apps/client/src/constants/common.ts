@@ -1,14 +1,14 @@
 export const ROUTES = {
-  BOARDS: (username: string) => `/${username}`,
-  PIN_CREATION: () => "/pin-creation-tool",
-  PIN: (id: string) => `/pin/${id}`,
-  HOME: () => "/",
-  IDEAS: () => "/ideas",
+  PROFILE: (username: string) => `/${username}` as const,
+  PIN_CREATION: () => "/pin-creation-tool" as const,
+  PIN: (id: string) => `/pin/${id}` as const,
+  HOME: () => "/" as const,
+  IDEAS: () => "/ideas" as const,
   SEARCH: (params?: { q: string }) => {
-    const basePath = "/search";
+    const basePath = "/search" as const;
     if (!params) return basePath;
     const qs = new URLSearchParams(params);
-    return `${basePath}?${qs.toString()}`;
+    return `${basePath}?${qs.toString()}` as const;
   },
 } as const;
 
