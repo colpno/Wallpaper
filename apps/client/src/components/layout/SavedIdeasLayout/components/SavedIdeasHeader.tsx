@@ -60,8 +60,7 @@ function SavedIdeasHeader(props: React.ComponentProps<"div">) {
         </div>
 
         <Link
-          // TODO: replace with profile link
-          to="#"
+          to={ROUTES.PROFILE(user.username)}
           className={cn(
             buttonVariants({ variant: "ghost" }),
             "flex translate-x-3.5 -translate-y-3 gap-3 px-3.5 py-3"
