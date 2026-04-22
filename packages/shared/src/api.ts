@@ -30,6 +30,10 @@ export const API_ROUTES = {
       path: () => BASE_PATH.PIN,
       method: "get",
     },
+    getManyWithSaves: {
+      path: () => `${BASE_PATH.PIN}/saved` as const,
+      method: "get",
+    },
     getOneById: {
       path: (id: string) => `${BASE_PATH.PIN}/${id}` as const,
       method: "get",

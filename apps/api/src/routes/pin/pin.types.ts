@@ -8,6 +8,10 @@ export type GetMany = {
   handler: RouteHandler<typeof routes.getMany>;
 } & PinAPIs.GetMany;
 
+export type GetManyWithSaves = {
+  handler: RouteHandler<typeof routes.getManyWithSaves>;
+} & PinAPIs.GetManyWithSaves;
+
 export type GetOneById = {
   handler: RouteHandler<typeof routes.getOneById>;
 } & PinAPIs.GetOneById;

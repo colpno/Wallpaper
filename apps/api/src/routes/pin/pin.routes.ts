@@ -39,6 +39,31 @@ export const getMany = router.register({
   },
 } as const);
 
+export const getManyWithSaves = router.register({
+  tags,
+  method: "get",
+  path: API_ROUTES.PIN.getManyWithSaves.path(),
+  summary: "Get multiple owned and saved pins",
+  description: "Retrieve multiple owned and saved pins.",
+  request: {
+    query: requestSchemas.getManyWithSaves.query,
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      requestSchemas.getManyWithSaves.responses[HttpStatusCodes.OK],
+      "Successful Response"
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.getManyWithSaves.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.getManyWithSaves.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
+  },
+} as const);
+
 export const getOneById = router.register({
   tags,
   method: "get",
@@ -189,6 +214,7 @@ export const search = router.register({
 } as const);
 
 router
+  .addHandler(getManyWithSaves, [handlers.getManyWithSaves])
   .addHandler(getOneById, [handlers.getOneById])
   .addHandler(getMany, [handlers.getMany])
   .addHandler(addOne, ({ validator }) => [

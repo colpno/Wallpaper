@@ -2,6 +2,7 @@ import type {
   AddOne,
   DeleteOneById,
   GetMany,
+  GetManyWithSaves,
   GetOneById,
   Search,
   UpdateOneById,
@@ -10,6 +11,7 @@ import type { File } from "@/utils/schemas.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 import type { Pin, PinDB } from "@repo/types";
+import { type PipelineStage, Types } from "mongoose";
 
 import { env } from "@/configs/env.js";
 import { logger } from "@/lib/logger.js";
@@ -18,39 +20,126 @@ import { buildQueryWithOptions, organizeQueryInput } from "@/utils/build-query-w
 import { toPaginationPayload } from "@/utils/converters.js";
 import { HttpError } from "@/utils/HttpError.js";
 import { deleteMedia, uploadMedia } from "@/utils/media.js";
+import { PipelineBuilder } from "@/utils/PipelineBuilder.js";
 
+import { SavedIdeaModel } from "../saved-idea/saved-idea.model.js";
 import { PinModel } from "./pin.model.js";
 import { searchPinsByEmbedding } from "./pin.services.js";
 
+const pipelineBuilder = new PipelineBuilder({
+  fieldToCollectionNameMap: {
+    pinOwner: "users",
+  },
+});
+
 export const getMany: GetMany["handler"] = async (req, res, next) => {
   try {
-    const { options, queryFilters } = organizeQueryInput(req.query);
+    const { options, queryFilters } = organizeQueryInput<PinDB>(req.query);
 
-    const pins = await buildQueryWithOptions(PinModel.find(queryFilters), options).lean<PinDB[]>();
+    const result = await buildQueryWithOptions(PinModel.find(queryFilters), options).lean<
+      PinDB[]
+    >();
 
     if (!req.query.limit) {
-      return res.status(HttpStatusCodes.OK).json(pins);
+      return res.status(HttpStatusCodes.OK).json(result);
     }
 
-    const totalItems = await PinModel.countDocuments({});
-    const itemsPerPage = req.query.limit;
+    const totalItems = await PinModel.countDocuments(queryFilters);
 
-    const result = toPaginationPayload({
-      data: pins,
+    const paginatedPins = toPaginationPayload({
+      data: result,
       page: req.query.page ?? 1,
-      perPage: itemsPerPage,
+      perPage: req.query.limit,
       totalItems,
     });
 
-    return res.status(HttpStatusCodes.OK).json(result);
+    return res.status(HttpStatusCodes.OK).json(paginatedPins);
   } catch (error) {
     return next(error);
   }
 };
 
+export const getManyWithSaves: GetManyWithSaves["handler"] = async (req, res, next) => {
+  try {
+    const { pinOwner, ...query } = req.query;
+    const userDefinedPipeline = pipelineBuilder.build<PinDB>(query);
+    const userObjectId = new Types.ObjectId(pinOwner);
+
+    const pipeline: PipelineStage[] = [
+      // Owned pins
+      {
+        $match: {
+          pinOwner: userObjectId,
+        },
+      },
+
+      // Saved pins
+      {
+        $unionWith: {
+          coll: "saved_ideas",
+          pipeline: [
+            {
+              $match: {
+                savedBy: userObjectId,
+              },
+            },
+
+            {
+              $lookup: {
+                from: "pins",
+                localField: "pin",
+                foreignField: "_id",
+                as: "pin",
+              },
+            },
+            { $unwind: "$pin" },
+
+            // Replace root with pin
+            {
+              $replaceRoot: {
+                newRoot: "$pin",
+              },
+            },
+          ],
+        },
+      },
+
+      // Spread user defined stages
+      ...userDefinedPipeline,
+    ];
+
+    const result = await PinModel.aggregate<PinDB & { isSaved: boolean; isOwned: boolean }>(
+      pipeline
+    );
+
+    if (!req.query.limit) {
+      return res.status(HttpStatusCodes.OK).json(result);
+    }
+
+    const totalOwnedPins = await PinModel.countDocuments({
+      pinOwner: userObjectId,
+    });
+    const totalSavedPins = await SavedIdeaModel.countDocuments({
+      savedBy: userObjectId,
+    });
+    const totalItems = totalOwnedPins + totalSavedPins;
+
+    const paginatedResult = toPaginationPayload({
+      data: result,
+      page: req.query.page ?? 1,
+      perPage: req.query.limit,
+      totalItems,
+    });
+
+    return res.status(HttpStatusCodes.OK).json(paginatedResult);
+  } catch (error) {
+    next(error);
+  }
+};
+
 export const getOneById: GetOneById["handler"] = async (req, res, next) => {
   try {
-    const { options } = organizeQueryInput(req.query);
+    const { options } = organizeQueryInput<PinDB>(req.query);
 
     const pin = await buildQueryWithOptions(
       PinModel.findById(req.params.id),

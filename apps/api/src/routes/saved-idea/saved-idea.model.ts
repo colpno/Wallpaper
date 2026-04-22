@@ -19,8 +19,8 @@ const schema = new Schema<SavedIdea<Types.ObjectId, Types.ObjectId>>(
   }
 );
 
-schema.index({ user: 1, pin: 1 }, { unique: true });
-schema.index({ user: 1, createdAt: -1 });
+schema.index({ savedBy: 1, pin: 1 }, { unique: true });
+schema.index({ savedBy: 1, createdAt: -1 });
 schema.index({ pin: 1 });
 
-export const SavedIdeaModel = model("saved-ideas", schema);
+export const SavedIdeaModel = model("saved_ideas", schema);

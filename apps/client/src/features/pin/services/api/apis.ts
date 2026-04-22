@@ -17,6 +17,17 @@ export const getPins = (
     params: query,
   });
 
+export const getPinsWithSaves = (
+  query?: PinAPIs.GetManyWithSaves["query"],
+  options?: Omit<AxiosRequestConfig<never>, "url" | "method" | "params">
+) =>
+  request<PinAPIs.GetManyWithSaves["response"]>({
+    ...options,
+    url: API_ROUTES.PIN.getManyWithSaves.path(),
+    method: API_ROUTES.PIN.getManyWithSaves.method,
+    params: query,
+  });
+
 export const getPinById = (
   params: PinAPIs.GetOneById["params"],
   query?: PinAPIs.GetOneById["query"],

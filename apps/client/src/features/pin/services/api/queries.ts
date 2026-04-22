@@ -3,13 +3,56 @@ import { infiniteQueryOptions, queryOptions } from "@tanstack/react-query";
 
 import { INITIAL_PAGE } from "@/constants/common";
 
-import { getPinById, getPins, searchPins } from "./apis";
+import { getPinById, getPins, getPinsWithSaves, searchPins } from "./apis";
 import { PIN_KEYS } from "./keys";
 
-export const getPinsInfiniteQueryOptions = (query: Omit<PinAPIs.GetMany["query"], "page">) => {
+export const getPinsInfiniteQueryOptions = (
+  query:
+    | ({
+        includeSaves?: false;
+      } & Omit<PinAPIs.GetMany["query"], "page">)
+    | ({
+        includeSaves: true;
+        pinOwner: string;
+      } & Omit<PinAPIs.GetMany["query"], "page" | "pinOwner">)
+) => {
+  const { includeSaves, ...rest } = query;
+
   return infiniteQueryOptions({
     queryFn: ({ signal, pageParam }) =>
-      getPins(
+      (includeSaves
+        ? getPinsWithSaves(
+            {
+              ...rest,
+              pinOwner: rest.pinOwner as string,
+              page: pageParam,
+            },
+            { signal }
+          )
+        : getPins(
+            {
+              ...rest,
+              page: pageParam,
+            },
+            { signal }
+          )
+      ).then((response) => response as Extract<typeof response, PaginationPayload<unknown[]>>),
+    queryKey: query ? PIN_KEYS.list(query) : PIN_KEYS.lists(),
+    initialPageParam: INITIAL_PAGE,
+    getNextPageParam: (lastPageResult) =>
+      lastPageResult.meta.currentPage < lastPageResult.meta.totalPages
+        ? lastPageResult.meta.currentPage + 1
+        : undefined,
+    select: (data) => data.pages.flatMap((page) => page.data),
+  });
+};
+
+export const getPinsWithSavesInfiniteQueryOptions = (
+  query: Omit<PinAPIs.GetManyWithSaves["query"], "page">
+) => {
+  return infiniteQueryOptions({
+    queryFn: ({ signal, pageParam }) =>
+      getPinsWithSaves(
         {
           ...query,
           page: pageParam,

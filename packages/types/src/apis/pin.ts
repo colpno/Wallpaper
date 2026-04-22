@@ -16,6 +16,13 @@ export type GetMany = {
   response: PinDB[] | PaginationPayload<PinDB[]>;
 };
 
+export type GetManyWithSaves = {
+  query: {
+    pinOwner: string;
+  } & Omit<QueryFilter<PinDB, Fields, SortableFields, EmbeddableFields>, "pinOwner">;
+  response: PinDB[] | PaginationPayload<PinDB[]>;
+};
+
 export type GetOneById = {
   params: {
     id: string;

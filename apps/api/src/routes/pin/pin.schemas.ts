@@ -2,11 +2,13 @@ import type {
   AddOne,
   DeleteOneById,
   GetMany,
+  GetManyWithSaves,
   GetOneById,
   Search,
   UpdateOneById,
 } from "./pin.types.js";
 import type { RequestSchemas, ZodObjectShapeMap } from "@/types/common.js";
+import type { NormalizeFilterOperators } from "@/utils/parse-filter-operators.js";
 import type { Types } from "mongoose";
 import type { ZodType } from "zod";
 
@@ -34,7 +36,6 @@ export const pinSchema = z
     __v: z.number(),
     createdAt: stringSchema,
     updatedAt: stringSchema,
-    removedAt: stringSchema.optional(),
     pinTitle: stringSchema,
     pinOwner: objectIdSchema,
     pinDescription: stringSchema.optional(),
@@ -51,7 +52,6 @@ export const pinSchema = z
 
 const queryFilterSchema = createQueryFilterSchema<PinDB<UserDB | string | Types.ObjectId>>()(
   {
-    removedAt: z.string(),
     pinTitle: z.string(),
     pinDescription: z.string(),
     pinOwner: z.string(),
@@ -62,20 +62,13 @@ const queryFilterSchema = createQueryFilterSchema<PinDB<UserDB | string | Types.
   {
     embeddableFields: ["pinOwner"],
     selectableFields: Object.keys(pinSchema.shape) as Array<keyof typeof pinSchema.shape>,
-    sortableFields: [
-      "createdAt",
-      "updatedAt",
-      "removedAt",
-      "photoWidth",
-      "photoHeight",
-      "photoAspectRatio",
-    ],
+    sortableFields: ["createdAt", "updatedAt", "photoWidth", "photoHeight", "photoAspectRatio"],
   }
 );
 
 export const requestSchemas = {
   getMany: {
-    query: queryFilterSchema,
+    query: queryFilterSchema satisfies ZodType<NormalizeFilterOperators<GetMany["query"]>>,
     responses: {
       [HttpStatusCodes.OK]: z.union([
         z.array(pinSchema),
@@ -84,6 +77,23 @@ export const requestSchemas = {
           meta: metaPaginationSchema,
         }),
       ]) satisfies ZodType<GetMany["response"]>,
+      [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
+      [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
+    },
+  },
+
+  getManyWithSaves: {
+    query: queryFilterSchema.omit({ pinOwner: true }).extend({
+      pinOwner: z.string(),
+    }) satisfies ZodType<NormalizeFilterOperators<GetManyWithSaves["query"]>>,
+    responses: {
+      [HttpStatusCodes.OK]: z.union([
+        z.array(pinSchema),
+        z.object({
+          data: z.array(pinSchema),
+          meta: metaPaginationSchema,
+        }),
+      ]) satisfies ZodType<GetManyWithSaves["response"]>,
       [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },

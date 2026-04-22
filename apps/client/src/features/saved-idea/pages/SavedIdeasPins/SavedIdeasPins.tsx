@@ -10,10 +10,10 @@ import Spinner from "@/components/ui/Spinner";
 import Typography from "@/components/ui/Typography";
 import { ROUTES } from "@/constants/common";
 import PinCard from "@/features/pin/components/PinCard";
+import { getPinsInfiniteQueryOptions } from "@/features/pin/services/api/queries";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 import { useSaveIdeasContext } from "../../contexts/savedIdeasContext";
-import { getSavedIdeasInfiniteQueryOptions } from "../../services/api/queries";
 
 const INFINITE_PAGE_SIZE = 50;
 
@@ -26,24 +26,17 @@ function SavedIdeasPins() {
   }
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } = useInfiniteQuery(
-    getSavedIdeasInfiniteQueryOptions({
-      savedBy: pin.createdByYou ? undefined : user.id,
+    getPinsInfiniteQueryOptions({
+      includeSaves: !pin.createdByYou,
+      pinOwner: user!.id,
       limit: INFINITE_PAGE_SIZE,
-      embed: {
-        path: "pin",
-        match: {
-          pinOwner: user.id,
-        },
-        select: {
-          pinDescription: true,
-          photoUrl: true,
-          photoBlurHash: true,
-          photoAspectRatio: true,
-          photoWidth: true,
-        },
-      },
-      sort: {
-        createdAt: "desc",
+      sort: { createdAt: "desc" },
+      select: {
+        pinDescription: true,
+        photoUrl: true,
+        photoBlurHash: true,
+        photoAspectRatio: true,
+        photoWidth: true,
       },
     })
   );
@@ -86,7 +79,7 @@ function SavedIdeasPins() {
       >
         {data.map((item) => (
           <MasonryWrapper key={item._id}>
-            <PinCard item={item.pin} showActionButton={false} />
+            <PinCard item={item} showActionButton={false} />
           </MasonryWrapper>
         ))}
       </Masonry>

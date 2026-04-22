@@ -15,8 +15,9 @@ import * as routes from "./pin.routes.js";
 import { pinSchema, requestSchemas } from "./pin.schemas.js";
 
 let db: SeededDB;
-const getPinById = createTestClient(routes.getOneById);
 const getPins = createTestClient(routes.getMany);
+const getPinsWithSaves = createTestClient(routes.getManyWithSaves);
+const getPinById = createTestClient(routes.getOneById);
 const addPin = createTestClient(routes.addOne);
 const updatePinById = createTestClient(routes.updateOneById);
 const deletePinById = createTestClient(routes.deleteOneById);
@@ -26,103 +27,8 @@ describe("Pin routes", () => {
     db = await seedDatabase();
   });
 
-  describe(`${routes.getOneById.method.toUpperCase()} ${routes.getOneById.path}`, () => {
-    it("returns a successful response", async () => {
-      const response = await getPinById({ id: db.pins[0]!._id });
-
-      expect(response.status).toBe(HttpStatusCodes.OK);
-
-      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK].safeParse(
-        response.body
-      );
-
-      expect(parseResult.success).toBe(true);
-    });
-
-    it("returns a pin with stripped properties", async () => {
-      const response = await getPinById({ id: db.pins[0]!._id }).query({
-        select: {
-          _id: 0,
-          pinTitle: 1,
-          pinOwner: 1,
-        },
-      });
-
-      expect(response.status).toBe(HttpStatusCodes.OK);
-
-      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK]
-        .pick({
-          pinTitle: true,
-          pinOwner: true,
-        })
-        .safeParse(response.body);
-
-      expect(parseResult.success).toBe(true);
-    });
-
-    it("returns a pin with populated fields", async () => {
-      const embedKey: PinKeys = "pinOwner";
-
-      const response = await getPinById({ id: db.pins[0]!._id }).query({ embed: embedKey });
-
-      expect(response.status).toBe(HttpStatusCodes.OK);
-
-      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK]
-        .omit({
-          [embedKey]: true,
-        })
-        .extend({
-          [embedKey]: userSchema,
-        })
-        .safeParse(response.body);
-
-      expect(parseResult.success).toBe(true);
-    });
-
-    it("returns a validation error if missing required fields", async () => {
-      const response = await getPinById();
-
-      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-
-      const parseResult = requestSchemas.getOneById.responses[
-        HttpStatusCodes.UNPROCESSABLE_ENTITY
-      ].safeParse(response.body);
-
-      expect(parseResult.success).toBe(true);
-    });
-
-    it("returns a validation error if payload is invalid", async () => {
-      const response = await getPinById({ id: "invalid-id" }).query({
-        select: {
-          // @ts-expect-error
-          photoHeight: "invalid-select",
-        },
-      });
-
-      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
-
-      const parseResult = requestSchemas.getOneById.responses[
-        HttpStatusCodes.UNPROCESSABLE_ENTITY
-      ].safeParse(response.body);
-
-      expect(parseResult.success).toBe(true);
-    });
-
-    it("returns a not found error if id does not belong to any", async () => {
-      const response = await getPinById({ id: "68d817527719e9421cb63734" });
-
-      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
-
-      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.NOT_FOUND].safeParse(
-        response.body
-      );
-
-      expect(parseResult.success).toBe(true);
-    });
-  });
-
   describe(`${routes.getMany.method.toUpperCase()} ${routes.getMany.path}`, () => {
-    it("Returns filtered pins", async () => {
+    it("returns filtered pins", async () => {
       const pinOwnerId = db.users[0]!._id;
 
       const response = await getPins().query({
@@ -233,6 +139,222 @@ describe("Pin routes", () => {
       const parseResult = requestSchemas.getMany.responses[
         HttpStatusCodes.UNPROCESSABLE_ENTITY
       ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+  });
+
+  describe(`${routes.getManyWithSaves.method.toUpperCase()} ${routes.getManyWithSaves.path}`, () => {
+    it("returns a successful response", async () => {
+      const pinOwnerId = db.users[0]!._id;
+
+      const response = await getPinsWithSaves().query({
+        pinOwner: pinOwnerId,
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z.array(pinSchema).safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a list of pins with stripped properties", async () => {
+      const response = await getPinsWithSaves().query({
+        pinOwner: db.users[0]!._id,
+        select: {
+          _id: 0,
+          pinTitle: 1,
+          pinOwner: 1,
+        },
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z
+        .array(
+          pinSchema.pick({
+            pinTitle: true,
+            pinOwner: true,
+          })
+        )
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a paginated list of pins", async () => {
+      const page = 1;
+      const limit = 1;
+
+      const response = await getPinsWithSaves().query({
+        pinOwner: db.users[0]!._id,
+        page,
+        limit,
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = paginationPayloadSchema(z.array(pinSchema)).safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+      expect(parseResult.data!.meta.currentPage).toBe(page);
+      expect(parseResult.data!.meta.itemsPerPage).toBe(limit);
+    });
+
+    it("returns a sorted list of pins", async () => {
+      const response = await getPinsWithSaves().query({
+        pinOwner: db.users[0]!._id,
+        sort: {
+          photoWidth: "asc",
+        },
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z.array(pinSchema).safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+      expect(parseResult.data!.length).toBeGreaterThan(0);
+      if (parseResult.data && parseResult.data.length > 1) {
+        for (let i = 1; i < parseResult.data.length; i++) {
+          expect(parseResult.data[i - 1]!.photoWidth <= parseResult.data[i]!.photoWidth).toBe(true);
+        }
+      }
+    });
+
+    it("returns a list of pins with populated fields", async () => {
+      const embedKey: PinKeys = "pinOwner";
+
+      const response = await getPinsWithSaves().query({
+        pinOwner: db.users[0]!._id,
+        embed: embedKey,
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z
+        .array(
+          pinSchema
+            .omit({
+              [embedKey]: true,
+            })
+            .extend({
+              [embedKey]: userSchema,
+            })
+        )
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a validation error if payload is invalid", async () => {
+      const response = await getPinsWithSaves().query({
+        limit: -5,
+        // @ts-expect-error
+        page: "invalid",
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.getManyWithSaves.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+  });
+
+  describe(`${routes.getOneById.method.toUpperCase()} ${routes.getOneById.path}`, () => {
+    it("returns a successful response", async () => {
+      const response = await getPinById({ id: db.pins[0]!._id });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK].safeParse(
+        response.body
+      );
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a pin with stripped properties", async () => {
+      const response = await getPinById({ id: db.pins[0]!._id }).query({
+        select: {
+          _id: 0,
+          pinTitle: 1,
+          pinOwner: 1,
+        },
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK]
+        .pick({
+          pinTitle: true,
+          pinOwner: true,
+        })
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a pin with populated fields", async () => {
+      const embedKey: PinKeys = "pinOwner";
+
+      const response = await getPinById({ id: db.pins[0]!._id }).query({ embed: embedKey });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.OK]
+        .omit({
+          [embedKey]: true,
+        })
+        .extend({
+          [embedKey]: userSchema,
+        })
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a validation error if missing required fields", async () => {
+      const response = await getPinById();
+
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.getOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a validation error if payload is invalid", async () => {
+      const response = await getPinById({ id: "invalid-id" }).query({
+        select: {
+          // @ts-expect-error
+          photoHeight: "invalid-select",
+        },
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.getOneById.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a not found error if id does not belong to any", async () => {
+      const response = await getPinById({ id: "68d817527719e9421cb63734" });
+
+      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
+
+      const parseResult = requestSchemas.getOneById.responses[HttpStatusCodes.NOT_FOUND].safeParse(
+        response.body
+      );
 
       expect(parseResult.success).toBe(true);
     });
