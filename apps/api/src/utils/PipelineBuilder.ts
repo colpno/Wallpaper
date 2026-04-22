@@ -20,7 +20,7 @@ type BuildPipelineReturnType<P extends boolean> = P extends true
   ? PipelineStage[]
   : Partial<PipelineStage.Match & PipelineStage.Sort & PipelineStage.Project> & {
       lookupStages?: PipelineStage[];
-      paginationStages?: PipelineStage[];
+      paginationStages?: [PipelineStage.Skip, PipelineStage.Limit];
     };
 
 export class PipelineBuilder {
@@ -141,7 +141,7 @@ export class PipelineBuilder {
       const pipeline: PipelineStage.Lookup["$lookup"]["pipeline"] = [];
 
       if (refer.match) pipeline.push(this.match(refer.match));
-      if (refer.options?.projection) pipeline.push(this.project(refer.options.projection));
+      if (refer.select) pipeline.push(this.project(refer.select));
 
       // Besides $lookup operator, adding stages that unwrap an array of populated results,
       // as MongoDB always packs results in an array regardless of a single or multiple population
