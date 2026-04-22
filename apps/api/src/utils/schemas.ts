@@ -81,3 +81,22 @@ export const paginationPayloadSchema = <T extends z.ZodArray>(dataSchema: T) =>
   });
 
 export const stringSchema = z.string().trim().nonempty();
+
+export const booleanFromStringSchema = z.union([z.boolean(), z.string()]).transform((val) => {
+  if (typeof val === "boolean") return val;
+
+  if (val === "true") return true;
+  if (val === "false") return false;
+
+  throw new Error("Invalid boolean string");
+});
+
+export const isoFromDateStringSchema = z.union([z.date(), z.string()]).transform((val) => {
+  if (val instanceof Date) return val.toISOString();
+
+  try {
+    return new Date(val).toISOString();
+  } catch {
+    throw new Error("Invalid date string");
+  }
+});

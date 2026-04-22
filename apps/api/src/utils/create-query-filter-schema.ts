@@ -16,7 +16,7 @@ import type {
 import { z } from "@/lib/zod.js";
 
 import { parseFilterOperators } from "./parse-filter-operators.js";
-import { objectIdSchema } from "./schemas.js";
+import { booleanFromStringSchema, isoFromDateStringSchema, objectIdSchema } from "./schemas.js";
 
 export const createQueryFilterSchema = <T extends Record<string, unknown>>() => {
   return <
@@ -37,22 +37,16 @@ export const createQueryFilterSchema = <T extends Record<string, unknown>>() => 
       embeddableFields?: TEmbeddable[];
     }
   ) => {
-    const embeddableFields = options?.embeddableFields
-      ? z.enum(options.embeddableFields)
-      : z.string();
+    const embeddableFields = (
+      options?.embeddableFields ? z.enum(options.embeddableFields) : z.string()
+    ) as ZodType<TEmbeddable>;
 
     return z
       .object({
         _id: createFilterOperatorsSchema(objectIdSchema),
         __v: createFilterOperatorsSchema(z.coerce.number()),
-        createdAt: z.union([
-          createFilterOperatorsSchema(z.coerce.date()),
-          createFilterOperatorsSchema(z.string()),
-        ]),
-        updatedAt: z.union([
-          createFilterOperatorsSchema(z.coerce.date()),
-          createFilterOperatorsSchema(z.string()),
-        ]),
+        createdAt: createFilterOperatorsSchema(isoFromDateStringSchema),
+        updatedAt: createFilterOperatorsSchema(isoFromDateStringSchema),
         limit: z.coerce.number().int().gte(1),
         page: z.coerce.number().int().gte(1),
         select: createSelectSchema(options?.selectableFields),
@@ -60,8 +54,8 @@ export const createQueryFilterSchema = <T extends Record<string, unknown>>() => 
         embed: z.union([
           embeddableFields,
           z.array(embeddableFields),
-          createEmbedOptionsSchema(),
-          z.array(createEmbedOptionsSchema()),
+          createEmbedOptionsSchema<TEmbeddable>(embeddableFields),
+          z.array(createEmbedOptionsSchema<TEmbeddable>(embeddableFields)),
         ]),
       })
       .extend(
@@ -103,7 +97,7 @@ const createFilterOperatorsSchema = <TSchema extends ZodType>(base: TSchema) => 
       all: z.array(base),
       in: z.array(base),
       nin: z.array(base),
-      exists: z.coerce.boolean(),
+      exists: booleanFromStringSchema,
       regex: z.string(),
       options: z.enum(regexOptions),
       size: z.union([
@@ -130,7 +124,7 @@ const createSelectSchema = <T extends string>(keys?: T[]) => {
     z.string(),
     z.partialRecord(
       keys ? z.enum(keys) : z.string(),
-      z.union([z.coerce.number(), z.coerce.boolean()])
+      z.union([z.coerce.number(), booleanFromStringSchema])
     ),
   ]) as z.ZodType<Select<T>>;
 };
@@ -153,8 +147,8 @@ function createSortSchema<T extends string>(keys?: readonly T[]) {
   ]) as z.ZodType<Sort<T>>;
 }
 
-const createEmbedOptionsSchema = () => {
-  const populateOptionsSchema: z.ZodType<EmbedOptions<Record<string, unknown>>> = z
+const createEmbedOptionsSchema = <T extends string>(pathSchema: ZodType<T>) => {
+  const populateOptionsSchema: z.ZodType<EmbedOptions<Record<T, unknown>>> = z
     .object({
       select: createSelectSchema(),
       match: z.record(z.string(), createFilterOperatorsSchema(z.string())),
@@ -163,10 +157,10 @@ const createEmbedOptionsSchema = () => {
           projection: createSelectSchema(),
           sort: createSortSchema(),
           lean: z.union([
-            z.coerce.boolean(),
+            booleanFromStringSchema,
             z
               .object({
-                versionKey: z.coerce.boolean(),
+                versionKey: booleanFromStringSchema,
                 transform: z.function({
                   input: [z.record(z.string(), z.unknown())],
                   output: z.void(),
@@ -175,18 +169,18 @@ const createEmbedOptionsSchema = () => {
               .partial(),
           ]),
           limit: z.coerce.number(),
-          includeResultMetadata: z.coerce.boolean(),
-          returnOriginal: z.coerce.boolean(),
+          includeResultMetadata: booleanFromStringSchema,
+          returnOriginal: booleanFromStringSchema,
           returnDocument: z.enum(["before", "after"]),
           skip: z.coerce.number(),
-          strict: z.union([z.coerce.boolean(), z.string()]),
-          strictQuery: z.union([z.coerce.boolean(), z.literal("throw")]),
+          strict: z.union([booleanFromStringSchema, z.string()]),
+          strictQuery: z.union([booleanFromStringSchema, z.literal("throw")]),
           timestamps: z.union([
-            z.coerce.boolean(),
+            booleanFromStringSchema,
             z
               .object({
-                createdAt: z.coerce.boolean(),
-                updatedAt: z.coerce.boolean(),
+                createdAt: booleanFromStringSchema,
+                updatedAt: booleanFromStringSchema,
               })
               .partial(),
           ]),
@@ -199,19 +193,19 @@ const createEmbedOptionsSchema = () => {
         z.array(z.lazy(() => populateOptionsSchema)),
       ]) as z.ZodType<EmbedOptions<Record<string, Record<string, unknown>>>["populate"]>,
       perDocumentLimit: z.coerce.number(),
-      strictPopulate: z.coerce.boolean(),
-      justOne: z.coerce.boolean(),
+      strictPopulate: booleanFromStringSchema,
+      justOne: booleanFromStringSchema,
       transform: z.function({
         input: [z.any(), z.any()],
         output: z.any(),
       }),
       localField: z.string(),
       foreignField: z.string(),
-      forceRepopulate: z.coerce.boolean(),
+      forceRepopulate: booleanFromStringSchema,
     })
     .partial()
     .extend({
-      path: z.string(),
+      path: pathSchema,
     })
     .openapi("EmbedOptions", { type: "object" });
   return populateOptionsSchema;
