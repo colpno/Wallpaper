@@ -33,6 +33,7 @@
     "editor.detectIndentation": false,
 
     "tailwindCSS.classFunctions": ["cva", "cn"],
+    "chat.disableAIFeatures": true,
     // "prettify-ts.maxDepth": 2,
     // "prettify-ts.maxUnionMembers": 50,
   },
