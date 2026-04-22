@@ -1,4 +1,3 @@
-import type { PopulateOptions } from "mongoose";
 import type { ZodType } from "zod";
 
 import type {
@@ -6,7 +5,6 @@ import type {
   EmbedOptions,
   FilterOperators,
   FlattenObjectKeys,
-  MapZodObjectShape,
   QueryFilter,
   Select,
   Sort,
@@ -53,9 +51,10 @@ export const createQueryFilterSchema = <T extends Record<string, unknown>>() => 
         sort: createSortSchema(options?.sortableFields),
         embed: z.union([
           embeddableFields,
-          z.array(embeddableFields),
           createEmbedOptionsSchema<TEmbeddable>(embeddableFields),
-          z.array(createEmbedOptionsSchema<TEmbeddable>(embeddableFields)),
+          z.array(
+            z.union([embeddableFields, createEmbedOptionsSchema<TEmbeddable>(embeddableFields)])
+          ),
         ]),
       })
       .extend(
@@ -154,54 +153,15 @@ const createEmbedOptionsSchema = <T extends string>(pathSchema: ZodType<T>) => {
       match: z.record(z.string(), createFilterOperatorsSchema(z.string())),
       options: z
         .object({
-          projection: createSelectSchema(),
           sort: createSortSchema(),
-          lean: z.union([
-            booleanFromStringSchema,
-            z
-              .object({
-                versionKey: booleanFromStringSchema,
-                transform: z.function({
-                  input: [z.record(z.string(), z.unknown())],
-                  output: z.void(),
-                }),
-              })
-              .partial(),
-          ]),
-          limit: z.coerce.number(),
-          includeResultMetadata: booleanFromStringSchema,
-          returnOriginal: booleanFromStringSchema,
-          returnDocument: z.enum(["before", "after"]),
-          skip: z.coerce.number(),
-          strict: z.union([booleanFromStringSchema, z.string()]),
-          strictQuery: z.union([booleanFromStringSchema, z.literal("throw")]),
-          timestamps: z.union([
-            booleanFromStringSchema,
-            z
-              .object({
-                createdAt: booleanFromStringSchema,
-                updatedAt: booleanFromStringSchema,
-              })
-              .partial(),
-          ]),
-        } satisfies MapZodObjectShape<PopulateOptions["options"]>)
+        })
         .partial(),
       populate: z.union([
         z.string(),
         z.array(z.string()),
         z.lazy(() => populateOptionsSchema),
         z.array(z.lazy(() => populateOptionsSchema)),
-      ]) as z.ZodType<EmbedOptions<Record<string, Record<string, unknown>>>["populate"]>,
-      perDocumentLimit: z.coerce.number(),
-      strictPopulate: booleanFromStringSchema,
-      justOne: booleanFromStringSchema,
-      transform: z.function({
-        input: [z.any(), z.any()],
-        output: z.any(),
-      }),
-      localField: z.string(),
-      foreignField: z.string(),
-      forceRepopulate: booleanFromStringSchema,
+      ]),
     })
     .partial()
     .extend({

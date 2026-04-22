@@ -1,5 +1,5 @@
 import type { DeleteOneById, UpdateOneById } from "./user.types.js";
-import type { RequestSchemas, ZodObjectShapeMap } from "@/types/common.js";
+import type { RequestSchemas } from "@/types/common.js";
 import type { ZodType } from "zod";
 
 import { HttpStatusCodes } from "@repo/shared";
@@ -31,8 +31,8 @@ export const userSchema = z
     salt: z.string(),
     avatarUrl: stringSchema.optional(),
     avatarCloudinaryId: stringSchema.optional(),
-  } satisfies ZodObjectShapeMap<UserDB>)
-  .openapi("User");
+  })
+  .openapi("User") satisfies ZodType<UserDB>;
 
 export const requestSchemas = {
   updateOneById: {

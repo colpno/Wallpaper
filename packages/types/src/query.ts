@@ -1,5 +1,5 @@
-import type { FlattenObject, FlattenObjectKeys, KnownKeys, UnwrapArray } from "./helpers.js";
-import type { PopulateOptions, QueryOptions, SortOrder as BaseSortOrder, Types } from "mongoose";
+import type { FlattenObject, FlattenObjectKeys } from "./helpers.js";
+import type { SortOrder as BaseSortOrder } from "mongoose";
 
 export type FilterOperators<T> = {
   eq?: T;
@@ -28,9 +28,7 @@ export type FilterOperators<T> = {
 
 export type FilterCondition<T> = T | FilterOperators<T>;
 export type Filter<T extends Record<string, unknown>> = {
-  [K in keyof T]: K extends `${string}_id`
-    ? FilterCondition<string | Types.ObjectId>
-    : FilterCondition<T[K]>;
+  [K in keyof T]?: FilterCondition<T[K]>;
 };
 
 export type SortOrder = BaseSortOrder;
@@ -42,32 +40,18 @@ export type Sort<T extends string> =
 export type SelectValue = boolean | 0 | 1;
 export type Select<T extends string> = string | { [K in T]?: SelectValue };
 
-export type EmbedOptions<O> = Omit<
-  PopulateOptions,
-  "path" | "select" | "match" | "options" | "populate"
-> &
-  {
-    [K in keyof O]?: {
-      path: K;
-      select?: Select<FlattenObjectKeys<UnwrapArray<O[K]>>>;
-      match?: Filter<FlattenObject<UnwrapArray<O[K]>>>;
-      options?: Omit<KnownKeys<QueryOptions>, "projection" | "sort"> & {
-        projection?: Select<FlattenObjectKeys<UnwrapArray<O[K]>>>;
-        sort?: Sort<FlattenObjectKeys<UnwrapArray<O[K]>>>;
-      };
-      populate?: FlattenObject<UnwrapArray<O[K]>> extends string
-        ?
-            | FlattenObject<UnwrapArray<O[K]>>
-            | FlattenObject<UnwrapArray<O[K]>>[]
-            | EmbedOptions<FlattenObject<UnwrapArray<O[K]>>>
-            | EmbedOptions<FlattenObject<UnwrapArray<O[K]>>>[]
-        :
-            | string
-            | string[]
-            | EmbedOptions<Record<string, unknown>>
-            | EmbedOptions<Record<string, unknown>>[];
-    };
-  }[keyof O];
+export type EmbedOptions<O> = {
+  path: keyof O;
+  select?: Select<string>;
+  match?: Filter<Record<string, unknown>>;
+  options?: {
+    sort?: Sort<string>;
+  };
+  populate?:
+    | string
+    | EmbedOptions<Record<string, unknown>>
+    | Array<string | EmbedOptions<Record<string, unknown>>>;
+};
 
 /**
  * Query filter type that for MongoDB queries.
@@ -90,13 +74,14 @@ export type QueryFilter<
     embed: TEmbeddable extends string
       ?
           | TEmbeddable
-          | TEmbeddable[]
           | EmbedOptions<Pick<FlattenObject<TData>, TEmbeddable & keyof FlattenObject<TData>>>
-          | EmbedOptions<Pick<FlattenObject<TData>, TEmbeddable & keyof FlattenObject<TData>>>[]
+          | Array<
+              | TEmbeddable
+              | EmbedOptions<Pick<FlattenObject<TData>, TEmbeddable & keyof FlattenObject<TData>>>
+            >
       :
           | FlattenObjectKeys<TData>
-          | FlattenObjectKeys<TData>[]
           | EmbedOptions<FlattenObject<TData>>
-          | EmbedOptions<FlattenObject<TData>>[];
+          | Array<FlattenObjectKeys<TData> | EmbedOptions<FlattenObject<TData>>>;
   } & Filter<FlattenObject<TData>>
 >;

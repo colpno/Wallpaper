@@ -1,18 +1,18 @@
-import type { QueryFilter } from "@repo/types";
-import { Query } from "mongoose";
+import type { KnownKeys, QueryFilter } from "@repo/types";
+import { type FilterQuery, Query } from "mongoose";
 
 type Command = "limit" | "page" | "select" | "sort" | "embed";
 
 type BuildQuerySettingsReturn<T extends Record<string, unknown>> = {
-  queryFilters: Omit<QueryFilter<T>, Command>;
+  queryFilters: Partial<KnownKeys<FilterQuery<T>>>;
   options: Pick<QueryFilter<T>, Command>;
 };
 
 export const organizeQueryInput = <T extends Record<string, unknown>>(
-  args?: QueryFilter<T>
+  args?: Pick<QueryFilter<T>, Command> & KnownKeys<FilterQuery<T>>
 ): BuildQuerySettingsReturn<T> => {
   if (!args) {
-    return { queryFilters: {} as BuildQuerySettingsReturn<T>["queryFilters"], options: {} };
+    return { queryFilters: {}, options: {} };
   }
 
   const { limit, page, select, sort, embed, ...queryFilters } = args;
@@ -39,7 +39,7 @@ export const organizeQueryInput = <T extends Record<string, unknown>>(
   }
 
   return {
-    queryFilters,
+    queryFilters: queryFilters as BuildQuerySettingsReturn<T>["queryFilters"],
     options,
   };
 };

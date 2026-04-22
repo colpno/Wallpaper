@@ -6,12 +6,12 @@ import type { FilterOperators } from "@repo/types";
 type Operators = keyof FilterOperators<unknown>;
 
 /** Recursively normalizes filter operators in the given type `T` to MongoDB operators. */
-type NormalizeFilterOperators<T> =
+export type NormalizeFilterOperators<T> =
   T extends Array<infer U>
     ? Array<NormalizeFilterOperators<U>>
     : T extends Record<string, unknown>
       ? {
-          [K in keyof T as K extends Operators ? `$${K}` : never]: NormalizeFilterOperators<T[K]>;
+          [K in keyof T as K extends Operators ? `$${K}` : K]?: NormalizeFilterOperators<T[K]>;
         }
       : T;
 
