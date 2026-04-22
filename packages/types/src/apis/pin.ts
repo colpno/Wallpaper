@@ -7,7 +7,7 @@ import type { QueryFilter } from "@/query.js";
 export type Fields = keyof PinDB | FlattenObjectKeys<PinDB<UserDB>>;
 export type SortableFields = Extract<
   Fields,
-  "createdAt" | "updatedAt" | "removedAt" | "photoWidth" | "photoHeight" | "photoAspectRatio"
+  "createdAt" | "updatedAt" | "photoWidth" | "photoHeight" | "photoAspectRatio"
 >;
 export type EmbeddableFields = Extract<Fields, "pinOwner">;
 

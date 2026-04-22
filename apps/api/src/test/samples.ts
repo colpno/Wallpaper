@@ -11,7 +11,7 @@ import { testUserPassword } from "./variables.js";
 
 faker.seed(123);
 
-export const createPin = (): Readonly<Required<Omit<Pin, "pinOwner" | "removedAt">>> => ({
+export const createPin = (): Readonly<Required<Omit<Pin, "pinOwner">>> => ({
   pinTitle: faker.lorem.words({ min: 2, max: 5 }),
   pinDescription: faker.commerce.productDescription(),
   photoCloudinaryId: faker.string.alphanumeric({ length: 20, casing: "lower" }),
