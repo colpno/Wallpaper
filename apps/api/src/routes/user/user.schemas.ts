@@ -51,7 +51,14 @@ export const requestSchemas = {
         avatar: placeholderFileSchema,
       }) satisfies ZodType<UpdateOneById["body"]>,
     responses: {
-      [HttpStatusCodes.OK]: userSchema satisfies ZodType<UpdateOneById["response"]>,
+      [HttpStatusCodes.OK]: userSchema.pick({
+        _id: true,
+        firstName: true,
+        lastName: true,
+        username: true,
+        email: true,
+        avatarUrl: true,
+      }) satisfies ZodType<UpdateOneById["response"]>,
       [HttpStatusCodes.NOT_FOUND]: httpNotFoundSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },

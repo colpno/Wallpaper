@@ -9,7 +9,7 @@ export type UpdateOneById = {
       avatar: File;
     }
   >;
-  response: UserDB;
+  response: Pick<UserDB, "_id" | "username" | "email" | "avatarUrl" | "firstName" | "lastName">;
 };
 
 export type DeleteOneById = {

@@ -33,6 +33,14 @@ export const updateOneById: UpdateOneById["handler"] = async (req, res, next) =>
 
     const updatedUser = await UserModel.findByIdAndUpdate(id, updateData, {
       new: true,
+      projection: {
+        _id: 1,
+        username: 1,
+        email: 1,
+        avatarUrl: 1,
+        firstName: 1,
+        lastName: 1,
+      },
     }).lean<UserDB>();
 
     if (!updatedUser) {
