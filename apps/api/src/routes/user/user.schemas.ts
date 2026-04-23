@@ -6,12 +6,13 @@ import { HttpStatusCodes } from "@repo/shared";
 import type { UserDB } from "@repo/types";
 
 import { z } from "@/lib/zod.js";
+import { escapeHTML } from "@/utils/converters.js";
 import {
+  escapedStringSchema,
   httpNotFoundSchema,
   httpValidationErrorSchema,
   objectIdSchema,
   placeholderFileSchema,
-  stringSchema,
 } from "@/utils/schemas.js";
 
 import * as handlers from "./user.handlers.js";
@@ -20,17 +21,17 @@ export const userSchema = z
   .object({
     _id: objectIdSchema,
     __v: z.number(),
-    createdAt: stringSchema,
-    updatedAt: stringSchema,
+    createdAt: escapedStringSchema,
+    updatedAt: escapedStringSchema,
     email: z.email(),
-    firstName: z.string(),
-    lastName: z.string(),
-    username: z.string(),
-    birthdate: stringSchema,
-    password: z.string().min(6),
-    salt: z.string(),
-    avatarUrl: stringSchema.optional(),
-    avatarCloudinaryId: stringSchema.optional(),
+    firstName: escapedStringSchema,
+    lastName: escapedStringSchema,
+    username: escapedStringSchema,
+    birthdate: escapedStringSchema,
+    password: z.string().min(6).transform(escapeHTML),
+    salt: escapedStringSchema,
+    avatarUrl: escapedStringSchema.optional(),
+    avatarCloudinaryId: escapedStringSchema.optional(),
   })
   .openapi("User") satisfies ZodType<UserDB>;
 

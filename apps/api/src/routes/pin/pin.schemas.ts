@@ -52,9 +52,9 @@ export const pinSchema = z
 
 const queryFilterSchema = createQueryFilterSchema<PinDB<UserDB | string | Types.ObjectId>>()(
   {
-    pinTitle: z.string(),
-    pinDescription: z.string(),
-    pinOwner: z.string(),
+    pinTitle: stringSchema,
+    pinDescription: stringSchema,
+    pinOwner: stringSchema,
     photoWidth: z.number(),
     photoHeight: z.number(),
     photoAspectRatio: z.number(),
@@ -84,7 +84,7 @@ export const requestSchemas = {
 
   getManyWithSaves: {
     query: queryFilterSchema.omit({ pinOwner: true }).extend({
-      pinOwner: z.string(),
+      pinOwner: stringSchema,
     }) satisfies ZodType<NormalizeFilterOperators<GetManyWithSaves["query"]>>,
     responses: {
       [HttpStatusCodes.OK]: z.union([

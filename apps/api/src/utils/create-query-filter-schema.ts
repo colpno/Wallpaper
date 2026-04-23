@@ -14,7 +14,12 @@ import type {
 import { z } from "@/lib/zod.js";
 
 import { parseFilterOperators } from "./parse-filter-operators.js";
-import { booleanFromStringSchema, isoFromDateStringSchema, objectIdSchema } from "./schemas.js";
+import {
+  booleanFromStringSchema,
+  isoFromDateStringSchema,
+  objectIdSchema,
+  stringSchema,
+} from "./schemas.js";
 
 export const createQueryFilterSchema = <T extends Record<string, unknown>>() => {
   return <
@@ -36,7 +41,7 @@ export const createQueryFilterSchema = <T extends Record<string, unknown>>() => 
     }
   ) => {
     const embeddableFields = (
-      options?.embeddableFields ? z.enum(options.embeddableFields) : z.string()
+      options?.embeddableFields ? z.enum(options.embeddableFields) : stringSchema
     ) as ZodType<TEmbeddable>;
 
     return z
@@ -97,7 +102,7 @@ const createFilterOperatorsSchema = <TSchema extends ZodType>(base: TSchema) => 
       in: z.array(base),
       nin: z.array(base),
       exists: booleanFromStringSchema,
-      regex: z.string(),
+      regex: stringSchema,
       options: z.enum(regexOptions),
       size: z.union([
         z.coerce.number(),
@@ -120,16 +125,16 @@ const createFilterOperatorsSchema = <TSchema extends ZodType>(base: TSchema) => 
 
 const createSelectSchema = <T extends string>(keys?: T[]) => {
   return z.union([
-    z.string(),
+    stringSchema,
     z.partialRecord(
-      keys ? z.enum(keys) : z.string(),
+      keys ? z.enum(keys) : stringSchema,
       z.union([z.coerce.number(), booleanFromStringSchema])
     ),
   ]) as z.ZodType<Select<T>>;
 };
 
 function createSortSchema<T extends string>(keys?: readonly T[]) {
-  const keySchema = keys ? z.enum(keys) : z.string();
+  const keySchema = keys ? z.enum(keys) : stringSchema;
   const valueSchema = z.union([
     z.literal(1),
     z.literal(-1),
@@ -140,7 +145,7 @@ function createSortSchema<T extends string>(keys?: readonly T[]) {
   ]) satisfies z.ZodType<SortOrder>;
 
   return z.union([
-    z.string(),
+    stringSchema,
     z.partialRecord(keySchema, valueSchema),
     z.array(z.tuple([keySchema, valueSchema])),
   ]) as z.ZodType<Sort<T>>;
@@ -150,15 +155,15 @@ const createEmbedOptionsSchema = <T extends string>(pathSchema: ZodType<T>) => {
   const populateOptionsSchema: z.ZodType<EmbedOptions<Record<T, unknown>>> = z
     .object({
       select: createSelectSchema(),
-      match: z.record(z.string(), createFilterOperatorsSchema(z.string())),
+      match: z.record(stringSchema, createFilterOperatorsSchema(stringSchema)),
       options: z
         .object({
           sort: createSortSchema(),
         })
         .partial(),
       populate: z.union([
-        z.string(),
-        z.array(z.string()),
+        stringSchema,
+        z.array(stringSchema),
         z.lazy(() => populateOptionsSchema),
         z.array(z.lazy(() => populateOptionsSchema)),
       ]),

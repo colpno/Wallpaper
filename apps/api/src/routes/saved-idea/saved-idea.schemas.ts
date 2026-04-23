@@ -32,8 +32,8 @@ export const savedIdeaSchema = z
 
 export const queryFilterSchema = createQueryFilterSchema<SavedIdeaDB<UserDB, PinDB>>()(
   {
-    savedBy: z.string(),
-    pin: z.string(),
+    savedBy: stringSchema,
+    pin: stringSchema,
   },
   {
     embeddableFields: ["savedBy", "pin"],

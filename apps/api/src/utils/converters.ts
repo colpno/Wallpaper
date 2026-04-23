@@ -68,3 +68,16 @@ export const toPaginationPayload = <T extends unknown[]>(
     },
   };
 };
+
+export const escapeHTML = (str: string) =>
+  str.replace(
+    /[&<>"']/g,
+    (tag) =>
+      ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;",
+      })[tag] || tag
+  );

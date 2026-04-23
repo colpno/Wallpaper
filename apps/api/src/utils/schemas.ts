@@ -10,6 +10,8 @@ import { isObjectIdOrHexString, Types } from "mongoose";
 
 import { z } from "@/lib/zod.js";
 
+import { escapeHTML } from "./converters.js";
+
 export const httpErrorSchema = z
   .object(sharedHttpErrorSchema.shape)
   .openapi("HTTPError") satisfies ZodType<GeneralErrorPayload>;
@@ -82,21 +84,33 @@ export const paginationPayloadSchema = <T extends z.ZodArray>(dataSchema: T) =>
 
 export const stringSchema = z.string().trim().nonempty();
 
-export const booleanFromStringSchema = z.union([z.boolean(), z.string()]).transform((val) => {
+export const escapedStringSchema = stringSchema.transform(escapeHTML);
+
+export const booleanFromStringSchema = z.union([z.boolean(), z.string()]).transform((val, ctx) => {
   if (typeof val === "boolean") return val;
 
   if (val === "true") return true;
   if (val === "false") return false;
 
-  throw new Error("Invalid boolean string");
+  ctx.addIssue({
+    code: "custom",
+    message: "Invalid boolean string",
+  });
+
+  return z.NEVER;
 });
 
-export const isoFromDateStringSchema = z.union([z.date(), z.string()]).transform((val) => {
+export const isoFromDateStringSchema = z.union([z.date(), z.string()]).transform((val, ctx) => {
   if (val instanceof Date) return val.toISOString();
 
   try {
     return new Date(val).toISOString();
   } catch {
-    throw new Error("Invalid date string");
+    ctx.addIssue({
+      code: "custom",
+      message: "Invalid date string",
+    });
+
+    return z.NEVER;
   }
 });
