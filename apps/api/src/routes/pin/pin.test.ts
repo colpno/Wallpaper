@@ -367,7 +367,6 @@ describe("Pin routes", () => {
           pinTitle: "New Pin",
           pinDescription: "New pin description",
           pinOwner: db.users[0]!._id,
-          photoBlurHash: "some-random-string",
           photo: "no-value",
         })
         .attach("photo", testImages[0]!);
@@ -428,7 +427,6 @@ describe("Pin routes", () => {
           pinTitle: "New Pin",
           pinOwner: db.users[0]!._id,
           pinDescription: "This is a new pin.",
-          photoBlurHash: "New blur hash",
           photo: "no-value",
           [extraKey]: "extra",
         })

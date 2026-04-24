@@ -11,7 +11,9 @@ import type { File } from "@/utils/schemas.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 import type { Pin, PinDB } from "@repo/types";
+import { encode } from "blurhash";
 import { type PipelineStage, Types } from "mongoose";
+import sharp from "sharp";
 
 import { env } from "@/configs/env.js";
 import { logger } from "@/lib/logger.js";
@@ -160,11 +162,26 @@ export const addOne: AddOne["handler"] = async (req, res, next) => {
   try {
     const photo = req.file as File;
 
-    const media = await uploadMedia(photo);
-    const aiDescription = await describeImage(photo);
+    const sharpInstance = sharp(photo.buffer);
+
+    const webp = await sharpInstance.clone().webp({ quality: 90 }).toBuffer();
+
+    const [media, aiDescription, { data, info }] = await Promise.all([
+      uploadMedia({ buffer: webp, mimetype: "image/webp" }),
+      describeImage(photo),
+      sharpInstance
+        .clone()
+        .resize(32, 32, { fit: "inside" })
+        .raw()
+        .ensureAlpha()
+        .toBuffer({ resolveWithObject: true }),
+    ]);
+
+    const blurhash = encode(new Uint8ClampedArray(data), info.width, info.height, 4, 4);
 
     const newPin = await PinModel.create({
       ...req.body,
+      photoBlurHash: blurhash,
       photoCloudinaryId: media.public_id,
       photoUrl: media.secure_url,
       photoWidth: media.width,

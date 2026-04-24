@@ -120,7 +120,6 @@ export const requestSchemas = {
         pinTitle: true,
         pinDescription: true,
         pinOwner: true,
-        photoBlurHash: true,
       })
       .extend({
         photo: placeholderFileSchema,
@@ -140,7 +139,6 @@ export const requestSchemas = {
       .pick({
         pinTitle: true,
         pinDescription: true,
-        photoBlurHash: true,
       } satisfies Record<keyof Omit<Required<UpdateOneById["body"]>, "photo">, true>)
       .extend({
         photo: placeholderFileSchema,

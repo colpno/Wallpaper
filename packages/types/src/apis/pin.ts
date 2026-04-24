@@ -32,7 +32,7 @@ export type GetOneById = {
 };
 
 export type AddOne = {
-  body: Pick<Pin, "pinTitle" | "pinDescription" | "pinOwner" | "photoBlurHash"> & {
+  body: Pick<Pin, "pinTitle" | "pinDescription" | "pinOwner"> & {
     photo: File;
   };
   response: PinDB;
@@ -43,7 +43,7 @@ export type UpdateOneById = {
     id: string;
   };
   body: Partial<
-    Pick<Pin, "pinTitle" | "pinDescription" | "photoBlurHash"> & {
+    Pick<Pin, "pinTitle" | "pinDescription"> & {
       photo: File;
     }
   >;
