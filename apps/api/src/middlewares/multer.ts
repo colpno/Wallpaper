@@ -19,7 +19,7 @@ export const multer =
       const methods: Method[] = ["single", "array", "fields"];
       const data = method === "single" ? req.file : req.files;
 
-      if (validationSchema && data && methods.some((m) => m === method)) {
+      if (validationSchema && methods.some((m) => m === method)) {
         const result = validationSchema.safeParse(data);
 
         if (!result.success) {

@@ -223,7 +223,7 @@ router
     handlers.addOne,
   ])
   .addHandler(updateOneById, ({ validator }) => [
-    multer("single", "photo")(fileSchema),
+    multer("single", "photo")(fileSchema.optional()),
     validator,
     handlers.updateOneById,
   ])

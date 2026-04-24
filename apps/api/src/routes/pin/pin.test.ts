@@ -385,8 +385,7 @@ describe("Pin routes", () => {
         // @ts-expect-error
         .field({
           pinOwner: db.users[0]!._id,
-        })
-        .attach("photo", testImages[0]!);
+        });
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
 

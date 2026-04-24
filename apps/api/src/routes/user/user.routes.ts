@@ -76,7 +76,7 @@ export const deleteOneById = router.register({
 
 router
   .addHandler(updateOneById, ({ validator }) => [
-    multer("single", "avatar" as UserKeys)(fileSchema),
+    multer("single", "avatar" as UserKeys)(fileSchema.optional()),
     validator,
     handlers.updateOneById,
   ])
