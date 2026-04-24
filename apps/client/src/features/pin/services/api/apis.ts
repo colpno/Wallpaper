@@ -45,6 +45,9 @@ export const addPin = (body: PinAPIs.AddOne["body"]) =>
     url: API_ROUTES.PIN.addOne.path(),
     method: API_ROUTES.PIN.addOne.method,
     data: body,
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
   });
 
 export const updatePinById = (

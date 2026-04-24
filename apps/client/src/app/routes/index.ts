@@ -23,6 +23,10 @@ export const routes = createBrowserRouter([
         Component: lazy(() => import("@/features/pin/pages/IdeasPage")),
       },
       {
+        path: ROUTES.PIN_CREATION(),
+        Component: lazy(() => import("@/features/pin/pages/PinCreation/PinCreation")),
+      },
+      {
         Component: SavedIdeasLayout,
         children: [
           {

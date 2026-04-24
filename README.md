@@ -133,8 +133,8 @@ npm run dev
 - [ ] Image upload with cropping
 - [x] File management with cloud
 - [ ] User profile management
-- [ ] Pins management
-- [ ] Member layout, pages for logged in users.
+- [x] Pins management
+- [x] Member layout, pages for logged in users.
 - [x] Guess layout, home page, explore page
 - [x] Improve loading states
 - [ ] Make layout fully responsive

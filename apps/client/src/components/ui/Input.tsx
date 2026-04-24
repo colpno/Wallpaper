@@ -26,7 +26,7 @@ function Input({ addons, uppercase, className, slotProps, ...props }: InputProps
       {...slotProps?.container}
       className={cn(
         "h-[inherit] overflow-hidden rounded-2xl border-gray-400 px-4 py-1.25 text-base focus-within:ring-1! focus-within:ring-blue-500!",
-        props.disabled && "opacity-50",
+        props.disabled && "border-gray-300 bg-secondary",
         className
       )}
     >
