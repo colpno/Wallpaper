@@ -3,10 +3,7 @@ import { model, Schema, type Types } from "mongoose";
 
 const schema = new Schema<Pin<Types.ObjectId>>(
   {
-    pinTitle: {
-      type: String,
-      required: true,
-    },
+    pinTitle: String,
     pinOwner: {
       type: Schema.ObjectId,
       ref: "users",

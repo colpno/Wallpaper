@@ -8,8 +8,8 @@ type ObjectId = Types.ObjectId;
  * @param O Owner type, one of User, string, or ObjectId.
  */
 export type Pin<O extends User | UserDB | string | ObjectId = string> = {
-  pinTitle: string;
   pinOwner: O;
+  pinTitle?: string;
   pinDescription?: string;
   photoCloudinaryId?: string;
   photoBlurHash: string;
