@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { HttpStatusCodes } from "@repo/shared";
+import type { PinDB } from "@repo/types";
 import { beforeEach, describe, expect, it } from "vitest";
 
-import { seedDatabase, type SeededDB } from "@/test/samples.js";
+import { createPin, seedDatabase, type SeededDB } from "@/test/samples.js";
 import { createTestClient } from "@/utils/create-test-client.js";
 
+import { PinModel } from "../pin/pin.model.js";
 import { SavedIdeaModel } from "./saved-idea.model.js";
 import * as routes from "./saved-idea.routes.js";
 import { requestSchemas } from "./saved-idea.schemas.js";
@@ -84,9 +86,13 @@ describe("Saved idea routes", () => {
 
   describe(`${routes.addOne.method.toUpperCase()} ${routes.addOne.path}`, () => {
     it("returns a successful response", async () => {
+      const newPin: PinDB = JSON.parse(
+        JSON.stringify((await PinModel.create(createPin(db.users[1]!._id))).toJSON<PinDB>())
+      );
+
       const response = await addSavedIdea().send({
         savedBy: db.users[0]!._id,
-        pin: db.pins[0]!._id,
+        pin: newPin._id,
       });
 
       expect(response.status).toBe(HttpStatusCodes.CREATED);
@@ -135,9 +141,13 @@ describe("Saved idea routes", () => {
     it("returns an item without extra field", async () => {
       const extraKey: string = "extraField";
 
+      const newPin: PinDB = JSON.parse(
+        JSON.stringify((await PinModel.create(createPin(db.users[1]!._id))).toJSON<PinDB>())
+      );
+
       const response = await addSavedIdea().send({
         savedBy: db.users[0]!._id,
-        pin: db.pins[0]!._id,
+        pin: newPin._id,
         [extraKey]: "extra",
       });
 

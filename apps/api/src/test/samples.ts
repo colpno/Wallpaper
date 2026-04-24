@@ -1,5 +1,3 @@
-import type { Types } from "mongoose";
-
 import { faker } from "@faker-js/faker";
 import type { Pin, PinDB, SavedIdea, SavedIdeaDB, User, UserDB } from "@repo/types";
 
@@ -11,7 +9,7 @@ import { testUserPassword } from "./variables.js";
 
 faker.seed(123);
 
-const createPin = (userId: string): Readonly<Required<Pin>> => ({
+export const createPin = (userId: string): Readonly<Required<Pin>> => ({
   pinTitle: faker.lorem.words({ min: 2, max: 5 }),
   pinDescription: faker.commerce.productDescription(),
   pinOwner: userId,
@@ -28,7 +26,7 @@ const createPin = (userId: string): Readonly<Required<Pin>> => ({
   ),
 });
 
-const createUser = (): Readonly<Required<User>> => {
+export const createUser = (): Readonly<Required<User>> => {
   const firstName = faker.person.firstName();
   const lastName = faker.person.lastName();
 
@@ -45,7 +43,7 @@ const createUser = (): Readonly<Required<User>> => {
   };
 };
 
-const createSavedIdea = (userId: string, pinId: string): Readonly<Required<SavedIdea>> => {
+export const createSavedIdea = (userId: string, pinId: string): Readonly<Required<SavedIdea>> => {
   return {
     savedBy: userId,
     pin: pinId,
@@ -58,10 +56,9 @@ const insertPins = async (userIds: string[]): Promise<SeededDB["pins"]> => {
 
   const pins = await PinModel.insertMany(newPins);
 
-  const jsonified = pins.map((item) => ({
-    ...item.toJSON(),
-    _id: item._id.toString(),
-  })) as SeededDB["pins"];
+  const jsonified = pins.map((item) =>
+    JSON.parse(JSON.stringify(item.toJSON()))
+  ) as SeededDB["pins"];
 
   return jsonified;
 };
@@ -71,11 +68,9 @@ const insertUsers = async (): Promise<SeededDB["users"]> => {
 
   const users = await UserModel.insertMany(newUsers);
 
-  const jsonified = users.map((item) => ({
-    ...item.toJSON(),
-    _id: item._id.toString(),
-    birthdate: item.birthdate,
-  })) as SeededDB["users"];
+  const jsonified = users.map((item) =>
+    JSON.parse(JSON.stringify(item.toJSON()))
+  ) as SeededDB["users"];
 
   return jsonified;
 };
@@ -95,18 +90,15 @@ const insertSavedIdeas = async (
 
   const savedIdeas = await SavedIdeaModel.insertMany(faker.helpers.shuffle(newSavedIdeas));
 
-  const jsonified = savedIdeas.map((item) => ({
-    ...item.toJSON(),
-    _id: item._id.toString(),
-    savedBy: item.savedBy.toString(),
-    pin: item.pin.toString(),
-  })) as SeededDB["savedIdeas"];
+  const jsonified = savedIdeas.map((item) =>
+    JSON.parse(JSON.stringify(item.toJSON()))
+  ) as SeededDB["savedIdeas"];
 
   return jsonified;
 };
 
 export type SeededDB = Readonly<{
-  pins: Required<PinDB<Types.ObjectId>[]>;
+  pins: Required<PinDB[]>;
   users: Required<UserDB[]>;
   savedIdeas: Required<SavedIdeaDB[]>;
 }>;
