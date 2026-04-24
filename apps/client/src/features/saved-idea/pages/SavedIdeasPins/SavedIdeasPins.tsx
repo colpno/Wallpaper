@@ -32,6 +32,7 @@ function SavedIdeasPins() {
       limit: INFINITE_PAGE_SIZE,
       sort: { createdAt: "desc" },
       select: {
+        pinOwner: true,
         pinDescription: true,
         photoUrl: true,
         photoBlurHash: true,
@@ -79,7 +80,7 @@ function SavedIdeasPins() {
       >
         {data.map((item) => (
           <MasonryWrapper key={item._id}>
-            <PinCard item={item} showActionButton={false} />
+            <PinCard item={item} showActionButton={false} editable />
           </MasonryWrapper>
         ))}
       </Masonry>

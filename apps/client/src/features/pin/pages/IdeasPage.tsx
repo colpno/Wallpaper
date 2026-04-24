@@ -14,10 +14,9 @@ function IdeasPage() {
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQuery(
     getPinsInfiniteQueryOptions({
       limit: INFINITE_PAGE_SIZE,
-      sort: {
-        createdAt: "asc",
-      },
+      sort: { createdAt: "desc" },
       select: {
+        pinOwner: true,
         pinTitle: true,
         pinDescription: true,
         photoUrl: true,

@@ -18,21 +18,22 @@ type Props = {
   item: Pick<
     PinDB,
     | "_id"
+    | "pinTitle"
     | "pinDescription"
     | "photoUrl"
     | "photoBlurHash"
     | "photoAspectRatio"
     | "photoWidth"
     | "pinOwner"
-  > &
-    Partial<Pick<PinDB, "pinTitle">>;
+  >;
   /**
    * @default true
    */
   showActionButton?: boolean;
+  editable?: boolean;
 };
 
-function PinCard({ item, showActionButton = true }: Props) {
+function PinCard({ item, showActionButton = true, editable }: Props) {
   const user = useStore((state) => state.user);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const odd = useRef<number>(Math.random());
@@ -67,24 +68,27 @@ function PinCard({ item, showActionButton = true }: Props) {
 
           <Image
             src={item.photoUrl}
-            alt={item.pinTitle}
+            alt={item.pinTitle ?? "Pin Photo"}
             onLoad={handleImageLoaded}
             className={cn(isImageLoading ? "opacity-0" : "opacity-100")}
           />
         </Link>
 
-        {user && (
-          <div className="hidden group-hover/pin:block">
-            {!isPinOwner && (
-              <SavePinButton
-                pinId={item._id}
-                pinPhoto={item.photoUrl}
-                className="absolute top-3 right-3"
-              />
-            )}
+        {!isPinOwner && user && (
+          <SavePinButton
+            pinId={item._id}
+            pinPhoto={item.photoUrl}
+            className="absolute top-3 right-3 hidden group-hover/pin:flex"
+          />
+        )}
 
-            <EditButton pinId={item._id} pinOwnerId={item.pinOwner} pinPhoto={item.photoUrl} />
-          </div>
+        {editable && (
+          <EditButton
+            pinId={item._id}
+            pinOwnerId={item.pinOwner}
+            pinPhoto={item.photoUrl}
+            className="absolute right-3 bottom-3 hidden group-hover/pin:flex"
+          />
         )}
       </div>
 
