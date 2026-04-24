@@ -10,11 +10,11 @@ import {
 
 import Typography from "@/components/ui/Typography";
 
-import { useDropdownMenuContext } from "../context";
+import { useDropdownMenu } from "../DropdownMenu.context";
 import Content from "./Content";
 
 function Submenu(item: DropdownMenuSubMenu) {
-  const { slotProps } = useDropdownMenuContext();
+  const { slotProps } = useDropdownMenu();
 
   return (
     <DropdownMenuSub {...slotProps?.submenu}>

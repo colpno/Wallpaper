@@ -3,11 +3,11 @@ import type { DropdownMenuGroup as GroupType } from "../DropdownMenu.types";
 import { DropdownMenuGroup, DropdownMenuLabel } from "@repo/ui/components";
 import { cn } from "@repo/ui/lib";
 
-import { useDropdownMenuContext } from "../context";
+import { useDropdownMenu } from "../DropdownMenu.context";
 import Item from "./Item";
 
 function Group(group: GroupType) {
-  const { slotProps } = useDropdownMenuContext();
+  const { slotProps } = useDropdownMenu();
 
   return (
     <DropdownMenuGroup {...slotProps?.group}>

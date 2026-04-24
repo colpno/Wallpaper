@@ -6,10 +6,10 @@ import { cn } from "@repo/ui/lib";
 import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
 
-import { useDropdownMenuContext } from "../context";
+import { useDropdownMenu } from "../DropdownMenu.context";
 
 function LinkItem({ icon, label, shortcut, className, to, ...props }: DropdownMenuItemLinkContent) {
-  const { slotProps } = useDropdownMenuContext();
+  const { slotProps } = useDropdownMenu();
 
   return (
     <DropdownMenuItem

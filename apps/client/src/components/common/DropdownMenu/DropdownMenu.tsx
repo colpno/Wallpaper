@@ -8,11 +8,11 @@ import {
 import { cn } from "@repo/ui/lib";
 
 import Content from "./components/Content";
-import { DropdownMenuContext } from "./context";
+import { DropdownMenuProvider } from "./DropdownMenu.context";
 
 function DropdownMenu({ data, trigger, slotProps, ...props }: DropdownMenuProps) {
   return (
-    <DropdownMenuContext value={{ slotProps }}>
+    <DropdownMenuProvider value={{ slotProps }}>
       <UIDropdownMenu {...props}>
         {trigger && <DropdownMenuTrigger {...slotProps?.trigger}>{trigger}</DropdownMenuTrigger>}
 
@@ -23,7 +23,7 @@ function DropdownMenu({ data, trigger, slotProps, ...props }: DropdownMenuProps)
           <Content data={data} />
         </DropdownMenuContent>
       </UIDropdownMenu>
-    </DropdownMenuContext>
+    </DropdownMenuProvider>
   );
 }
 

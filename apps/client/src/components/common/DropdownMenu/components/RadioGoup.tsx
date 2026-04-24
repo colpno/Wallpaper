@@ -11,10 +11,10 @@ import { cn } from "@repo/ui/lib";
 
 import Typography from "@/components/ui/Typography";
 
-import { useDropdownMenuContext } from "../context";
+import { useDropdownMenu } from "../DropdownMenu.context";
 
 function RadioGroup(item: DropdownMenuRadioGroupType) {
-  const { slotProps } = useDropdownMenuContext();
+  const { slotProps } = useDropdownMenu();
 
   const handleValueChange = (value: string): void => {
     item.onChange?.(value);

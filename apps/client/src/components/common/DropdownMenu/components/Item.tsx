@@ -5,12 +5,12 @@ import { cn } from "@repo/ui/lib";
 
 import Typography from "@/components/ui/Typography";
 
-import { useDropdownMenuContext } from "../context";
+import { useDropdownMenu } from "../DropdownMenu.context";
 import LinkItem from "./LinkItem";
 import Submenu from "./Submenu";
 
 function Item(item: ItemType) {
-  const { slotProps } = useDropdownMenuContext();
+  const { slotProps } = useDropdownMenu();
 
   // Link
   if ("to" in item) {
