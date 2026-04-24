@@ -75,6 +75,7 @@ function Account() {
           </Tooltip>
 
           <Tooltip
+            align="end"
             trigger={
               <Button variant="ghost" size="icon-md">
                 <FaChevronDown />
@@ -83,9 +84,6 @@ function Account() {
             slotProps={{
               trigger: {
                 asChild: true,
-              },
-              content: {
-                align: "end",
               },
             }}
           >

@@ -6,16 +6,15 @@ type Props = {
   slotProps?: {
     container?: React.ComponentProps<typeof UITooltip>;
     trigger?: React.ComponentProps<typeof TooltipTrigger>;
-    content?: React.ComponentProps<typeof TooltipContent>;
   };
-};
+} & React.ComponentProps<typeof TooltipContent>;
 
-function Tooltip({ trigger, children, slotProps }: Props) {
+function Tooltip({ trigger, children, slotProps, ...props }: Props) {
   return (
     <UITooltip {...slotProps?.container}>
       {trigger && <TooltipTrigger {...slotProps?.trigger}>{trigger}</TooltipTrigger>}
 
-      <TooltipContent {...slotProps?.content}>{children}</TooltipContent>
+      <TooltipContent {...props}>{children}</TooltipContent>
     </UITooltip>
   );
 }

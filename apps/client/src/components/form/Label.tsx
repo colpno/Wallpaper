@@ -22,8 +22,8 @@ function Label({ children, hint, ...props }: Props) {
           }
           slotProps={{
             trigger: { asChild: true },
-            content: { className: cn("max-w-xs") },
           }}
+          className={cn("max-w-xs")}
         >
           {hint}
         </Tooltip>
