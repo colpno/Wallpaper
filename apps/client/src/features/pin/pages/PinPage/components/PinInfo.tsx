@@ -10,7 +10,6 @@ import Button from "@/components/ui/Button";
 import Image from "@/components/ui/Image";
 import Link from "@/components/ui/Link";
 import { ROUTES } from "@/constants/common";
-import { HEADER_HEIGHT } from "@/constants/components";
 import { checkSavedQueryOptions } from "@/features/saved-idea/services/api/queries";
 
 import ZoomOutButton from "./ZoomOutButton";
@@ -30,10 +29,7 @@ function PinInfo(pin: Pick<PinDB, "_id" | "photoUrl" | "photoWidth" | "photoAspe
 
   return (
     <div className="w-full overflow-clip rounded-2xl border border-gray-300">
-      <div
-        className="sticky right-0 left-0 z-pinpage-detail flex h-16 items-center justify-between bg-background px-4 py-2"
-        style={{ top: HEADER_HEIGHT }}
-      >
+      <div className="sticky top-header-height right-0 left-0 z-pinpage-detail flex h-16 items-center justify-between bg-background px-4 py-2">
         <div>
           <Button variant="ghost" size="icon-xl">
             <LuDownload />

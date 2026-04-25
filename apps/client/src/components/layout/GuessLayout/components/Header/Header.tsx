@@ -4,7 +4,6 @@ import FormDialog from "@/components/dialogs/FormDialog";
 import Icon from "@/components/ui/Icon";
 import Link from "@/components/ui/Link";
 import { ROUTES } from "@/constants/common";
-import { HEADER_HEIGHT } from "@/constants/components";
 import AuthForm from "@/features/auth/components/AuthForm";
 
 import SearchBar from "./components/SearchBar";
@@ -13,10 +12,7 @@ const menu = [{ label: "Explore", url: ROUTES.IDEAS() }];
 
 function Header() {
   return (
-    <header
-      className="fixed inset-x-0 top-0 z-header flex gap-4 bg-background p-4 shadow-[0_2px_1px_rgba(0,0,0,0.05)]"
-      style={{ height: HEADER_HEIGHT }}
-    >
+    <header className="sticky inset-x-0 top-0 z-header flex h-header-height gap-4 bg-background p-4 shadow-[0_2px_1px_rgba(0,0,0,0.05)]">
       <nav className="flex items-center gap-3">
         <Link to={ROUTES.HOME()}>
           <Icon variant="default" />

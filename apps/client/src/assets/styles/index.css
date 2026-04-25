@@ -8,9 +8,17 @@
 
   --z-index-header: 40;
   --z-index-header-search-overlay: 39;
-  --z-index-sidebar: 30;
+  --z-index-sidebar: 50;
+  --z-index-sub-sidebar: 49;
   --z-index-pinpage-detail: 38;
   --z-index-saved-ideas-header: 38;
+
+  --spacing-header-height: 80px;
+  --spacing-sidebar-width: 72px;
+  --spacing-sub-sidebar-width: 368px;
+
+  --transition-duration-sidebar: 200ms;
+  --transition-duration-not-sidebar: 150ms;
 }
 
 @keyframes scale-down {

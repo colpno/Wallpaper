@@ -12,7 +12,6 @@ import Heading from "@/components/ui/Heading";
 import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
 import { ROUTES } from "@/constants/common";
-import { HEADER_HEIGHT } from "@/constants/components";
 import {
   useSaveIdeasContext,
   type ViewOption,
@@ -34,8 +33,10 @@ function SavedIdeasHeader(props: React.ComponentProps<"div">) {
   return (
     <div
       {...props}
-      className={cn("sticky z-saved-ideas-header bg-background pt-5 pb-4", props.className)}
-      style={{ top: HEADER_HEIGHT }}
+      className={cn(
+        "sticky top-header-height z-saved-ideas-header bg-background pt-5 pb-4",
+        props.className
+      )}
     >
       <Container className="flex justify-between">
         <div className="space-y-6">
