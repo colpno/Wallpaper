@@ -6,34 +6,34 @@ import { toast } from "@repo/ui/components";
 
 import { request } from "@/lib/axios/client";
 
-export const getPins = (
-  query?: PinAPIs.GetMany["query"],
+export const getPins = <TQuery extends PinAPIs.GetMany["query"]>(
+  query?: TQuery,
   options?: Omit<AxiosRequestConfig<never>, "url" | "method" | "params">
 ) =>
-  request<PinAPIs.GetMany["response"]>({
+  request<PinAPIs.GetMany<TQuery>["response"]>({
     ...options,
     url: API_ROUTES.PIN.getMany.path(),
     method: API_ROUTES.PIN.getMany.method,
     params: query,
   });
 
-export const getPinsWithSaves = (
-  query?: PinAPIs.GetManyWithSaves["query"],
+export const getPinsWithSaves = <TQuery extends PinAPIs.GetManyWithSaves["query"]>(
+  query?: TQuery,
   options?: Omit<AxiosRequestConfig<never>, "url" | "method" | "params">
 ) =>
-  request<PinAPIs.GetManyWithSaves["response"]>({
+  request<PinAPIs.GetManyWithSaves<TQuery>["response"]>({
     ...options,
     url: API_ROUTES.PIN.getManyWithSaves.path(),
     method: API_ROUTES.PIN.getManyWithSaves.method,
     params: query,
   });
 
-export const getPinById = (
+export const getPinById = <TQuery extends PinAPIs.GetOneById["query"]>(
   params: PinAPIs.GetOneById["params"],
-  query?: PinAPIs.GetOneById["query"],
+  query?: TQuery,
   options?: Omit<AxiosRequestConfig<never>, "url" | "method" | "params">
 ) =>
-  request<PinAPIs.GetOneById["response"]>({
+  request<PinAPIs.GetOneById<TQuery>["response"]>({
     ...options,
     url: API_ROUTES.PIN.getOneById.path(params.id),
     method: API_ROUTES.PIN.getOneById.method,
@@ -66,12 +66,12 @@ export const deletePinById = (params: PinAPIs.DeleteOneById["params"]) =>
     method: API_ROUTES.PIN.deleteOneById.method,
   });
 
-export const searchPins = async (
+export const searchPins = async <TQuery extends PinAPIs.Search["query"]>(
   body: PinAPIs.Search["body"],
-  query?: PinAPIs.Search["query"],
+  query?: TQuery,
   options?: Omit<AxiosRequestConfig<never>, "url" | "method" | "params">
 ) => {
-  const response = await request<PinAPIs.Search["response"], typeof body>({
+  const response = await request<PinAPIs.Search<TQuery>["response"], typeof body>({
     ...options,
     url: API_ROUTES.PIN.search.path(),
     method: API_ROUTES.PIN.search.method,

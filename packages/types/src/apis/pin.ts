@@ -11,24 +11,43 @@ export type SortableFields = Extract<
 >;
 export type EmbeddableFields = Extract<Fields, "pinOwner">;
 
-export type GetMany = {
-  query: QueryFilter<PinDB, Fields, SortableFields, EmbeddableFields>;
-  response: PinDB[] | PaginationPayload<PinDB[]>;
+export type GetMany<
+  TQuery extends QueryFilter<PinDB, Fields, SortableFields, EmbeddableFields> = QueryFilter<
+    PinDB,
+    Fields,
+    SortableFields,
+    EmbeddableFields
+  >,
+> = {
+  query: TQuery;
+  response:
+    | (TQuery extends { embed: "pinOwner" } ? PinDB<UserDB> : PinDB)[]
+    | PaginationPayload<(TQuery extends { embed: "pinOwner" } ? PinDB<UserDB> : PinDB)[]>;
 };
 
-export type GetManyWithSaves = {
+export type GetManyWithSaves<
+  TQuery extends Omit<QueryFilter<PinDB, Fields, SortableFields, EmbeddableFields>, "pinOwner"> =
+    Omit<QueryFilter<PinDB, Fields, SortableFields, EmbeddableFields>, "pinOwner">,
+> = {
   query: {
     pinOwner: string;
-  } & Omit<QueryFilter<PinDB, Fields, SortableFields, EmbeddableFields>, "pinOwner">;
-  response: PinDB[] | PaginationPayload<PinDB[]>;
+  } & TQuery;
+  response:
+    | (TQuery extends { embed: "pinOwner" } ? PinDB<UserDB> : PinDB)[]
+    | PaginationPayload<(TQuery extends { embed: "pinOwner" } ? PinDB<UserDB> : PinDB)[]>;
 };
 
-export type GetOneById = {
+export type GetOneById<
+  TQuery extends Pick<GetMany["query"], "select" | "embed"> = Pick<
+    GetMany["query"],
+    "select" | "embed"
+  >,
+> = {
   params: {
     id: string;
   };
-  query: Pick<GetMany["query"], "select" | "embed">;
-  response: PinDB;
+  query: TQuery;
+  response: TQuery extends { embed: "pinOwner" } ? PinDB<UserDB> : PinDB;
 };
 
 export type AddOne = {
@@ -57,14 +76,16 @@ export type DeleteOneById = {
   response: never;
 };
 
-export type Search = {
+export type Search<
+  TQuery extends Omit<GetMany["query"], "embed"> = Omit<GetMany["query"], "embed">,
+> = {
   query: {
     /**
      * The smallest score amongst the last search results, used in pagination.
      * The largest is 1 which means the same item.
      */
     lastSmallestScore: number;
-  } & Omit<GetMany["query"], "embed">;
+  } & TQuery;
   body: { text: string } | { embedding: number[] };
   /**
    * Descending sorted list by score by default.
@@ -73,7 +94,10 @@ export type Search = {
     message?: string;
   } & PaginationPayload<
     Array<
-      Omit<PinDB, "descriptionEmbeddings" | "photoCloudinaryId"> & {
+      Omit<
+        TQuery extends { embed: "pinOwner" } ? PinDB<UserDB> : PinDB,
+        "descriptionEmbeddings" | "photoCloudinaryId"
+      > & {
         score: number;
       }
     >

@@ -6,15 +6,17 @@ import { INITIAL_PAGE } from "@/constants/common";
 import { getPinById, getPins, getPinsWithSaves, searchPins } from "./apis";
 import { PIN_KEYS } from "./keys";
 
-export const getPinsInfiniteQueryOptions = (
-  query:
+export const getPinsInfiniteQueryOptions = <
+  TQuery extends
     | ({
         includeSaves?: false;
       } & Omit<PinAPIs.GetMany["query"], "page">)
     | ({
         includeSaves: true;
         pinOwner: string;
-      } & Omit<PinAPIs.GetMany["query"], "page" | "pinOwner">)
+      } & Omit<PinAPIs.GetMany["query"], "page" | "pinOwner">),
+>(
+  query: TQuery
 ) => {
   const { includeSaves, ...rest } = query;
 
@@ -47,8 +49,10 @@ export const getPinsInfiniteQueryOptions = (
   });
 };
 
-export const getPinsWithSavesInfiniteQueryOptions = (
-  query: Omit<PinAPIs.GetManyWithSaves["query"], "page">
+export const getPinsWithSavesInfiniteQueryOptions = <
+  TQuery extends Omit<PinAPIs.GetManyWithSaves["query"], "page">,
+>(
+  query: TQuery
 ) => {
   return infiniteQueryOptions({
     queryFn: ({ signal, pageParam }) =>
@@ -78,9 +82,11 @@ export const getPinByIdQueryOptions = <TQuery extends PinAPIs.GetOneById["query"
     queryKey: PIN_KEYS.item(params),
   });
 
-export const searchPinsInfiniteQueryOptions = (
+export const searchPinsInfiniteQueryOptions = <
+  TQuery extends Omit<PinAPIs.Search["query"], "page">,
+>(
   body: PinAPIs.Search["body"],
-  query: Omit<PinAPIs.Search["query"], "page">
+  query: TQuery
 ) =>
   infiniteQueryOptions({
     queryFn: ({ signal, pageParam }) =>
