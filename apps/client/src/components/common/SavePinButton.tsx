@@ -1,6 +1,7 @@
 import { toast } from "@repo/ui/components";
+import { cn } from "@repo/ui/lib";
 import { useMutation } from "@tanstack/react-query";
-import React, { type MouseEventHandler, useEffect } from "react";
+import React, { type MouseEventHandler, useEffect, useState } from "react";
 
 import { useStore } from "@/app/stores/useStore";
 import { ROUTES } from "@/constants/common";
@@ -10,36 +11,33 @@ import Button from "../ui/Button";
 import Image from "../ui/Image";
 import Link from "../ui/Link";
 import Typography from "../ui/Typography";
+import LoginDialogForm from "./LoginDialogForm";
 
 type Props = {
   pinId: string;
   pinPhoto: string;
-  onSuccess?: (success: boolean) => void;
   saved?: boolean;
 } & React.ComponentProps<typeof Button>;
 
-function SavePinButton({ pinId, pinPhoto, onSuccess, saved, ...props }: Props) {
+function SavePinButton({ pinId, pinPhoto, saved, ...props }: Props) {
+  const [openLoginForm, setOpenLoginForm] = useState(false);
   const user = useStore((state) => state.user);
   const { mutate, isPending, isSuccess } = useMutation(addSavedIdeaMutationOptions());
-
-  if (!user) {
-    throw new Error("Must be logged in to use this feature");
-  }
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();
 
     if (user) {
       mutate({ savedBy: user.id, pin: pinId });
+    } else {
+      setOpenLoginForm(true);
     }
 
     props.onClick?.(e);
   };
 
   useEffect(() => {
-    onSuccess?.(isSuccess);
-
-    if (isSuccess) {
+    if (isSuccess && user) {
       toast.success(
         <div className="flex items-center gap-2">
           <Image
@@ -63,14 +61,19 @@ function SavePinButton({ pinId, pinPhoto, onSuccess, saved, ...props }: Props) {
   }, [isSuccess]);
 
   return (
-    <Button
-      size="sm"
-      variant={saved || isPending || isSuccess ? "active" : "default"}
-      {...props}
-      onClick={handleClick}
-    >
-      {isPending ? "Saving..." : saved || isSuccess ? "Saved" : "Save"}
-    </Button>
+    <>
+      <Button
+        size="sm"
+        variant={saved || isPending || isSuccess ? "active" : "default"}
+        {...props}
+        onClick={handleClick}
+        className={cn(saved && "pointer-events-none")}
+      >
+        {isPending ? "Saving..." : saved || isSuccess ? "Saved" : "Save"}
+      </Button>
+
+      <LoginDialogForm open={openLoginForm} onOpenChange={setOpenLoginForm} />
+    </>
   );
 }
 
