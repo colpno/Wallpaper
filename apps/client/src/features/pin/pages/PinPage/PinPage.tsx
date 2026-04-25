@@ -27,7 +27,7 @@ function PinPage() {
       { id: pinId! },
       {
         select: {
-          _id: false,
+          _id: true,
           descriptionEmbeddings: true,
           photoUrl: true,
           photoWidth: true,
