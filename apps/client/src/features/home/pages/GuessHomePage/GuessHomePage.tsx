@@ -1,12 +1,10 @@
 import { GroupBoards, SearchBySkinTone, VisualSearch } from "@/assets/images";
-import FormDialog from "@/components/dialogs/FormDialog";
+import RegisterDialogForm from "@/components/common/RegisterDialogForm";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
-import Icon from "@/components/ui/Icon";
 import Image from "@/components/ui/Image";
 import Typography from "@/components/ui/Typography";
-import AuthForm from "@/features/auth/components/AuthForm";
 
 import Footer from "./components/Footer";
 import Hero from "./components/Hero";
@@ -100,15 +98,7 @@ function GuessHomePage() {
 }
 
 function HomePageAuthForm() {
-  return (
-    <FormDialog
-      trigger={<Button>Join Pinterest</Button>}
-      slotProps={{ trigger: { asChild: true } }}
-    >
-      <Icon variant="favicon" className="m-[8px_auto_6px]" />
-      <AuthForm className="py-0" />
-    </FormDialog>
-  );
+  return <RegisterDialogForm trigger={<Button>Join Pinterest</Button>} />;
 }
 
 export default GuessHomePage;
