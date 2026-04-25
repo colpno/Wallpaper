@@ -80,7 +80,7 @@ function SearchBar({ placeholder = "Search for easy dinners, fashion, etc.", ...
               end: (
                 <Button
                   variant="ghost"
-                  size="icon-md"
+                  size="icon-sm"
                   onClick={() => setValue("q", "")}
                   className={cn(
                     "size-11 rounded-2xl hover:bg-gray-50",

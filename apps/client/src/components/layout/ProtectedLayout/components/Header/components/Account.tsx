@@ -77,7 +77,7 @@ function Account() {
           <Tooltip
             align="end"
             trigger={
-              <Button variant="ghost" size="icon-md">
+              <Button variant="ghost" size="icon-sm">
                 <FaChevronDown />
               </Button>
             }

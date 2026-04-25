@@ -16,7 +16,7 @@ function Label({ children, hint, ...props }: Props) {
         {children}{" "}
         <Tooltip
           trigger={
-            <Button variant="ghost" size="icon-sm" className="text-base">
+            <Button variant="ghost" size="icon-xs" className="text-base">
               <AiOutlineExclamationCircle />
             </Button>
           }

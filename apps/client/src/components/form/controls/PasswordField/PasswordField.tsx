@@ -66,10 +66,9 @@ function PasswordField({ label, showStrength, labelHint, ...props }: Props) {
                   end: (
                     <Button
                       variant="ghost"
-                      size="icon-md"
+                      size="icon-sm"
                       onClick={handleEyeClick}
                       aria-label="Reveal password"
-                      className="text-lg"
                     >
                       {inputType === "text" ? <GoEyeClosed /> : <GoEye />}
                     </Button>

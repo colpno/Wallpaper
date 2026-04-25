@@ -43,7 +43,7 @@ function ZoomOutButton({ pin, zoomOptions = defaultZoomOptions, ...props }: Prop
     <Dialog
       open={open}
       trigger={
-        <Button variant="secondary" size="icon-xl" {...props} onClick={() => setOpen(true)}>
+        <Button variant="secondary" size="icon-lg" {...props} onClick={() => setOpen(true)}>
           <MdOutlineZoomOutMap />
         </Button>
       }
@@ -63,7 +63,7 @@ function ZoomOutButton({ pin, zoomOptions = defaultZoomOptions, ...props }: Prop
 
       <Button
         variant="secondary"
-        size="icon-xl"
+        size="icon-lg"
         className="absolute top-3 left-3"
         onClick={() => setOpen(false)}
       >
@@ -72,14 +72,14 @@ function ZoomOutButton({ pin, zoomOptions = defaultZoomOptions, ...props }: Prop
 
       <div className="absolute right-3 bottom-3 flex flex-col gap-2">
         {scale === zoomOptions.max && (
-          <Button variant="secondary" size="icon-xl" onClick={() => setScale(zoomOptions.default)}>
+          <Button variant="secondary" size="icon-lg" onClick={() => setScale(zoomOptions.default)}>
             <MdOutlineZoomInMap />
           </Button>
         )}
 
         <Button
           variant="secondary"
-          size="icon-xl"
+          size="icon-lg"
           disabled={scale === zoomOptions.max}
           onClick={handleScaleUp}
         >
@@ -88,7 +88,7 @@ function ZoomOutButton({ pin, zoomOptions = defaultZoomOptions, ...props }: Prop
 
         <Button
           variant="secondary"
-          size="icon-xl"
+          size="icon-lg"
           disabled={scale === zoomOptions.min}
           onClick={handleScaleDown}
         >

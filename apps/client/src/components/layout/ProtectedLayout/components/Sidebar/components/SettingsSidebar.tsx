@@ -43,7 +43,7 @@ function SettingsSidebar() {
           Settings & Support
         </Typography>
 
-        <Button variant="ghost" size="icon-md" onClick={() => setSubSidebar(null)}>
+        <Button variant="ghost" size="icon-sm" onClick={() => setSubSidebar(null)}>
           <LuX />
         </Button>
       </div>

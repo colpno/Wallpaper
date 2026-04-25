@@ -45,7 +45,7 @@ function EditButton({ pinId, pinOwnerId, pinPhoto, ...props }: Props) {
         title: { className: cn("text-center text-2xl") },
       }}
       trigger={
-        <Button variant="tertiary" size="icon-md" {...props}>
+        <Button variant="tertiary" size="icon-sm" {...props}>
           <LuPencil />
         </Button>
       }

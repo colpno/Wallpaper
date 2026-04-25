@@ -4,7 +4,9 @@ import { cn } from "@repo/ui/lib";
 import { LuPin, LuX } from "react-icons/lu";
 
 import Button from "@/components/ui/Button";
+import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
+import { ROUTES } from "@/constants/common";
 
 import { useSidebar } from "../Sidebar.context";
 
@@ -12,6 +14,7 @@ type Item = {
   icon: IconType;
   title: string;
   description: string;
+  url: string;
 };
 
 const data: Item[] = [
@@ -19,6 +22,7 @@ const data: Item[] = [
     icon: LuPin,
     title: "Pin",
     description: "Post your photos or videos and add links, stickers, effects and more",
+    url: ROUTES.PIN_CREATION(),
   },
 ];
 
@@ -39,16 +43,20 @@ function CreationSidebar() {
           Create
         </Typography>
 
-        <Button variant="ghost" size="icon-md" onClick={() => setSubSidebar(null)}>
+        <Button variant="ghost" size="icon-sm" onClick={() => setSubSidebar(null)}>
           <LuX />
         </Button>
       </div>
 
-      <div>
+      <div className="space-y-6">
         {data.map((item) => (
-          <div key={item.title} className="flex items-center gap-3 p-3">
-            <Button variant="secondary" className="size-15">
-              <item.icon className="size-7" />
+          <Link
+            key={item.title}
+            to={item.url}
+            className="flex items-center gap-3 rounded-md px-3 py-2 hover:bg-neutral-100"
+          >
+            <Button variant="secondary" size="icon-xl" className="pointer-events-none">
+              <item.icon />
             </Button>
 
             <div>
@@ -58,7 +66,7 @@ function CreationSidebar() {
                 {item.description}
               </Typography>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </div>

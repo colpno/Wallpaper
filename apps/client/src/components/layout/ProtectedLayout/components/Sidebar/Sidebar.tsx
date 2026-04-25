@@ -27,7 +27,7 @@ function Sidebar() {
         key: "home-1",
         label: "Home",
         element: (
-          <Link to={ROUTES.HOME()} button variant="ghost" size="icon-xl">
+          <Link to={ROUTES.HOME()} button variant="ghost" size="icon-lg">
             <Icon variant="favicon" className="size-8.5!" />
           </Link>
         ),
@@ -36,7 +36,7 @@ function Sidebar() {
         key: "home-2",
         label: "Home",
         element: (
-          <Link to={ROUTES.HOME()} navlink button variant="ghost" size="icon-xl">
+          <Link to={ROUTES.HOME()} navlink button variant="ghost" size="icon-lg">
             {({ isActive }) => (isActive ? <PiHouseFill /> : <PiHouseBold />)}
           </Link>
         ),
@@ -45,7 +45,7 @@ function Sidebar() {
         key: "your-boards",
         label: "Your boards",
         element: (
-          <Link to={ROUTES.PROFILE(user.username)} navlink button variant="ghost" size="icon-xl">
+          <Link to={ROUTES.PROFILE(user.username)} navlink button variant="ghost" size="icon-lg">
             {({ isActive }) => (isActive ? <MdSpaceDashboard /> : <MdOutlineSpaceDashboard />)}
           </Link>
         ),
@@ -54,7 +54,7 @@ function Sidebar() {
         key: "create",
         label: "Create",
         element: (
-          <Button variant="ghost" size="icon-xl" onClick={() => toggleSubSidebar("creation")}>
+          <Button variant="ghost" size="icon-lg" onClick={() => toggleSubSidebar("creation")}>
             {subSidebar === "creation" ? <FaSquarePlus /> : <FaRegSquarePlus />}
           </Button>
         ),
@@ -65,7 +65,7 @@ function Sidebar() {
         key: "settings-Support",
         label: "Settings & Support",
         element: (
-          <Button variant="ghost" size="icon-xl" onClick={() => toggleSubSidebar("settings")}>
+          <Button variant="ghost" size="icon-lg" onClick={() => toggleSubSidebar("settings")}>
             {subSidebar === "settings" ? <PiGearFill /> : <PiGear />}
           </Button>
         ),

@@ -64,9 +64,9 @@ function SavePinButton({ pinId, pinPhoto, onSuccess, saved, ...props }: Props) {
 
   return (
     <Button
-      {...props}
       size="sm"
       variant={saved || isPending || isSuccess ? "active" : "default"}
+      {...props}
       onClick={handleClick}
     >
       {isPending ? "Saving..." : saved || isSuccess ? "Saved" : "Save"}

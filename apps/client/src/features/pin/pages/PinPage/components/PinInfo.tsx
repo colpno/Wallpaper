@@ -31,19 +31,19 @@ function PinInfo(pin: Pick<PinDB, "_id" | "photoUrl" | "photoWidth" | "photoAspe
     <div className="w-full overflow-clip rounded-2xl border border-gray-300">
       <div className="sticky top-header-height right-0 left-0 z-pinpage-detail flex h-16 items-center justify-between bg-background px-4 py-2">
         <div>
-          <Button variant="ghost" size="icon-xl">
+          <Button variant="ghost" size="icon-lg">
             <LuDownload />
           </Button>
         </div>
 
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2">
           {isSavePinSuccess ||
             (isSaved && (
               <Link
                 to={ROUTES.PROFILE(user.username)}
                 button
                 variant="ghost"
-                size="sm"
+                size="md"
                 className="hover:underline"
               >
                 Profile
@@ -51,6 +51,7 @@ function PinInfo(pin: Pick<PinDB, "_id" | "photoUrl" | "photoWidth" | "photoAspe
             ))}
 
           <SavePinButton
+            size="md"
             pinId={pin._id}
             pinPhoto={pin.photoUrl}
             saved={data?.saved}

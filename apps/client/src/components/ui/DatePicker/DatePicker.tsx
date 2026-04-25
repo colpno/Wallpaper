@@ -1,8 +1,8 @@
 import type { DatePickerProps, DatePickerValue, DateRange, Mode } from "./DatePicker.types";
 
 import { Calendar, Popover, PopoverContent, PopoverTrigger } from "@repo/ui/components";
-import { CalendarIcon } from "lucide-react";
 import { useState } from "react";
+import { LuCalendar } from "react-icons/lu";
 
 import Button from "../Button";
 import Input from "../Input";
@@ -55,8 +55,8 @@ function DatePicker<TMode extends Mode = "single">({
         end: (
           <Popover open={open} onOpenChange={setOpen}>
             <PopoverTrigger asChild>
-              <Button variant="ghost" size="icon-md" aria-label="Select date">
-                <CalendarIcon className="size-4.5" />
+              <Button variant="ghost" size="icon-sm" aria-label="Select date">
+                <LuCalendar />
 
                 <span className="sr-only">Select date</span>
               </Button>

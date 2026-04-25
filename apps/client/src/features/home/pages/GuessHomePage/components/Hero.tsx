@@ -130,7 +130,7 @@ function Hero(props: React.ComponentProps<"section">) {
 
       {/* Right column */}
       <div className="relative w-fit">
-        <div className="relative h-[400px] w-[300px]">
+        <div className="relative h-100 w-75">
           {heroContents.map((item, index) => (
             <Image
               key={item.text}
@@ -149,7 +149,7 @@ function Hero(props: React.ComponentProps<"section">) {
           ))}
         </div>
 
-        <div className="absolute -right-27 bottom-0 h-[270px] w-[200px]">
+        <div className="absolute -right-27 bottom-0 h-67.5 w-50">
           {heroContents.map((item, index) => (
             <Image
               key={item.text}
@@ -169,7 +169,7 @@ function Hero(props: React.ComponentProps<"section">) {
 
         <div
           className={cn(
-            "absolute -top-[30px] right-0 grid size-20 rotate-5 place-items-center rounded-[28px] transition-all duration-300",
+            "absolute -top-7.5 right-0 grid size-20 rotate-5 place-items-center rounded-[28px] transition-all duration-300",
             showPinIcon ? "scale-100 opacity-100" : "scale-80 opacity-0",
             showPinIcon && currentIndex === 0 && "bg-(--color-1)",
             showPinIcon && currentIndex === 1 && "bg-(--color-2)",
@@ -184,7 +184,7 @@ function Hero(props: React.ComponentProps<"section">) {
 
       {/* Play button */}
       <Button
-        size="icon-lg"
+        size="icon-md"
         className="absolute right-5 bottom-5 bg-secondary text-foreground"
         onClick={handlePlayButtonClick}
       >
