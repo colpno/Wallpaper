@@ -1,4 +1,5 @@
 import type { Pin } from "@repo/types";
+import { DialogClose } from "@repo/ui/components";
 import { cn } from "@repo/ui/lib";
 import { useState } from "react";
 import { LuMinus, LuPlus, LuX } from "react-icons/lu";
@@ -28,7 +29,6 @@ const defaultZoomOptions: ZoomOptions = {
 };
 
 function ZoomOutButton({ pin, zoomOptions = defaultZoomOptions, ...props }: Props) {
-  const [open, setOpen] = useState(false);
   const [scale, setScale] = useState(zoomOptions.default);
 
   const handleScaleUp = () => {
@@ -41,9 +41,8 @@ function ZoomOutButton({ pin, zoomOptions = defaultZoomOptions, ...props }: Prop
 
   return (
     <Dialog
-      open={open}
       trigger={
-        <Button variant="secondary" size="icon-lg" {...props} onClick={() => setOpen(true)}>
+        <Button variant="secondary" size="icon-lg" {...props}>
           <MdOutlineZoomOutMap />
         </Button>
       }
@@ -61,14 +60,11 @@ function ZoomOutButton({ pin, zoomOptions = defaultZoomOptions, ...props }: Prop
         style={{ transform: `scale(${scale})` }}
       />
 
-      <Button
-        variant="secondary"
-        size="icon-lg"
-        className="absolute top-3 left-3"
-        onClick={() => setOpen(false)}
-      >
-        <LuX />
-      </Button>
+      <DialogClose asChild className="absolute top-3 left-3">
+        <Button variant="secondary" size="icon-lg">
+          <LuX />
+        </Button>
+      </DialogClose>
 
       <div className="absolute right-3 bottom-3 flex flex-col gap-2">
         {scale === zoomOptions.max && (
