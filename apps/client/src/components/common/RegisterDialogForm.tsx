@@ -4,12 +4,19 @@ import FormDialog from "../dialogs/FormDialog";
 import Icon from "../ui/Icon";
 
 type Props = {
-  trigger: React.ReactNode;
-};
+  trigger?: React.ReactNode;
+} & React.ComponentProps<typeof FormDialog>;
 
-function RegisterDialogForm({ trigger }: Props) {
+function RegisterDialogForm({ trigger, ...props }: Props) {
   return (
-    <FormDialog trigger={trigger} slotProps={{ trigger: { asChild: true } }}>
+    <FormDialog
+      {...props}
+      trigger={trigger}
+      slotProps={{
+        ...props.slotProps,
+        trigger: { ...props.slotProps?.trigger, asChild: !!trigger },
+      }}
+    >
       <Icon variant="favicon" className="m-[8px_auto_6px]" />
       <AuthForm className="py-0" defaultForm="register" />
     </FormDialog>
