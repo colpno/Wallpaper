@@ -10,7 +10,7 @@ function Container<TAs extends keyof JSX.IntrinsicElements>({ as, ...props }: Pr
   const Element = (as ?? "div") as ElementType;
 
   return (
-    <Element {...props} className={cn("mx-auto w-full max-w-7xl px-3 2xl:px-0", props.className)} />
+    <Element {...props} className={cn("mx-auto w-full max-w-7xl px-4 2xl:px-0", props.className)} />
   );
 }
 

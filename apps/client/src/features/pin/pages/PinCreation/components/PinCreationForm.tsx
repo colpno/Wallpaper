@@ -33,7 +33,7 @@ function PinCreationForm({ onSubmit }: Props) {
           <>
             <div
               className={cn(
-                "flex items-center justify-between border-y border-gray-300 p-3",
+                "flex items-center justify-between border-y border-border p-3",
                 !file && "py-6"
               )}
             >

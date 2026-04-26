@@ -32,7 +32,7 @@ function CreationSidebar() {
   return (
     <div
       className={cn(
-        "fixed inset-y-0 left-0 z-sub-sidebar flex w-sub-sidebar-width flex-col border-r border-gray-300 bg-background p-3 transition-[translate,opacity] duration-sidebar ease-in-out",
+        "fixed inset-y-0 left-0 z-sub-sidebar flex w-sub-sidebar-width flex-col border-r border-border bg-background p-3 transition-[translate,opacity] duration-sidebar ease-in-out",
         subSidebar === "creation"
           ? "translate-x-sidebar-width opacity-100"
           : "-translate-x-full opacity-0"

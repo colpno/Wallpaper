@@ -78,7 +78,7 @@ function Sidebar() {
       <CreationSidebar />
       <SettingsSidebar />
 
-      <div className="fixed inset-y-0 left-0 z-sidebar flex w-sidebar-width flex-col border-r border-gray-300 bg-background py-4">
+      <div className="fixed inset-y-0 left-0 z-sidebar flex w-sidebar-width flex-col border-r border-border bg-background py-4">
         <div className="flex flex-1 flex-col items-center gap-6">
           {data.mainNav.map((item) => (
             <Tooltip
