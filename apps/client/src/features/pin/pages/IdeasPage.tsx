@@ -48,7 +48,7 @@ function IdeasPage() {
           <Masonry>
             {data.map((item) => (
               <MasonryWrapper key={item._id}>
-                <PinCard item={item} />
+                <PinCard item={item} showCaptions />
               </MasonryWrapper>
             ))}
           </Masonry>

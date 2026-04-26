@@ -31,9 +31,10 @@ type Props = {
    */
   showActionButton?: boolean;
   editable?: boolean;
+  showCaptions?: boolean;
 };
 
-function PinCard({ item, showActionButton = true, editable }: Props) {
+function PinCard({ item, showActionButton = true, editable, showCaptions }: Props) {
   const user = useStore((state) => state.user);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const odd = useRef<number>(Math.random());
@@ -92,15 +93,13 @@ function PinCard({ item, showActionButton = true, editable }: Props) {
         )}
       </div>
 
-      {(showTitle || showActionButton) && (
+      {((showCaptions && showTitle) || showActionButton) && (
         <div className="flex justify-between gap-x-1 px-1.5">
-          {showTitle && (
+          {showCaptions && showTitle && (
             <div className="flex-1 space-y-1.5">
-              {showTitle && (
-                <Typography size="sm" className="line-clamp-1 font-medium">
-                  {item.pinTitle}
-                </Typography>
-              )}
+              <Typography size="sm" className="line-clamp-1 font-medium">
+                {item.pinTitle}
+              </Typography>
 
               {showDescription && (
                 <Typography size="sm" className="line-clamp-2">
