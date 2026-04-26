@@ -3,6 +3,8 @@ import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useMemo, useRef } from "react";
 import { Navigate, useParams } from "react-router";
 
+import { useStore } from "@/app/stores/useStore";
+import LoginDialogForm from "@/components/common/LoginDialogForm";
 import { Masonry, MasonryWrapper } from "@/components/common/Masonry";
 import Container from "@/components/ui/Container";
 import Spinner from "@/components/ui/Spinner";
@@ -17,6 +19,7 @@ import PinInfo from "./components/PinInfo";
 function PinPage() {
   const { pinId } = useParams();
   const lastSmallestScore = useRef(MAX_SIMILARITY_SCORE);
+  const user = useStore((state) => state.user);
 
   const {
     data: pin,
@@ -35,7 +38,7 @@ function PinPage() {
         },
       }
     ),
-    enabled: !!pinId,
+    enabled: !!pinId && !!user,
   });
 
   const {
@@ -60,7 +63,7 @@ function PinPage() {
         },
       }
     ),
-    enabled: !!pin?.descriptionEmbeddings,
+    enabled: !!pin?.descriptionEmbeddings && !!user,
   });
 
   if (similarPins?.[similarPins.length - 1]) {
@@ -113,8 +116,12 @@ function PinPage() {
     return <Navigate to={ROUTES.IDEAS()} />;
   }
 
+  if (!user) {
+    return <LoginDialogForm open={true} showCloseButton={false} />;
+  }
+
   return (
-    <Container as="section" className="pt-11">
+    <Container as="section" className="max-w-none">
       <Masonry>{masonryItems}</Masonry>
     </Container>
   );
