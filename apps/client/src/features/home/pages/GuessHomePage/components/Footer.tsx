@@ -6,7 +6,7 @@ import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
 import { ROUTES } from "@/constants/common";
 
-import { footerMenu } from "../constants";
+import { footerMenu } from "../GuessHomePage.constants";
 
 function Footer(props: React.ComponentProps<"footer">) {
   return (

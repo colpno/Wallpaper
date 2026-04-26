@@ -12,7 +12,7 @@ import Icon from "@/components/ui/Icon";
 import Image from "@/components/ui/Image";
 import AuthForm from "@/features/auth/components/AuthForm";
 
-import { heroContents } from "../constants";
+import { heroContents } from "../GuessHomePage.constants";
 
 // Workaround to fix: Element type is invalid: expected a string (for built-in components) or a class/function (for composite components) but got: object.
 const Slider = (

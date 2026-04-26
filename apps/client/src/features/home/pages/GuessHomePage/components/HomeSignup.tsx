@@ -7,7 +7,7 @@ import Heading from "@/components/ui/Heading";
 import Image from "@/components/ui/Image";
 import AuthForm from "@/features/auth/components/AuthForm";
 
-import { dishImages } from "../constants";
+import { dishImages } from "../GuessHomePage.constants";
 
 function HomeSignup(props: React.ComponentProps<"section">) {
   return (
