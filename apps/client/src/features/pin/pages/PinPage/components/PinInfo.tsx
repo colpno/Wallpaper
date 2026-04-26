@@ -13,7 +13,9 @@ import { checkSavedQueryOptions } from "@/features/saved-idea/services/api/queri
 
 import ZoomOutButton from "./ZoomOutButton";
 
-function PinInfo(pin: Pick<PinDB, "_id" | "photoUrl" | "photoWidth" | "photoAspectRatio">) {
+function PinInfo(
+  pin: Pick<PinDB, "_id" | "photoUrl" | "photoWidth" | "photoHeight" | "photoAspectRatio">
+) {
   const user = useStore((state) => state.user);
   const { data } = useQuery({
     ...checkSavedQueryOptions({ userId: user?.id || "", pinId: pin._id }),
@@ -22,8 +24,8 @@ function PinInfo(pin: Pick<PinDB, "_id" | "photoUrl" | "photoWidth" | "photoAspe
   const isSaved = data?.saved;
 
   return (
-    <div className="w-full overflow-clip rounded-2xl border border-gray-300">
-      <div className="sticky top-header-height right-0 left-0 z-pinpage-detail flex h-16 items-center justify-between bg-background px-4 py-2">
+    <div className="w-full overflow-clip rounded-b-2xl border-x border-b border-border">
+      <div className="sticky top-header-height right-0 left-0 z-pinpage-detail flex h-16 items-center justify-between border-t border-border bg-background px-4 py-2">
         <div>
           <Button variant="ghost" size="icon-lg">
             <LuDownload />
@@ -47,28 +49,26 @@ function PinInfo(pin: Pick<PinDB, "_id" | "photoUrl" | "photoWidth" | "photoAspe
         </div>
       </div>
 
-      <div className="px-4 pb-3">
-        <div
-          className="relative mx-auto max-h-[70dvh] max-w-full"
-          style={{ width: pin.photoWidth, aspectRatio: pin.photoAspectRatio }}
-        >
-          <Image
-            src={pin.photoUrl}
-            className={cn(
-              "absolute size-full rounded-lg",
-              pin.photoWidth > 620 && "rounded-xl",
-              pin.photoWidth > 920 && "rounded-2xl"
-            )}
-          />
+      <div
+        className="relative mx-auto max-h-[70dvh] max-w-full px-4 pb-3"
+        style={{ height: pin.photoHeight, aspectRatio: pin.photoAspectRatio }}
+      >
+        <Image
+          src={pin.photoUrl}
+          className={cn(
+            "absolute size-full rounded-lg",
+            pin.photoWidth > 620 && "rounded-xl",
+            pin.photoWidth > 920 && "rounded-3xl"
+          )}
+        />
 
-          <div
-            className={cn(
-              "mr-3 ml-auto flex h-full w-fit flex-col justify-end gap-3 pb-3",
-              "[&>button]:sticky [&>button]:bg-white/60! [&>button]:text-black"
-            )}
-          >
-            <ZoomOutButton pin={pin} className="bottom-3" saved={isSaved} />
-          </div>
+        <div
+          className={cn(
+            "mr-3 ml-auto flex h-full w-fit flex-col justify-end gap-3 pb-3",
+            "[&>button]:sticky [&>button]:bg-white/60! [&>button]:text-black"
+          )}
+        >
+          <ZoomOutButton pin={pin} className="bottom-3" saved={isSaved} />
         </div>
       </div>
     </div>

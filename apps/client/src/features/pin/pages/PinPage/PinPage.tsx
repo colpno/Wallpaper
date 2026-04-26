@@ -37,6 +37,7 @@ function PinPage() {
           descriptionEmbeddings: true,
           photoUrl: true,
           photoWidth: true,
+          photoHeight: true,
           photoAspectRatio: true,
         },
       }
