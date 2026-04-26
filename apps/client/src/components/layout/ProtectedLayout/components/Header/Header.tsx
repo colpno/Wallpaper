@@ -1,8 +1,9 @@
 import { cn } from "@repo/ui/lib";
 
+import SearchBar from "@/components/layout/SearchBar";
+
 import { useSidebar } from "../Sidebar/Sidebar.context";
 import Account from "./components/Account";
-import SearchBar from "./components/SearchBar";
 
 function Header(props: React.ComponentProps<"header">) {
   const { subSidebar } = useSidebar();

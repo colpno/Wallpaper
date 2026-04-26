@@ -1,12 +1,11 @@
 import { Button } from "@repo/ui/components";
 
 import FormDialog from "@/components/dialogs/FormDialog";
+import SearchBar from "@/components/layout/SearchBar";
 import Icon from "@/components/ui/Icon";
 import Link from "@/components/ui/Link";
 import { ROUTES } from "@/constants/common";
 import AuthForm from "@/features/auth/components/AuthForm";
-
-import SearchBar from "./components/SearchBar";
 
 const menu = [{ label: "Explore", url: ROUTES.IDEAS() }];
 
