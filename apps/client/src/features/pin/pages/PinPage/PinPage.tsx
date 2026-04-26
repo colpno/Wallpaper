@@ -1,11 +1,13 @@
 import { toast } from "@repo/ui/components";
 import { useInfiniteQuery, useQuery } from "@tanstack/react-query";
 import { useMemo, useRef } from "react";
-import { Navigate, useParams } from "react-router";
+import { GoArrowLeft } from "react-icons/go";
+import { Navigate, useNavigate, useParams } from "react-router";
 
 import { useStore } from "@/app/stores/useStore";
 import LoginDialogForm from "@/components/common/LoginDialogForm";
 import { Masonry, MasonryWrapper } from "@/components/common/Masonry";
+import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import Spinner from "@/components/ui/Spinner";
 import { INFINITE_PAGE_SIZE, MAX_SIMILARITY_SCORE, ROUTES } from "@/constants/common";
@@ -20,6 +22,7 @@ function PinPage() {
   const { pinId } = useParams();
   const lastSmallestScore = useRef(MAX_SIMILARITY_SCORE);
   const user = useStore((state) => state.user);
+  const navigate = useNavigate();
 
   const {
     data: pin,
@@ -121,8 +124,17 @@ function PinPage() {
   }
 
   return (
-    <Container as="section" className="max-w-none">
-      <Masonry>{masonryItems}</Masonry>
+    <Container as="section" className="grid max-w-none grid-cols-18">
+      <Button
+        variant="ghost"
+        size="icon-xl"
+        className="col-span-1 size-16"
+        onClick={() => navigate(-1)}
+      >
+        <GoArrowLeft />
+      </Button>
+
+      <Masonry className="col-span-16">{masonryItems}</Masonry>
     </Container>
   );
 }
