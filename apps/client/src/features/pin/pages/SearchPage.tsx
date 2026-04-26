@@ -3,6 +3,7 @@ import { useMemo, useRef } from "react";
 import { Navigate, useSearchParams } from "react-router";
 
 import { Masonry, MasonryWrapper } from "@/components/common/Masonry";
+import Container from "@/components/ui/Container";
 import Spinner from "@/components/ui/Spinner";
 import { INFINITE_PAGE_SIZE, MAX_SIMILARITY_SCORE, ROUTES } from "@/constants/common";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
@@ -34,6 +35,10 @@ function SearchPage() {
     ),
     enabled: !!qParam,
   });
+
+  if (data?.[data.length - 1]) {
+    lastSmallestScore.current = data[data.length - 1]!.score;
+  }
 
   const { loadMoreRef } = useInfiniteScroll({ fetchNextPage, hasNextPage, isFetchingNextPage });
 
@@ -70,11 +75,7 @@ function SearchPage() {
     return <Navigate to={ROUTES.IDEAS()} />;
   }, [isLoading, data]);
 
-  if (data?.[data.length - 1]) {
-    lastSmallestScore.current = data[data.length - 1]!.score;
-  }
-
-  return <section className="px-4 pt-11">{masonryItems}</section>;
+  return <Container className="max-w-none">{masonryItems}</Container>;
 }
 
 export default SearchPage;
