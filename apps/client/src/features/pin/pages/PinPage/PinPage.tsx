@@ -32,8 +32,12 @@ function PinPage() {
     ...getPinByIdQueryOptions(
       { id: pinId! },
       {
+        embed: "pinOwner",
         select: {
           _id: true,
+          pinTitle: true,
+          pinDescription: true,
+          pinOwner: true,
           descriptionEmbeddings: true,
           photoUrl: true,
           photoWidth: true,
@@ -99,7 +103,7 @@ function PinPage() {
 
     return (
       <>
-        <MasonryWrapper className="col-span-3">
+        <MasonryWrapper className="col-span-3" observeResize>
           <PinInfo {...pin} />
         </MasonryWrapper>
 

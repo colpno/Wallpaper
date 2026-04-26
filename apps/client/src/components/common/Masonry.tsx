@@ -41,6 +41,16 @@ export const Masonry = memo(function Masonry({ children, ...props }: React.Compo
     const masonryObserver = new ResizeObserver(scheduleResize);
     masonryObserver.observe(masonry);
 
+    // Observe only wrappers marked for resize observation
+    wrappers.forEach((wrapper) => {
+      if (wrapper.hasAttribute("data-observe-resize")) {
+        const item = wrapper.firstElementChild as HTMLElement;
+        if (item) {
+          masonryObserver.observe(item);
+        }
+      }
+    });
+
     // Initial layout
     scheduleResize();
 
@@ -64,6 +74,10 @@ export const Masonry = memo(function Masonry({ children, ...props }: React.Compo
   );
 });
 
-export function MasonryWrapper(props: React.ComponentProps<"div">) {
-  return <div {...props} />;
+type MasonryWrapperProps = React.ComponentProps<"div"> & {
+  observeResize?: boolean;
+};
+
+export function MasonryWrapper({ observeResize, ...props }: MasonryWrapperProps) {
+  return <div {...props} data-observe-resize={observeResize ? "" : undefined} />;
 }
