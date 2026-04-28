@@ -10,8 +10,7 @@ import Tooltip from "@/components/common/Tooltip";
 import Button from "@/components/ui/Button";
 import Typography from "@/components/ui/Typography";
 import { ROUTES } from "@/constants/common";
-
-const extractFirstWordLetter = (text: string) => text.split(" ").map((t) => t[0]!);
+import { extractFirstLetter } from "@/utils/converters";
 
 function Account() {
   const user = useStore((state) => state.user);
@@ -69,7 +68,7 @@ function Account() {
               <Avatar
                 src={user.avatarUrl}
                 alt={`${user.username}'s avatar`}
-                fallback={`${extractFirstWordLetter(user.firstName)}${extractFirstWordLetter(user.lastName)}`}
+                fallback={`${extractFirstLetter(user.firstName)}${extractFirstLetter(user.lastName)}`}
               />
             }
           >
