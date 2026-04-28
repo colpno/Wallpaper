@@ -1,6 +1,7 @@
 import type { DropdownMenuData } from "@/components/common/DropdownMenu";
 
 import { FaChevronDown } from "react-icons/fa6";
+import { Navigate } from "react-router";
 
 import { useStore } from "@/app/stores/useStore";
 import Avatar from "@/components/common/Avatar";
@@ -8,6 +9,7 @@ import DropdownMenu from "@/components/common/DropdownMenu";
 import Tooltip from "@/components/common/Tooltip";
 import Button from "@/components/ui/Button";
 import Typography from "@/components/ui/Typography";
+import { ROUTES } from "@/constants/common";
 
 const extractFirstWordLetter = (text: string) => text.split(" ").map((t) => t[0]!);
 
@@ -16,7 +18,7 @@ function Account() {
   const logout = useStore((state) => state.logout);
 
   if (!user) {
-    throw new Error("Must be logged in to access this feature");
+    return <Navigate to={ROUTES.HOME()} />;
   }
 
   const avatarMenu: DropdownMenuData = [

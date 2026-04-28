@@ -1,5 +1,6 @@
 import { cn } from "@repo/ui/lib";
 import { useInfiniteQuery } from "@tanstack/react-query";
+import { Navigate } from "react-router";
 
 import { useStore } from "@/app/stores/useStore";
 import { PinJar } from "@/assets/images";
@@ -22,7 +23,7 @@ function SavedIdeasPins() {
   const user = useStore((state) => state.user);
 
   if (!user) {
-    throw new Error("Must be logged in to use this feature");
+    return <Navigate to={ROUTES.HOME()} />;
   }
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isLoading } = useInfiniteQuery(

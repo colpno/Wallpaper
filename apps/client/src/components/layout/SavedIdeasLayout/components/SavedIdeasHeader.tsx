@@ -1,7 +1,7 @@
 import { buttonVariants } from "@repo/ui/components";
 import { cn } from "@repo/ui/lib";
 import { PiSlidersHorizontal } from "react-icons/pi";
-import { useMatch } from "react-router";
+import { Navigate, useMatch } from "react-router";
 
 import { useStore } from "@/app/stores/useStore";
 import Avatar from "@/components/common/Avatar";
@@ -25,7 +25,7 @@ function SavedIdeasHeader(props: React.ComponentProps<"div">) {
   const user = useStore((state) => state.user);
 
   if (!user) {
-    throw new Error("Must be logged in to access this feature");
+    return <Navigate to={ROUTES.HOME()} />;
   }
 
   const menu = [{ label: "Pins", url: ROUTES.PROFILE(user.username) }];

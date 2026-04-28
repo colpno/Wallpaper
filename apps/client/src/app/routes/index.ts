@@ -2,6 +2,7 @@ import { lazy } from "react";
 import { createBrowserRouter } from "react-router";
 
 import MainLayout from "@/components/layout/MainLayout";
+import ProtectedLayout from "@/components/layout/ProtectedLayout";
 import SavedIdeasLayout from "@/components/layout/SavedIdeasLayout";
 import { ROUTES } from "@/constants/common";
 import HomePage from "@/features/home/pages/HomePage";
@@ -23,10 +24,6 @@ export const routes = createBrowserRouter([
         Component: lazy(() => import("@/features/pin/pages/IdeasPage")),
       },
       {
-        path: ROUTES.PIN_CREATION(),
-        Component: lazy(() => import("@/features/pin/pages/PinCreation/PinCreation")),
-      },
-      {
         Component: SavedIdeasLayout,
         children: [
           {
@@ -40,6 +37,15 @@ export const routes = createBrowserRouter([
       {
         path: ROUTES.HOME(),
         Component: HomePage,
+      },
+    ],
+  },
+  {
+    Component: ProtectedLayout,
+    children: [
+      {
+        path: ROUTES.PIN_CREATION(),
+        Component: lazy(() => import("@/features/pin/pages/PinCreation/PinCreation")),
       },
     ],
   },
