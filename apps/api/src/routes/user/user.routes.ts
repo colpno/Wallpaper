@@ -15,6 +15,31 @@ const router = new Router();
 
 export const { router: userRouter } = router;
 
+export const getOne = router.register({
+  tags,
+  method: "get",
+  path: API_ROUTES.USER.getOne.path(),
+  summary: "Get a user",
+  description: "Retrieve a user.",
+  request: {
+    query: requestSchemas.getOne.query,
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      requestSchemas.getOne.responses[HttpStatusCodes.OK],
+      "Successful Response"
+    ),
+    [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.getOne.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.getOne.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
+  },
+} as const);
+
 export const updateOneById = router.register({
   tags,
   method: "patch",
@@ -75,6 +100,7 @@ export const deleteOneById = router.register({
 });
 
 router
+  .addHandler(getOne, [handlers.getOne])
   .addHandler(updateOneById, ({ validator }) => [
     multer("single", "avatar" as UserKeys)(fileSchema.optional()),
     validator,

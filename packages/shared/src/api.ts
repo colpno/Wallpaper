@@ -69,6 +69,10 @@ export const API_ROUTES = {
   },
 
   USER: {
+    getOne: {
+      path: () => `${BASE_PATH.USER}/user` as const,
+      method: "get",
+    },
     updateOneById: {
       path: (id: string) => `${BASE_PATH.USER}/${id}` as const,
       method: "patch",

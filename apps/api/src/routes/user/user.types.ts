@@ -4,6 +4,10 @@ import type { UserAPIs } from "@repo/types";
 
 import * as routes from "./user.routes.js";
 
+export type GetOne = {
+  handler: RouteHandler<typeof routes.getOne>;
+} & UserAPIs.GetOne;
+
 export type UpdateOneById = {
   handler: RouteHandler<typeof routes.updateOneById>;
 } & UserAPIs.UpdateOneById;

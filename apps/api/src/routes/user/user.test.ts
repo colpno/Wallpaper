@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 import { HttpStatusCodes } from "@repo/shared";
 import { beforeEach, describe, expect, it } from "vitest";
 
@@ -10,6 +11,7 @@ import * as routes from "./user.routes.js";
 import { requestSchemas } from "./user.schemas.js";
 
 let db: SeededDB;
+const getUser = createTestClient(routes.getOne);
 const updateUserById = createTestClient(routes.updateOneById);
 const deleteUserById = createTestClient(routes.deleteOneById);
 const login = createTestClient(loginRouteConfig);
@@ -17,6 +19,79 @@ const login = createTestClient(loginRouteConfig);
 describe("User routes", () => {
   beforeEach(async () => {
     db = await seedDatabase();
+  });
+
+  describe(`${routes.getOne.method.toUpperCase()} ${routes.getOne.path}`, () => {
+    it("returns a successful response", async () => {
+      const response = await getUser().query({ username: db.users[0]!.username });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = requestSchemas.getOne.responses[HttpStatusCodes.OK].safeParse(
+        response.body
+      );
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a user with stripped properties", async () => {
+      const response = await getUser().query({
+        username: db.users[0]!.username,
+        select: {
+          _id: 0,
+          username: 1,
+        },
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = requestSchemas.getOne.responses[HttpStatusCodes.OK]
+        .pick({
+          username: true,
+        })
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a validation error if missing required fields", async () => {
+      const response = await getUser();
+
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.getOne.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a validation error if payload is invalid", async () => {
+      const response = await getUser().query({
+        // @ts-expect-error
+        avatarUrl: 1,
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.getOne.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a not found error if query doesn't match any user", async () => {
+      const response = await getUser().query({ username: "1" });
+
+      expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
+
+      const parseResult = requestSchemas.getOne.responses[HttpStatusCodes.NOT_FOUND].safeParse(
+        response.body
+      );
+
+      expect(parseResult.success).toBe(true);
+    });
   });
 
   describe(`${routes.updateOneById.method.toUpperCase()} ${routes.updateOneById.path}`, () => {
