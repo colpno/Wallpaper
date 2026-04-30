@@ -1,7 +1,8 @@
+import type { FlattenObjectKeys } from "@/helpers.js";
 import type { User, UserDB } from "@/models/user.js";
 import type { QueryFilter } from "@/query.js";
 
-export type Fields = keyof UserDB;
+export type Fields = FlattenObjectKeys<UserDB>;
 export type SortableFields = Extract<
   Fields,
   "createdAt" | "updatedAt" | "firstName" | "lastName" | "username" | "email" | "birthdate"
