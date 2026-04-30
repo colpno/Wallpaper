@@ -1,11 +1,11 @@
 import { cn } from "@repo/ui/lib";
 
-import Image from "./Image";
+import { Favicon } from "@/assets/images";
 
 type Variant = "default" | "text" | "favicon";
 
 type ComponentProps<TVariant extends Variant> = TVariant extends "favicon"
-  ? Omit<React.ComponentProps<typeof Image>, "src">
+  ? React.ComponentProps<typeof Favicon>
   : React.ComponentProps<"svg">;
 
 type Props<TVariant extends Variant> = {
@@ -19,10 +19,8 @@ function Icon<TVariant extends Variant>({ variant, ...props }: Props<TVariant>) 
   switch (variant) {
     case "favicon":
       return (
-        <Image
-          alt="Favicon"
+        <Favicon
           {...(props as ComponentProps<"favicon">)}
-          src="/favicon.svg"
           className={cn("size-10", props.className)}
         />
       );

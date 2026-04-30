@@ -37,6 +37,7 @@ export { default as Dish34 } from "./dish-34.jpg";
 export { default as Dish35 } from "./dish-35.jpg";
 export { default as Fashion1 } from "./fashion-1.jpg";
 export { default as Fashion2 } from "./fashion-2.jpg";
+export { default as Favicon } from "./favicon.svg?react";
 export { default as Food1 } from "./food-1.jpg";
 export { default as Food2 } from "./food-2.jpg";
 export { default as GroupBoards } from "./group-boards.png";
