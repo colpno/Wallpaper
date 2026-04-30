@@ -70,15 +70,12 @@ export type QueryFilter<
     limit: number;
     page: number;
     select: Select<[TSelectable] extends [string] ? TSelectable : FlattenObjectKeys<TData>>;
-    sort: Sort<TSortable extends string ? TSortable : FlattenObjectKeys<TData>>;
-    embed: TEmbeddable extends string
+    sort: Sort<[TSortable] extends [string] ? TSortable : FlattenObjectKeys<TData>>;
+    embed: [TEmbeddable] extends [FlattenObjectKeys<TData>]
       ?
           | TEmbeddable
-          | EmbedOptions<Pick<FlattenObject<TData>, TEmbeddable & keyof FlattenObject<TData>>>
-          | Array<
-              | TEmbeddable
-              | EmbedOptions<Pick<FlattenObject<TData>, TEmbeddable & keyof FlattenObject<TData>>>
-            >
+          | EmbedOptions<Pick<FlattenObject<TData>, TEmbeddable>>
+          | Array<TEmbeddable | EmbedOptions<Pick<FlattenObject<TData>, TEmbeddable>>>
       :
           | FlattenObjectKeys<TData>
           | EmbedOptions<FlattenObject<TData>>
