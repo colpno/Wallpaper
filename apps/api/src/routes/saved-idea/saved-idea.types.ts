@@ -4,6 +4,10 @@ import type { SavedIdeaAPIs } from "@repo/types";
 
 import * as routes from "./saved-idea.routes.js";
 
+export type GetMany = {
+  handler: RouteHandler<typeof routes.getMany>;
+} & SavedIdeaAPIs.GetMany;
+
 export type CheckSaved = {
   handler: RouteHandler<typeof routes.checkSaved>;
 } & SavedIdeaAPIs.CheckSaved;

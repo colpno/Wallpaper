@@ -5,6 +5,17 @@ import type { SavedIdeaAPIs } from "@repo/types";
 
 import { request } from "@/lib/axios/client";
 
+export const getSavedIdeas = <TQuery extends SavedIdeaAPIs.GetMany["query"]>(
+  query?: TQuery,
+  options?: Omit<AxiosRequestConfig<never>, "url" | "method" | "params">
+) =>
+  request<SavedIdeaAPIs.GetMany<TQuery>["response"]>({
+    ...options,
+    url: API_ROUTES.SAVED_IDEA.getMany.path(),
+    method: API_ROUTES.SAVED_IDEA.getMany.method,
+    params: query,
+  });
+
 export const checkSaved = (
   query: SavedIdeaAPIs.CheckSaved["query"],
   options?: Omit<AxiosRequestConfig<never>, "url" | "method" | "query">

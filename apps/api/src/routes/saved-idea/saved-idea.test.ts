@@ -1,17 +1,21 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { HttpStatusCodes } from "@repo/shared";
-import type { PinDB } from "@repo/types";
+import type { PinDB, SavedIdeaDB } from "@repo/types";
 import { beforeEach, describe, expect, it } from "vitest";
+import z from "zod";
 
 import { createPin, seedDatabase, type SeededDB } from "@/test/samples.js";
 import { createTestClient } from "@/utils/create-test-client.js";
+import { paginationPayloadSchema } from "@/utils/schemas.js";
 
 import { PinModel } from "../pin/pin.model.js";
+import { userSchema } from "../user/user.schemas.js";
 import { SavedIdeaModel } from "./saved-idea.model.js";
 import * as routes from "./saved-idea.routes.js";
-import { requestSchemas } from "./saved-idea.schemas.js";
+import { requestSchemas, savedIdeaSchema } from "./saved-idea.schemas.js";
 
 let db: SeededDB;
+const getIdeas = createTestClient(routes.getMany);
 const checkSaved = createTestClient(routes.checkSaved);
 const addSavedIdea = createTestClient(routes.addOne);
 const deleteSavedIdeaById = createTestClient(routes.deleteOneById);
@@ -19,6 +23,123 @@ const deleteSavedIdeaById = createTestClient(routes.deleteOneById);
 describe("Saved idea routes", () => {
   beforeEach(async () => {
     db = await seedDatabase();
+  });
+
+  describe(`${routes.getMany.method.toUpperCase()} ${routes.getMany.path}`, () => {
+    it("returns filtered items", async () => {
+      const pinOwnerId = db.users[0]!._id;
+
+      const response = await getIdeas().query({
+        savedBy: pinOwnerId,
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z.array(savedIdeaSchema).safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+      for (const pin of parseResult.data!) {
+        expect(pin.savedBy).toBe(pinOwnerId);
+      }
+    });
+
+    it("returns a list of items with stripped properties", async () => {
+      const response = await getIdeas().query({
+        select: {
+          _id: 0,
+          savedBy: 1,
+        },
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z
+        .array(
+          savedIdeaSchema.pick({
+            savedBy: true,
+          })
+        )
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a paginated list of items", async () => {
+      const page = 1;
+      const limit = 1;
+
+      const response = await getIdeas().query({ page, limit });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = paginationPayloadSchema(z.array(savedIdeaSchema)).safeParse(
+        response.body
+      );
+
+      expect(parseResult.success).toBe(true);
+      expect(parseResult.data!.meta.currentPage).toBe(page);
+      expect(parseResult.data!.meta.itemsPerPage).toBe(limit);
+    });
+
+    it("returns a sorted list of items", async () => {
+      const response = await getIdeas().query({
+        sort: {
+          updatedAt: "asc",
+        },
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z.array(savedIdeaSchema).safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+      expect(parseResult.data!.length).toBeGreaterThan(0);
+      if (parseResult.data && parseResult.data.length > 1) {
+        for (let i = 1; i < parseResult.data.length; i++) {
+          expect(parseResult.data[i - 1]!.updatedAt <= parseResult.data[i]!.updatedAt).toBe(true);
+        }
+      }
+    });
+
+    it("returns a list of items with populated fields", async () => {
+      const embedKey: keyof SavedIdeaDB = "savedBy";
+
+      const response = await getIdeas().query({
+        embed: embedKey,
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.OK);
+
+      const parseResult = z
+        .array(
+          savedIdeaSchema
+            .omit({
+              [embedKey]: true,
+            })
+            .extend({
+              [embedKey]: userSchema,
+            })
+        )
+        .safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
+
+    it("returns a validation error if payload is invalid", async () => {
+      const response = await getIdeas().query({
+        limit: -5,
+        // @ts-expect-error
+        page: "invalid",
+      });
+
+      expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
+
+      const parseResult = requestSchemas.getMany.responses[
+        HttpStatusCodes.UNPROCESSABLE_ENTITY
+      ].safeParse(response.body);
+
+      expect(parseResult.success).toBe(true);
+    });
   });
 
   describe(`${routes.checkSaved.method.toUpperCase()} ${routes.checkSaved.path}`, () => {

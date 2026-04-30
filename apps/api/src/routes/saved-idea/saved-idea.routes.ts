@@ -11,6 +11,27 @@ const router = new Router();
 
 export const { router: savedIdeaRouter } = router;
 
+export const getMany = router.register({
+  tags,
+  method: "get",
+  path: API_ROUTES.SAVED_IDEA.getMany.path(),
+  summary: "Get multiple ideas",
+  description: "Retrieve multiple ideas.",
+  request: {
+    query: requestSchemas.getMany.query,
+  },
+  responses: {
+    [HttpStatusCodes.OK]: jsonContent(
+      requestSchemas.getMany.responses[HttpStatusCodes.OK],
+      "Successful Response"
+    ),
+    [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
+      requestSchemas.getMany.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],
+      "Validation Error"
+    ),
+  },
+} as const);
+
 export const checkSaved = router.register({
   tags,
   method: "get",
@@ -91,5 +112,6 @@ export const deleteOneById = router.register({
 
 router
   .addHandler(checkSaved, [handlers.checkSaved])
+  .addHandler(getMany, [handlers.getMany])
   .addHandler(addOne, [handlers.addOne])
   .addHandler(deleteOneById, [handlers.deleteOneById]);

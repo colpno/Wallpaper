@@ -1,11 +1,40 @@
-import type { AddOne, CheckSaved, DeleteOneById } from "./saved-idea.types.js";
+import type { AddOne, CheckSaved, DeleteOneById, GetMany } from "./saved-idea.types.js";
 
 import { HttpStatusCodes } from "@repo/shared";
-import type { SavedIdeaDB } from "@repo/types";
+import type { PinDB, SavedIdeaDB, UserDB } from "@repo/types";
 
 import { logger } from "@/lib/logger.js";
+import { buildQueryWithOptions, organizeQueryInput } from "@/utils/build-query-with-options.js";
+import { toPaginationPayload } from "@/utils/converters.js";
 
 import { SavedIdeaModel } from "./saved-idea.model.js";
+
+export const getMany: GetMany["handler"] = async (req, res, next) => {
+  try {
+    const { options, queryFilters } = organizeQueryInput<SavedIdeaDB<UserDB, PinDB>>(req.query);
+
+    const result = await buildQueryWithOptions(SavedIdeaModel.find(queryFilters), options).lean<
+      SavedIdeaDB[]
+    >();
+
+    if (!req.query.limit) {
+      return res.status(HttpStatusCodes.OK).json(result);
+    }
+
+    const totalItems = await SavedIdeaModel.countDocuments(queryFilters);
+
+    const paginatedSavedIdeas = toPaginationPayload({
+      data: result,
+      page: req.query.page ?? 1,
+      perPage: req.query.limit,
+      totalItems,
+    });
+
+    return res.status(HttpStatusCodes.OK).json(paginatedSavedIdeas);
+  } catch (error) {
+    return next(error);
+  }
+};
 
 export const checkSaved: CheckSaved["handler"] = async (req, res, next) => {
   try {
