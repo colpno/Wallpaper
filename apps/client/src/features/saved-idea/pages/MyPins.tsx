@@ -9,16 +9,15 @@ import Link from "@/components/ui/Link";
 import Spinner from "@/components/ui/Spinner";
 import Typography from "@/components/ui/Typography";
 import { ROUTES } from "@/constants/common";
+import { useSaveIdeasContext } from "@/contexts/savedIdeaContext";
 import PinCard from "@/features/pin/components/PinCard";
 import { getPinsInfiniteQueryOptions } from "@/features/pin/services/api/queries";
 import { getUserQueryOptions } from "@/features/user/services/api/queries";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
-import { useSaveIdeasContext } from "../../contexts/savedIdeasContext";
-
 const INFINITE_PAGE_SIZE = 50;
 
-function SavedIdeasPins() {
+function MyPins() {
   const { pin } = useSaveIdeasContext();
   const { username } = useParams();
 
@@ -106,4 +105,4 @@ function SavedIdeasPins() {
   );
 }
 
-export default SavedIdeasPins;
+export default MyPins;

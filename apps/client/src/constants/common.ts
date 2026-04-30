@@ -1,4 +1,7 @@
 export const ROUTES = {
+  SAVED_IDEA_PINS: (username: string) => `/${username}/pins` as const,
+  PROFILE_SAVES: (username: string) => `/${username}/saved` as const,
+  PROFILE_CREATES: (username: string) => `/${username}/created` as const,
   PROFILE: (username: string) => `/${username}` as const,
   PIN_CREATION: () => "/pin-creation-tool" as const,
   PIN: (id: string) => `/pin/${id}` as const,

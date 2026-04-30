@@ -6,11 +6,11 @@ import {
   type SavedIdeasContextState,
   SaveIdeasContext,
   type ViewOption,
-} from "@/features/saved-idea/contexts/savedIdeasContext";
+} from "@/contexts/savedIdeaContext";
 
 import SavedIdeasHeader from "./components/SavedIdeasHeader";
 
-function SavedIdeasLayout() {
+function SavedIdeasLayout({ children }: { children?: React.ReactNode }) {
   const [pinStates, setPinStates] = useState<SavedIdeasContextState["pin"]>(defaultState.pin);
 
   const setViewOption = (option: ViewOption) => {
@@ -32,9 +32,8 @@ function SavedIdeasLayout() {
   return (
     <SaveIdeasContext value={contextValue}>
       <SavedIdeasHeader />
-      <div className="pt-6">
-        <Outlet />
-      </div>
+
+      <div className="pt-6">{children ?? <Outlet />}</div>
     </SaveIdeasContext>
   );
 }

@@ -12,10 +12,7 @@ import Heading from "@/components/ui/Heading";
 import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
 import { ROUTES } from "@/constants/common";
-import {
-  useSaveIdeasContext,
-  type ViewOption,
-} from "@/features/saved-idea/contexts/savedIdeasContext";
+import { useSaveIdeasContext, type ViewOption } from "@/contexts/savedIdeaContext";
 
 const creationDropdownMenu: DropdownMenuData = [
   { key: "pin", label: "Pin", to: ROUTES.PIN_CREATION() },
