@@ -18,6 +18,9 @@
       "**/.turbo/**": true,
       "**/node_modules/**": true,
     },
+    "files.associations": {
+      "*.css": "tailwindcss",
+    },
     "search.exclude": {
       "**/dist/**": true,
       "**/logs/**": true,
@@ -32,12 +35,15 @@
     "editor.insertSpaces": true,
     "editor.detectIndentation": false,
 
-    "tailwindCSS.classFunctions": ["cva", "cn"],
     "chat.disableAIFeatures": true,
-    // "prettify-ts.maxDepth": 2,
-    // "prettify-ts.maxUnionMembers": 50,
+
+    "tailwindCSS.classFunctions": ["cva", "cn"],
   },
   "extensions": {
-    "recommendations": ["dbaeumer.vscode-eslint", "bradlc.vscode-tailwindcss"],
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "bradlc.vscode-tailwindcss",
+    ],
   },
 }
