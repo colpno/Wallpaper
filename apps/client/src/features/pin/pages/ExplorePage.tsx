@@ -10,7 +10,7 @@ import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 import PinCard from "../components/PinCard";
 import { getPinsInfiniteQueryOptions } from "../services/api/queries";
 
-function IdeasPage() {
+function ExplorePage() {
   const { data, isLoading, hasNextPage, isFetchingNextPage, fetchNextPage } = useInfiniteQuery(
     getPinsInfiniteQueryOptions({
       limit: INFINITE_PAGE_SIZE,
@@ -65,4 +65,4 @@ function IdeasPage() {
   );
 }
 
-export default IdeasPage;
+export default ExplorePage;

@@ -8,9 +8,9 @@ import Spinner from "@/components/ui/Spinner";
 import { INFINITE_PAGE_SIZE, MAX_SIMILARITY_SCORE, ROUTES } from "@/constants/common";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
-import PinCard from "../components/PinCard";
-import PinCardSkeleton from "../components/PinCard/PinCardSkeleton";
-import { searchPinsInfiniteQueryOptions } from "../services/api/queries";
+import PinCard from "../../pin/components/PinCard";
+import PinCardSkeleton from "../../pin/components/PinCard/PinCardSkeleton";
+import { searchPinsInfiniteQueryOptions } from "../../pin/services/api/queries";
 
 function SearchPage() {
   const lastSmallestScore = useRef(MAX_SIMILARITY_SCORE);
@@ -72,7 +72,7 @@ function SearchPage() {
       );
     }
 
-    return <Navigate to={ROUTES.IDEAS()} />;
+    return <Navigate to={ROUTES.EXPLORE()} />;
   }, [isLoading, data]);
 
   return <Container className="max-w-none">{masonryItems}</Container>;

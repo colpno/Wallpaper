@@ -121,7 +121,7 @@ function PinPage() {
 
   if (!pinId || (isPinFetched && !pin)) {
     toast.info("We can't find that idea! Try searching for one just like it.");
-    return <Navigate to={ROUTES.IDEAS()} />;
+    return <Navigate to={ROUTES.EXPLORE()} />;
   }
 
   if (!user) {

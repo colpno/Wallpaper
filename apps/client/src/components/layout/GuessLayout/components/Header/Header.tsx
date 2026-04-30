@@ -7,7 +7,7 @@ import Link from "@/components/ui/Link";
 import { ROUTES } from "@/constants/common";
 import AuthForm from "@/features/auth/components/AuthForm";
 
-const menu = [{ label: "Explore", url: ROUTES.IDEAS() }];
+const menu = [{ label: "Explore", url: ROUTES.EXPLORE() }];
 
 function Header() {
   return (

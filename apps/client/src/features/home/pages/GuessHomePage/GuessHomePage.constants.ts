@@ -66,7 +66,7 @@ export const footerMenu = [
   {
     label: "Quick links",
     items: [
-      { label: "Explore", url: ROUTES.IDEAS() },
+      { label: "Explore", url: ROUTES.EXPLORE() },
       { label: "Shop", url: "#" },
       { label: "Users", url: "#" },
       { label: "Collections", url: "#" },

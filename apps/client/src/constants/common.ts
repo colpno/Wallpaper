@@ -6,7 +6,7 @@ export const ROUTES = {
   PIN_CREATION: () => "/pin-creation-tool" as const,
   PIN: (id: string) => `/pin/${id}` as const,
   HOME: () => "/" as const,
-  IDEAS: () => "/ideas" as const,
+  EXPLORE: () => "/ideas" as const,
   SEARCH: (params?: { q: string }) => {
     const basePath = "/search" as const;
     if (!params) return basePath;

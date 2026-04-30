@@ -4,7 +4,7 @@ import { useStore } from "@/app/stores/useStore";
 import OtherUserProfileLayout from "@/components/layout/OtherUserProfileLayout";
 import SavedIdeasLayout from "@/components/layout/SavedIdeasLayout";
 import { ROUTES } from "@/constants/common";
-import MyPins from "@/features/saved-idea/pages/MyPins";
+import MyPins from "@/features/pin/pages/MyPins";
 
 import OtherUserProfileSavedPinsPage from "./OtherUserProfileSavedPinsPage";
 

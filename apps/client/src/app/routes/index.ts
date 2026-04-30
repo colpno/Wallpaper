@@ -19,12 +19,12 @@ export const routes = createBrowserRouter([
 
       {
         path: ROUTES.SEARCH(),
-        Component: lazy(() => import("@/features/pin/pages/SearchPage")),
+        Component: lazy(() => import("@/features/search/pages/SearchPage")),
       },
 
       {
-        path: ROUTES.IDEAS(),
-        Component: lazy(() => import("@/features/pin/pages/IdeasPage")),
+        path: ROUTES.EXPLORE(),
+        Component: lazy(() => import("@/features/pin/pages/ExplorePage")),
       },
 
       {
@@ -32,7 +32,7 @@ export const routes = createBrowserRouter([
         children: [
           {
             path: ROUTES.SAVED_IDEA_PINS(":username"),
-            Component: lazy(() => import("@/features/saved-idea/pages/MyPins")),
+            Component: lazy(() => import("@/features/pin/pages/MyPins")),
           },
         ],
       },
