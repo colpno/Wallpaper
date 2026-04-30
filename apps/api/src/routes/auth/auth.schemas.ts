@@ -24,6 +24,7 @@ export const requestSchemas = {
         firstName: true,
         lastName: true,
       }) satisfies ZodType<Login["response"]>,
+      [HttpStatusCodes.NOT_FOUND]: httpErrorSchema,
       [HttpStatusCodes.UNAUTHORIZED]: httpErrorSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
     },

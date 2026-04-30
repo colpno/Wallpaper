@@ -1,14 +1,22 @@
 import type { PaginationPayload } from "./payload.js";
+import type { Fields as UserFields, SortableFields as SortableUserFields } from "./user.js";
 import type { FlattenObjectKeys } from "@/helpers.js";
 import type { Pin, PinDB } from "@/models/pin.js";
 import type { UserDB } from "@/models/user.js";
 import type { QueryFilter } from "@/query.js";
 
-export type Fields = FlattenObjectKeys<PinDB<UserDB>>;
+export type Fields = FlattenObjectKeys<PinDB> | `pinOwner.${UserFields}`;
+
 export type SortableFields = Extract<
   Fields,
-  "createdAt" | "updatedAt" | "photoWidth" | "photoHeight" | "photoAspectRatio"
+  | "createdAt"
+  | "updatedAt"
+  | "photoWidth"
+  | "photoHeight"
+  | "photoAspectRatio"
+  | `pinOwner.${SortableUserFields}`
 >;
+
 export type EmbeddableFields = Extract<Fields, "pinOwner">;
 
 export type GetMany<

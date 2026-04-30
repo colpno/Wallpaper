@@ -9,11 +9,10 @@ import type {
 } from "./pin.types.js";
 import type { RequestSchemas, ZodObjectShapeMap } from "@/types/common.js";
 import type { NormalizeFilterOperators } from "@/utils/parse-filter-operators.js";
-import type { Types } from "mongoose";
 import type { ZodType } from "zod";
 
 import { HttpStatusCodes } from "@repo/shared";
-import type { PinDB, UserDB } from "@repo/types";
+import type { PinAPIs, PinDB, UserDB } from "@repo/types";
 
 import { z } from "@/lib/zod.js";
 import { createQueryFilterSchema } from "@/utils/create-query-filter-schema.js";
@@ -50,7 +49,21 @@ export const pinSchema = z
   } satisfies ZodObjectShapeMap<PinDB>)
   .openapi("Pin");
 
-const queryFilterSchema = createQueryFilterSchema<PinDB<UserDB | string | Types.ObjectId>>()(
+export const selectableFields: PinAPIs.Fields[] = Object.keys(pinSchema.shape) as Array<
+  keyof typeof pinSchema.shape
+>;
+
+export const sortableFields: PinAPIs.SortableFields[] = [
+  "createdAt",
+  "updatedAt",
+  "photoWidth",
+  "photoHeight",
+  "photoAspectRatio",
+];
+
+export const embeddableFields: PinAPIs.EmbeddableFields[] = ["pinOwner"];
+
+const queryFilterSchema = createQueryFilterSchema<PinDB<UserDB>>()(
   {
     pinTitle: stringSchema,
     pinDescription: stringSchema,
@@ -60,9 +73,9 @@ const queryFilterSchema = createQueryFilterSchema<PinDB<UserDB | string | Types.
     photoAspectRatio: z.number(),
   },
   {
-    embeddableFields: ["pinOwner"],
-    selectableFields: Object.keys(pinSchema.shape) as Array<keyof typeof pinSchema.shape>,
-    sortableFields: ["createdAt", "updatedAt", "photoWidth", "photoHeight", "photoAspectRatio"],
+    embeddableFields,
+    selectableFields,
+    sortableFields,
   }
 );
 

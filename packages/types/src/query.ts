@@ -32,10 +32,7 @@ export type Filter<T extends Record<string, unknown>> = {
 };
 
 export type SortOrder = BaseSortOrder;
-export type Sort<T extends string> =
-  | string
-  | Partial<Record<T, SortOrder | { $meta: unknown }>>
-  | [T, SortOrder][];
+export type Sort<T extends string> = string | Partial<Record<T, SortOrder>> | [T, SortOrder][];
 
 export type SelectValue = boolean | 0 | 1;
 export type Select<T extends string> = string | { [K in T]?: SelectValue };

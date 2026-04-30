@@ -17,8 +17,8 @@ import {
   stringSchema,
 } from "@/utils/schemas.js";
 
-import { pinSchema } from "../pin/pin.schemas.js";
-import { userSchema } from "../user/user.schemas.js";
+import { selectableFields as selectablePinFields } from "../pin/pin.schemas.js";
+import { selectableFields as selectableUserFields } from "../user/user.schemas.js";
 import * as handlers from "./saved-idea.handlers.js";
 
 export const savedIdeaSchema = z
@@ -32,31 +32,33 @@ export const savedIdeaSchema = z
   })
   .openapi("SavedIdea") satisfies ZodType<SavedIdeaDB>;
 
-export const queryFilterSchema = createQueryFilterSchema<SavedIdeaDB<UserDB, PinDB>>()(
+export const selectableFields: SavedIdeaAPIs.Fields[] = [
+  ...(Object.keys(savedIdeaSchema.shape) as Array<keyof typeof savedIdeaSchema.shape>),
+  ...selectablePinFields.map((field) => `pin.${field}` as const),
+  ...selectableUserFields.map((field) => `savedBy.${field}` as const),
+];
+
+export const sortableFields: SavedIdeaAPIs.SortableFields[] = [
+  "createdAt",
+  "updatedAt",
+  "pin.createdAt",
+  "pin.updatedAt",
+  "pin.photoWidth",
+  "pin.photoHeight",
+  "pin.photoAspectRatio",
+];
+
+export const embeddableFields: SavedIdeaAPIs.EmbeddableFields[] = ["savedBy", "pin"];
+
+export const queryFilterSchema = createQueryFilterSchema<SavedIdeaDB<UserDB, PinDB<UserDB>>>()(
   {
     savedBy: stringSchema,
     pin: stringSchema,
   },
   {
-    embeddableFields: ["savedBy", "pin"],
-    selectableFields: [
-      ...(Object.keys(savedIdeaSchema.shape) as Array<keyof typeof savedIdeaSchema.shape>),
-      ...(Object.keys(userSchema.shape).map(
-        (k) => `savedBy.${k}`
-      ) as Array<`savedBy.${keyof typeof userSchema.shape}`>),
-      ...(Object.keys(pinSchema.shape).map(
-        (k) => `pin.${k}`
-      ) as Array<`pin.${keyof typeof pinSchema.shape}`>),
-    ],
-    sortableFields: [
-      "createdAt",
-      "updatedAt",
-      "pin.createdAt",
-      "pin.updatedAt",
-      "pin.photoWidth",
-      "pin.photoHeight",
-      "pin.photoAspectRatio",
-    ] satisfies SavedIdeaAPIs.SortableFields[],
+    embeddableFields,
+    selectableFields,
+    sortableFields,
   }
 );
 

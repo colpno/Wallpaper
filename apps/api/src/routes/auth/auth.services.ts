@@ -14,3 +14,8 @@ export const hash = (
   const hashedValue = hash.digest("hex");
   return { salt, hashedValue };
 };
+
+export const isSamePassword = (hashed: string, plaintext: string, salt: string): boolean => {
+  const hashObject = hash(plaintext, salt);
+  return hashed === hashObject.hashedValue;
+};

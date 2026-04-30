@@ -1,6 +1,6 @@
 import type { FilterQuery, PipelineStage, SortOrder } from "mongoose";
 
-import type { EmbedOptions, KnownKeys, QueryFilter, Select, Sort } from "@repo/types";
+import type { EmbedOptions, QueryFilter, Select, Sort } from "@repo/types";
 
 import { parseFilterOperators } from "./parse-filter-operators.js";
 
@@ -30,9 +30,8 @@ export class PipelineBuilder {
     this.fieldToCollectionNameMap = options?.fieldToCollectionNameMap ?? {};
   }
 
-  public build<Data extends Record<string, unknown>, IsPipeline extends boolean = true>(
-    query?: Pick<QueryFilter<Data>, "embed" | "limit" | "page" | "select" | "sort"> &
-      KnownKeys<FilterQuery<Data>>,
+  public build<T, Query extends FilterQuery<T> = FilterQuery<T>, IsPipeline extends boolean = true>(
+    query?: Query,
     options: BuildPipelineOptions<IsPipeline> = { isPipeline: true as IsPipeline }
   ): BuildPipelineReturnType<IsPipeline> {
     const {
@@ -42,7 +41,7 @@ export class PipelineBuilder {
       limit: limit,
       page: page,
       ...filters
-    } = query ?? {};
+    } = (query ?? {}) as QueryFilter<Record<string, unknown>>;
 
     const stages: BuildPipelineReturnType<false> = {};
 

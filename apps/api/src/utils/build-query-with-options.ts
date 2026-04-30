@@ -1,57 +1,48 @@
-import type { KnownKeys, QueryFilter } from "@repo/types";
-import { type FilterQuery, Query } from "mongoose";
+import { Query } from "mongoose";
 
 type Command = "limit" | "page" | "select" | "sort" | "embed";
+const commands: Command[] = ["limit", "page", "select", "sort", "embed"];
 
-type BuildQuerySettingsReturn<T extends Record<string, unknown>> = {
-  queryFilters: Partial<KnownKeys<FilterQuery<T>>>;
-  options: Pick<QueryFilter<T>, Command>;
+type OrganizeQueryResult<T> = {
+  options: Pick<T, Command & keyof T>;
+  queryFilters: Omit<T, Command>;
 };
 
 export const organizeQueryInput = <T extends Record<string, unknown>>(
-  args?: Pick<QueryFilter<T>, Command> & KnownKeys<FilterQuery<T>>
-): BuildQuerySettingsReturn<T> => {
+  args?: T
+): OrganizeQueryResult<T> => {
+  const options: Partial<Record<Command, unknown>> = {};
+  const queryFilters: Record<string, unknown> = {};
+
   if (!args) {
-    return { queryFilters: {}, options: {} };
+    return {
+      options: {},
+      queryFilters: {},
+    } as OrganizeQueryResult<T>;
   }
 
-  const { limit, page, select, sort, embed, ...queryFilters } = args;
-  const options: BuildQuerySettingsReturn<T>["options"] = {};
-
-  if (select) {
-    options.select = select;
-  }
-
-  if (sort) {
-    options.sort = sort;
-  }
-
-  if (embed) {
-    options.embed = embed as typeof options.embed;
-  }
-
-  if (page) {
-    options.page = page;
-  }
-
-  if (limit) {
-    options.limit = limit;
+  for (const key in args) {
+    if (commands.includes(key as Command)) {
+      options[key as Command] = args[key];
+    } else {
+      queryFilters[key] = args[key];
+    }
   }
 
   return {
-    queryFilters: queryFilters as BuildQuerySettingsReturn<T>["queryFilters"],
-    options,
-  };
+    options: options,
+    queryFilters: queryFilters,
+  } as OrganizeQueryResult<T>;
 };
 
 export const buildQueryWithOptions = <
-  Data extends Record<string, unknown>,
   QueryResultType,
   QueryDocType,
   TQuery extends Query<QueryResultType, QueryDocType>,
+  TOptions extends Partial<Record<Command, unknown>>,
 >(
   query: TQuery,
-  options: QueryFilter<Data>
+  options: TOptions
 ) => {
   const { limit, page, select, sort, embed } = options;
 
@@ -68,8 +59,8 @@ export const buildQueryWithOptions = <
   }
 
   if (limit) {
-    const skip = ((page ?? 1) - 1) * limit;
-    query = query.skip(skip).limit(limit);
+    const skip = (((page as number) ?? 1) - 1) * (limit as number);
+    query = query.skip(skip).limit(limit as number);
   }
 
   return query;

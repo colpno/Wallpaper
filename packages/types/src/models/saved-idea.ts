@@ -5,7 +5,7 @@ import type { Types } from "mongoose";
 
 export type SavedIdea<
   U extends User | UserDB | string | Types.ObjectId = string,
-  P extends Pin | PinDB | string | Types.ObjectId = string,
+  P extends Pin | PinDB | PinDB<UserDB> | PinDB<User> | string | Types.ObjectId = string,
 > = {
   savedBy: U;
   pin: P;
@@ -13,5 +13,5 @@ export type SavedIdea<
 
 export type SavedIdeaDB<
   U extends User | UserDB | string | Types.ObjectId = string,
-  P extends Pin | PinDB | string | Types.ObjectId = string,
+  P extends Pin | PinDB | PinDB<UserDB> | PinDB<User> | string | Types.ObjectId = string,
 > = SavedIdea<U, P> & DefaultModelProps;

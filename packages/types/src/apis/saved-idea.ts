@@ -1,20 +1,19 @@
 import type { PaginationPayload } from "./payload.js";
-import type { SortableFields as SortablePinFields } from "./pin.js";
+import type { Fields as PinFields, SortableFields as SortablePinFields } from "./pin.js";
+import type { Fields as UserFields, SortableFields as SortableUserFields } from "./user.js";
 import type { FlattenObjectKeys } from "@/helpers.js";
 import type { PinDB } from "@/models/pin.js";
 import type { SavedIdea, SavedIdeaDB } from "@/models/saved-idea.js";
 import type { UserDB } from "@/models/user.js";
 import type { QueryFilter } from "@/query.js";
 
-export type Fields = FlattenObjectKeys<SavedIdeaDB<UserDB, PinDB>>;
+export type Fields = FlattenObjectKeys<SavedIdeaDB> | `pin.${PinFields}` | `savedBy.${UserFields}`;
+
 export type SortableFields = Extract<
   Fields,
-  | "createdAt"
-  | "updatedAt"
-  | keyof {
-      [K in SortablePinFields as `pin.${K}`]: unknown;
-    }
+  "createdAt" | "updatedAt" | `pin.${SortablePinFields}` | `savedBy.${SortableUserFields}`
 >;
+
 export type EmbeddableFields = Extract<Fields, "savedBy" | "pin">;
 
 type EmbedData<TQuery> =

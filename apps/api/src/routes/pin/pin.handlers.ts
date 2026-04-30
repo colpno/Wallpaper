@@ -7,26 +7,22 @@ import type {
   Search,
   UpdateOneById,
 } from "./pin.types.js";
-import type { File } from "@/utils/schemas.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 import type { Pin, PinDB } from "@repo/types";
-import { encode } from "blurhash";
 import { type PipelineStage, Types } from "mongoose";
-import sharp from "sharp";
 
 import { env } from "@/configs/env.js";
 import { logger } from "@/lib/logger.js";
-import { describeImage, toEmbeddings } from "@/services/embedding.js";
-import { buildQueryWithOptions, organizeQueryInput } from "@/utils/build-query-with-options.js";
+import { toEmbeddings } from "@/services/embedding.js";
 import { toPaginationPayload } from "@/utils/converters.js";
 import { HttpError } from "@/utils/HttpError.js";
-import { deleteMedia, uploadMedia } from "@/utils/media.js";
+import { deleteMedia } from "@/utils/media.js";
 import { PipelineBuilder } from "@/utils/PipelineBuilder.js";
 
 import { SavedIdeaModel } from "../saved-idea/saved-idea.model.js";
 import { PinModel } from "./pin.model.js";
-import { searchPinsByEmbedding } from "./pin.services.js";
+import { findPinById, findPins, searchPinsByEmbedding, uploadPhoto } from "./pin.services.js";
 
 const pipelineBuilder = new PipelineBuilder({
   fieldToCollectionNameMap: {
@@ -36,22 +32,17 @@ const pipelineBuilder = new PipelineBuilder({
 
 export const getMany: GetMany["handler"] = async (req, res, next) => {
   try {
-    const { options, queryFilters } = organizeQueryInput<PinDB>(req.query);
+    const result = await findPins(req.query);
 
-    const result = await buildQueryWithOptions(PinModel.find(queryFilters), options).lean<
-      PinDB[]
-    >();
-
-    if (!req.query.limit) {
+    if (Array.isArray(result)) {
       return res.status(HttpStatusCodes.OK).json(result);
     }
 
-    const totalItems = await PinModel.countDocuments(queryFilters);
-
+    const { data: pins, totalItems } = result;
     const paginatedPins = toPaginationPayload({
-      data: result,
+      data: pins,
       page: req.query.page ?? 1,
-      perPage: req.query.limit,
+      perPage: req.query.limit ?? 1,
       totalItems,
     });
 
@@ -64,7 +55,7 @@ export const getMany: GetMany["handler"] = async (req, res, next) => {
 export const getManyWithSaves: GetManyWithSaves["handler"] = async (req, res, next) => {
   try {
     const { pinOwner, ...query } = req.query;
-    const userDefinedPipeline = pipelineBuilder.build<PinDB>(query);
+    const userDefinedPipeline = pipelineBuilder.build(query);
     const userObjectId = new Types.ObjectId(pinOwner);
 
     const pipeline: PipelineStage[] = [
@@ -141,18 +132,13 @@ export const getManyWithSaves: GetManyWithSaves["handler"] = async (req, res, ne
 
 export const getOneById: GetOneById["handler"] = async (req, res, next) => {
   try {
-    const { options } = organizeQueryInput<PinDB>(req.query);
+    const result = await findPinById(req.params.id, req.query);
 
-    const pin = await buildQueryWithOptions(
-      PinModel.findById(req.params.id),
-      options
-    ).lean<PinDB>();
-
-    if (!pin) {
+    if (!result) {
       return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "Pin not found" });
     }
 
-    return res.status(HttpStatusCodes.OK).json(pin);
+    return res.status(HttpStatusCodes.OK).json(result);
   } catch (error) {
     return next(error);
   }
@@ -160,36 +146,16 @@ export const getOneById: GetOneById["handler"] = async (req, res, next) => {
 
 export const addOne: AddOne["handler"] = async (req, res, next) => {
   try {
-    const photo = req.file as File;
+    const photo = req.file;
 
-    const sharpInstance = sharp(photo.buffer);
+    if (!photo) {
+      return res.status(HttpStatusCodes.BAD_REQUEST).json({
+        message: "Photo must be provided in order to create a pin",
+      });
+    }
 
-    const webp = await sharpInstance.clone().webp({ quality: 90 }).toBuffer();
-
-    const [media, aiDescription, { data, info }] = await Promise.all([
-      uploadMedia({ buffer: webp, mimetype: "image/webp" }),
-      describeImage(photo),
-      sharpInstance
-        .clone()
-        .resize(32, 32, { fit: "inside" })
-        .raw()
-        .ensureAlpha()
-        .toBuffer({ resolveWithObject: true }),
-    ]);
-
-    const blurhash = encode(new Uint8ClampedArray(data), info.width, info.height, 4, 4);
-
-    const newPin = await PinModel.create({
-      ...req.body,
-      photoBlurHash: blurhash,
-      photoCloudinaryId: media.public_id,
-      photoUrl: media.secure_url,
-      photoWidth: media.width,
-      photoHeight: media.height,
-      photoAspectRatio: Math.round((media.width / media.height) * 100) / 100,
-      photoDescription: aiDescription,
-      descriptionEmbeddings: await toEmbeddings(aiDescription),
-    });
+    const uploadedPhoto = await uploadPhoto(photo);
+    const newPin = await PinModel.create({ ...req.body, ...uploadedPhoto });
 
     return res.status(HttpStatusCodes.CREATED).json(newPin.toObject<PinDB>());
   } catch (error) {
@@ -212,9 +178,11 @@ export const updateOneById: UpdateOneById["handler"] = async (req, res, next) =>
     const updateData: Partial<Pin> = { ...req.body };
 
     if (photo) {
-      const addedMedia = await uploadMedia(photo as File);
-      updateData.photoCloudinaryId = addedMedia.public_id;
+      // Upload new media
+      const uploadedMedia = await uploadPhoto(photo);
+      Object.assign(updateData, uploadedMedia);
 
+      // Delete old media
       if (pin.photoCloudinaryId) await deleteMedia(pin.photoCloudinaryId);
     }
 

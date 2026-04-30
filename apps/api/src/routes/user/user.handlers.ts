@@ -1,31 +1,25 @@
 import type { DeleteOneById, GetOne, UpdateOneById } from "./user.types.js";
-import type { File } from "@/utils/schemas.js";
 
 import { HttpStatusCodes } from "@repo/shared";
 import type { User, UserDB } from "@repo/types";
 
 import { logger } from "@/lib/logger.js";
-import { buildQueryWithOptions, organizeQueryInput } from "@/utils/build-query-with-options.js";
 import { HttpError } from "@/utils/HttpError.js";
-import { deleteMedia, uploadMedia } from "@/utils/media.js";
+import { deleteMedia } from "@/utils/media.js";
 
 import { UserModel } from "./user.model.js";
+import { findUser, uploadAvatar } from "./user.services.js";
 
 export const getOne: GetOne["handler"] = async (req, res, next) => {
   try {
-    const { options, queryFilters } = organizeQueryInput<UserDB>(req.query);
+    const result = await findUser(req.query);
 
-    const user = await buildQueryWithOptions(
-      UserModel.findOne(queryFilters),
-      options
-    ).lean<UserDB>();
-
-    if (!user) {
+    if (!result) {
       logger.debug(`User not found: ${JSON.stringify(req.query)}`);
       return res.status(HttpStatusCodes.NOT_FOUND).json({ message: "User not found" });
     }
 
-    return res.status(HttpStatusCodes.OK).json(user);
+    return res.status(HttpStatusCodes.OK).json(result);
   } catch (error) {
     next(error);
   }
@@ -46,9 +40,11 @@ export const updateOneById: UpdateOneById["handler"] = async (req, res, next) =>
     const updateData: Partial<User> = { ...req.body };
 
     if (avatar) {
-      const addedMedia = await uploadMedia(avatar as File);
-      updateData.avatarUrl = addedMedia.secure_url;
+      // Upload new media
+      const uploadedMedia = await uploadAvatar(avatar);
+      Object.assign(updateData, uploadedMedia);
 
+      // Delete old media
       if (user.avatarUrl) await deleteMedia(user.avatarUrl);
     }
 

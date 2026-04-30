@@ -1,4 +1,4 @@
-import { API_ROUTES, HttpStatusCodes } from "@repo/shared";
+import { API_ROUTES, HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
 
 import { jsonContent } from "@/utils/openapi.js";
 import { Router } from "@/utils/Router.js";
@@ -26,8 +26,12 @@ export const login = router.register({
       "Successful Response"
     ),
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
+      requestSchemas.login.responses[HttpStatusCodes.NOT_FOUND],
+      HttpStatusPhrases.NOT_FOUND
+    ),
+    [HttpStatusCodes.UNAUTHORIZED]: jsonContent(
       requestSchemas.login.responses[HttpStatusCodes.UNAUTHORIZED],
-      "Unauthorized"
+      HttpStatusPhrases.UNAUTHORIZED
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
       requestSchemas.login.responses[HttpStatusCodes.UNPROCESSABLE_ENTITY],

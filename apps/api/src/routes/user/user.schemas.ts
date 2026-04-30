@@ -3,7 +3,7 @@ import type { RequestSchemas } from "@/types/common.js";
 import type { ZodType } from "zod";
 
 import { HttpStatusCodes } from "@repo/shared";
-import type { UserDB } from "@repo/types";
+import type { UserAPIs, UserDB } from "@repo/types";
 
 import { z } from "@/lib/zod.js";
 import { escapeHTML } from "@/utils/converters.js";
@@ -38,6 +38,20 @@ export const userSchema = z
   })
   .openapi("User") satisfies ZodType<UserDB>;
 
+export const selectableFields: UserAPIs.Fields[] = Object.keys(userSchema.shape) as Array<
+  keyof typeof userSchema.shape
+>;
+
+export const sortableFields: UserAPIs.SortableFields[] = [
+  "createdAt",
+  "updatedAt",
+  "firstName",
+  "lastName",
+  "username",
+  "email",
+  "birthdate",
+];
+
 const queryFilterSchema = createQueryFilterSchema<UserDB>()(
   {
     firstName: stringSchema,
@@ -48,16 +62,8 @@ const queryFilterSchema = createQueryFilterSchema<UserDB>()(
     avatarUrl: z.url(),
   },
   {
-    selectableFields: Object.keys(userSchema.shape) as Array<keyof typeof userSchema.shape>,
-    sortableFields: [
-      "createdAt",
-      "updatedAt",
-      "firstName",
-      "lastName",
-      "username",
-      "email",
-      "birthdate",
-    ],
+    selectableFields,
+    sortableFields,
   }
 );
 

@@ -1,32 +1,27 @@
 import type { AddOne, CheckSaved, DeleteOneById, GetMany } from "./saved-idea.types.js";
 
 import { HttpStatusCodes } from "@repo/shared";
-import type { PinDB, SavedIdeaDB, UserDB } from "@repo/types";
+import type { SavedIdeaDB } from "@repo/types";
 
 import { logger } from "@/lib/logger.js";
-import { buildQueryWithOptions, organizeQueryInput } from "@/utils/build-query-with-options.js";
 import { toPaginationPayload } from "@/utils/converters.js";
 
 import { SavedIdeaModel } from "./saved-idea.model.js";
+import { findSavedIdeas } from "./saved-idea.services.js";
 
 export const getMany: GetMany["handler"] = async (req, res, next) => {
   try {
-    const { options, queryFilters } = organizeQueryInput<SavedIdeaDB<UserDB, PinDB>>(req.query);
+    const result = await findSavedIdeas(req.query);
 
-    const result = await buildQueryWithOptions(SavedIdeaModel.find(queryFilters), options).lean<
-      SavedIdeaDB[]
-    >();
-
-    if (!req.query.limit) {
+    if (Array.isArray(result)) {
       return res.status(HttpStatusCodes.OK).json(result);
     }
 
-    const totalItems = await SavedIdeaModel.countDocuments(queryFilters);
-
+    const { data, totalItems } = result;
     const paginatedSavedIdeas = toPaginationPayload({
-      data: result,
+      data,
       page: req.query.page ?? 1,
-      perPage: req.query.limit,
+      perPage: req.query.limit ?? 1,
       totalItems,
     });
 
