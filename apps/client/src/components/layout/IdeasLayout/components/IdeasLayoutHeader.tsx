@@ -12,13 +12,13 @@ import Heading from "@/components/ui/Heading";
 import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
 import { ROUTES } from "@/constants/common";
-import { useSaveIdeasContext, type ViewOption } from "@/contexts/savedIdeaContext";
+import { useIdeasPage, type ViewOption } from "@/contexts/ideasPageContext";
 
 const creationDropdownMenu: DropdownMenuData = [
   { key: "pin", label: "Pin", to: ROUTES.PIN_CREATION() },
 ];
 
-function SavedIdeasHeader(props: React.ComponentProps<"div">) {
+function IdeasLayoutHeader(props: React.ComponentProps<"div">) {
   const user = useStore((state) => state.user);
 
   if (!user) {
@@ -88,7 +88,7 @@ function SavedIdeasHeader(props: React.ComponentProps<"div">) {
 }
 
 function PageActions() {
-  const { pin } = useSaveIdeasContext();
+  const { pin } = useIdeasPage();
   const matchPinPage = useMatch(ROUTES.PROFILE("*"));
 
   if (matchPinPage) {
@@ -138,4 +138,4 @@ function PageActions() {
   return null;
 }
 
-export default SavedIdeasHeader;
+export default IdeasLayoutHeader;

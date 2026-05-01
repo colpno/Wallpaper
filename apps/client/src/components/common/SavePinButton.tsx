@@ -5,7 +5,7 @@ import React, { type MouseEventHandler, useEffect, useState } from "react";
 
 import { useStore } from "@/app/stores/useStore";
 import { ROUTES } from "@/constants/common";
-import { addSavedIdeaMutationOptions } from "@/features/saved-idea/services/api/mutations";
+import { addIdeaMutationOptions } from "@/features/idea/services/api/mutations";
 
 import Button from "../ui/Button";
 import Image from "../ui/Image";
@@ -22,7 +22,7 @@ type Props = {
 function SavePinButton({ pinId, pinPhoto, saved, ...props }: Props) {
   const [openLoginForm, setOpenLoginForm] = useState(false);
   const user = useStore((state) => state.user);
-  const { mutate, isPending, isSuccess } = useMutation(addSavedIdeaMutationOptions());
+  const { mutate, isPending, isSuccess } = useMutation(addIdeaMutationOptions());
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {
     e.preventDefault();

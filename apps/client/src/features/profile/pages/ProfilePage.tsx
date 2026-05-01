@@ -1,8 +1,8 @@
 import { Navigate, useParams } from "react-router";
 
 import { useStore } from "@/app/stores/useStore";
+import IdeasLayout from "@/components/layout/IdeasLayout";
 import OtherUserProfileLayout from "@/components/layout/OtherUserProfileLayout";
-import SavedIdeasLayout from "@/components/layout/SavedIdeasLayout";
 import { ROUTES } from "@/constants/common";
 import MyPins from "@/features/pin/pages/MyPins";
 
@@ -18,9 +18,9 @@ function ProfilePage() {
 
   if (user && user.username === username) {
     return (
-      <SavedIdeasLayout>
+      <IdeasLayout>
         <MyPins />
-      </SavedIdeasLayout>
+      </IdeasLayout>
     );
   }
 

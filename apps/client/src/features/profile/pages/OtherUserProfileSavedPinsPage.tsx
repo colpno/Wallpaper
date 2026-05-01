@@ -6,15 +6,15 @@ import Spinner from "@/components/ui/Spinner";
 import Typography from "@/components/ui/Typography";
 import { INFINITE_PAGE_SIZE } from "@/constants/common";
 import { useOtherUserProfile } from "@/contexts/otherUserProfileContext";
+import { getIdeasInfiniteQueryOptions } from "@/features/idea/services/api/queries";
 import PinCard from "@/features/pin/components/PinCard";
-import { getSavedIdeasInfiniteQueryOptions } from "@/features/saved-idea/services/api/queries";
 import { useInfiniteScroll } from "@/hooks/useInfiniteScroll";
 
 function OtherUserProfileSavedPinsPage() {
   const { user } = useOtherUserProfile();
 
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } = useInfiniteQuery(
-    getSavedIdeasInfiniteQueryOptions({
+    getIdeasInfiniteQueryOptions({
       savedBy: user._id,
       embed: "pin",
       limit: INFINITE_PAGE_SIZE,

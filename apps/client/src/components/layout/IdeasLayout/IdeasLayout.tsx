@@ -3,15 +3,15 @@ import { Outlet } from "react-router";
 
 import {
   defaultState,
-  type SavedIdeasContextState,
-  SaveIdeasContext,
+  type IdeasPageContextState,
+  IdeasPageProvider,
   type ViewOption,
-} from "@/contexts/savedIdeaContext";
+} from "@/contexts/ideasPageContext";
 
-import SavedIdeasHeader from "./components/SavedIdeasHeader";
+import IdeasLayoutHeader from "./components/IdeasLayoutHeader";
 
-function SavedIdeasLayout({ children }: { children?: React.ReactNode }) {
-  const [pinStates, setPinStates] = useState<SavedIdeasContextState["pin"]>(defaultState.pin);
+function IdeasLayout({ children }: { children?: React.ReactNode }) {
+  const [pinStates, setPinStates] = useState<IdeasPageContextState["pin"]>(defaultState.pin);
 
   const setViewOption = (option: ViewOption) => {
     setPinStates((prev) => ({ ...prev, viewOptions: option }));
@@ -30,12 +30,12 @@ function SavedIdeasLayout({ children }: { children?: React.ReactNode }) {
   };
 
   return (
-    <SaveIdeasContext value={contextValue}>
-      <SavedIdeasHeader />
+    <IdeasPageProvider value={contextValue}>
+      <IdeasLayoutHeader />
 
       <div className="pt-6">{children ?? <Outlet />}</div>
-    </SaveIdeasContext>
+    </IdeasPageProvider>
   );
 }
 
-export default SavedIdeasLayout;
+export default IdeasLayout;

@@ -20,7 +20,7 @@ import { HttpError } from "@/utils/HttpError.js";
 import { deleteMedia } from "@/utils/media.js";
 import { PipelineBuilder } from "@/utils/PipelineBuilder.js";
 
-import { SavedIdeaModel } from "../saved-idea/saved-idea.model.js";
+import { IdeaModel } from "../idea/idea.model.js";
 import { PinModel } from "./pin.model.js";
 import { findPinById, findPins, searchPinsByEmbedding, uploadPhoto } from "./pin.services.js";
 
@@ -69,7 +69,7 @@ export const getManyWithSaves: GetManyWithSaves["handler"] = async (req, res, ne
       // Saved pins
       {
         $unionWith: {
-          coll: "saved_ideas",
+          coll: "ideas",
           pipeline: [
             {
               $match: {
@@ -112,7 +112,7 @@ export const getManyWithSaves: GetManyWithSaves["handler"] = async (req, res, ne
     const totalOwnedPins = await PinModel.countDocuments({
       pinOwner: userObjectId,
     });
-    const totalSavedPins = await SavedIdeaModel.countDocuments({
+    const totalSavedPins = await IdeaModel.countDocuments({
       savedBy: userObjectId,
     });
     const totalItems = totalOwnedPins + totalSavedPins;

@@ -1,10 +1,10 @@
 import { lazy } from "react";
 import { createBrowserRouter } from "react-router";
 
+import IdeasLayout from "@/components/layout/IdeasLayout";
 import MainLayout from "@/components/layout/MainLayout";
 import OtherUserProfileLayout from "@/components/layout/OtherUserProfileLayout";
 import ProtectedLayout from "@/components/layout/ProtectedLayout";
-import SavedIdeasLayout from "@/components/layout/SavedIdeasLayout";
 import { ROUTES } from "@/constants/common";
 import HomePage from "@/features/home/pages/HomePage";
 
@@ -28,10 +28,10 @@ export const routes = createBrowserRouter([
       },
 
       {
-        Component: SavedIdeasLayout,
+        Component: IdeasLayout,
         children: [
           {
-            path: ROUTES.SAVED_IDEA_PINS(":username"),
+            path: ROUTES.IDEA_PINS(":username"),
             Component: lazy(() => import("@/features/pin/pages/MyPins")),
           },
         ],

@@ -11,7 +11,7 @@ import Image from "@/components/ui/Image";
 import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
 import { ROUTES } from "@/constants/common";
-import { checkSavedQueryOptions } from "@/features/saved-idea/services/api/queries";
+import { checkSavedQueryOptions } from "@/features/idea/services/api/queries";
 
 import PinInfoDescription from "./PinInfoDescription";
 import ZoomOutButton from "./ZoomOutButton";

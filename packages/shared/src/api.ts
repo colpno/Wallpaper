@@ -3,7 +3,7 @@ const BASE_PATH = {
   MEDIA: "/medias",
   PIN: "/pins",
   USER: "/users",
-  SAVED_IDEA: "/saved-ideas",
+  IDEA: "/ideas",
 } as const;
 
 export const API_ROUTES = {
@@ -83,21 +83,21 @@ export const API_ROUTES = {
     },
   },
 
-  SAVED_IDEA: {
+  IDEA: {
     getMany: {
-      path: () => BASE_PATH.SAVED_IDEA,
+      path: () => BASE_PATH.IDEA,
       method: "get",
     },
     checkSaved: {
-      path: () => `${BASE_PATH.SAVED_IDEA}/check` as const,
+      path: () => `${BASE_PATH.IDEA}/check` as const,
       method: "get",
     },
     addOne: {
-      path: () => BASE_PATH.SAVED_IDEA,
+      path: () => BASE_PATH.IDEA,
       method: "post",
     },
     deleteOneById: {
-      path: (id: string) => `${BASE_PATH.SAVED_IDEA}/${id}` as const,
+      path: (id: string) => `${BASE_PATH.IDEA}/${id}` as const,
       method: "delete",
     },
   },

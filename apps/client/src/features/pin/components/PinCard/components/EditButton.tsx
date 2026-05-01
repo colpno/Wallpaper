@@ -9,8 +9,8 @@ import Dialog from "@/components/dialogs/Dialog";
 import Button from "@/components/ui/Button";
 import Image from "@/components/ui/Image";
 import Typography from "@/components/ui/Typography";
+import { deleteIdeaByIdMutationOptions } from "@/features/idea/services/api/mutations";
 import { deletePinByIdMutationOptions } from "@/features/pin/services/api/mutations";
-import { deleteSavedIdeaByIdMutationOptions } from "@/features/saved-idea/services/api/mutations";
 
 type Props = {
   pinId: string;
@@ -19,7 +19,7 @@ type Props = {
 } & React.ComponentProps<typeof Button>;
 
 function EditButton({ pinId, pinOwnerId, pinPhoto, ...props }: Props) {
-  const { mutate: deleteSavedIdea } = useMutation(deleteSavedIdeaByIdMutationOptions());
+  const { mutate: deleteIdea } = useMutation(deleteIdeaByIdMutationOptions());
   const { mutate: deletePin } = useMutation(deletePinByIdMutationOptions());
   const user = useStore((state) => state.user);
   const isPinOwner = pinOwnerId === user?.id;
@@ -31,7 +31,7 @@ function EditButton({ pinId, pinOwnerId, pinPhoto, ...props }: Props) {
       if (isPinOwner) {
         deletePin({ id: pinId });
       } else {
-        deleteSavedIdea({ id: pinId });
+        deleteIdea({ id: pinId });
       }
     }
   };

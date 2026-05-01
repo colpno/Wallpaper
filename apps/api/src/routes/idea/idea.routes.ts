@@ -3,18 +3,18 @@ import { API_ROUTES, HttpStatusCodes, HttpStatusPhrases } from "@repo/shared";
 import { jsonContent } from "@/utils/openapi.js";
 import { Router } from "@/utils/Router.js";
 
-import * as handlers from "./saved-idea.handlers.js";
-import { requestSchemas } from "./saved-idea.schemas.js";
+import * as handlers from "./idea.handlers.js";
+import { requestSchemas } from "./idea.schemas.js";
 
-const tags = ["Saved Idea"];
+const tags = ["Idea"];
 const router = new Router();
 
-export const { router: savedIdeaRouter } = router;
+export const { router: ideaRouter } = router;
 
 export const getMany = router.register({
   tags,
   method: "get",
-  path: API_ROUTES.SAVED_IDEA.getMany.path(),
+  path: API_ROUTES.IDEA.getMany.path(),
   summary: "Get multiple ideas",
   description: "Retrieve multiple ideas.",
   request: {
@@ -35,7 +35,7 @@ export const getMany = router.register({
 export const checkSaved = router.register({
   tags,
   method: "get",
-  path: API_ROUTES.SAVED_IDEA.checkSaved.path(),
+  path: API_ROUTES.IDEA.checkSaved.path(),
   summary: "Is pin saved?",
   description: "Check if a pin is saved.",
   request: {
@@ -60,7 +60,7 @@ export const checkSaved = router.register({
 export const addOne = router.register({
   tags,
   method: "post",
-  path: API_ROUTES.SAVED_IDEA.addOne.path(),
+  path: API_ROUTES.IDEA.addOne.path(),
   summary: "Save an idea.",
   description: "Create a new idea.",
   request: {
@@ -89,7 +89,7 @@ export const addOne = router.register({
 export const deleteOneById = router.register({
   tags,
   method: "delete",
-  path: API_ROUTES.SAVED_IDEA.deleteOneById.path("{id}"),
+  path: API_ROUTES.IDEA.deleteOneById.path("{id}"),
   summary: "Delete an idea by ID",
   description: "Delete a single idea using its unique ID.",
   request: {

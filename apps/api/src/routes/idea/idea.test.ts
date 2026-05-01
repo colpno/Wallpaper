@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { HttpStatusCodes } from "@repo/shared";
-import type { PinDB, SavedIdeaDB } from "@repo/types";
+import type { IdeaDB, PinDB } from "@repo/types";
 import { beforeEach, describe, expect, it } from "vitest";
 import z from "zod";
 
@@ -10,17 +10,17 @@ import { paginationPayloadSchema } from "@/utils/schemas.js";
 
 import { PinModel } from "../pin/pin.model.js";
 import { userSchema } from "../user/user.schemas.js";
-import { SavedIdeaModel } from "./saved-idea.model.js";
-import * as routes from "./saved-idea.routes.js";
-import { requestSchemas, savedIdeaSchema } from "./saved-idea.schemas.js";
+import { IdeaModel } from "./idea.model.js";
+import * as routes from "./idea.routes.js";
+import { ideaSchema, requestSchemas } from "./idea.schemas.js";
 
 let db: SeededDB;
 const getIdeas = createTestClient(routes.getMany);
 const checkSaved = createTestClient(routes.checkSaved);
-const addSavedIdea = createTestClient(routes.addOne);
-const deleteSavedIdeaById = createTestClient(routes.deleteOneById);
+const addIdea = createTestClient(routes.addOne);
+const deleteIdeaById = createTestClient(routes.deleteOneById);
 
-describe("Saved idea routes", () => {
+describe("Idea routes", () => {
   beforeEach(async () => {
     db = await seedDatabase();
   });
@@ -35,7 +35,7 @@ describe("Saved idea routes", () => {
 
       expect(response.status).toBe(HttpStatusCodes.OK);
 
-      const parseResult = z.array(savedIdeaSchema).safeParse(response.body);
+      const parseResult = z.array(ideaSchema).safeParse(response.body);
 
       expect(parseResult.success).toBe(true);
       for (const pin of parseResult.data!) {
@@ -55,7 +55,7 @@ describe("Saved idea routes", () => {
 
       const parseResult = z
         .array(
-          savedIdeaSchema.pick({
+          ideaSchema.pick({
             savedBy: true,
           })
         )
@@ -72,9 +72,7 @@ describe("Saved idea routes", () => {
 
       expect(response.status).toBe(HttpStatusCodes.OK);
 
-      const parseResult = paginationPayloadSchema(z.array(savedIdeaSchema)).safeParse(
-        response.body
-      );
+      const parseResult = paginationPayloadSchema(z.array(ideaSchema)).safeParse(response.body);
 
       expect(parseResult.success).toBe(true);
       expect(parseResult.data!.meta.currentPage).toBe(page);
@@ -90,7 +88,7 @@ describe("Saved idea routes", () => {
 
       expect(response.status).toBe(HttpStatusCodes.OK);
 
-      const parseResult = z.array(savedIdeaSchema).safeParse(response.body);
+      const parseResult = z.array(ideaSchema).safeParse(response.body);
 
       expect(parseResult.success).toBe(true);
       expect(parseResult.data!.length).toBeGreaterThan(0);
@@ -102,7 +100,7 @@ describe("Saved idea routes", () => {
     });
 
     it("returns a list of items with populated fields", async () => {
-      const embedKey: keyof SavedIdeaDB = "savedBy";
+      const embedKey: keyof IdeaDB = "savedBy";
 
       const response = await getIdeas().query({
         embed: embedKey,
@@ -112,7 +110,7 @@ describe("Saved idea routes", () => {
 
       const parseResult = z
         .array(
-          savedIdeaSchema
+          ideaSchema
             .omit({
               [embedKey]: true,
             })
@@ -145,8 +143,8 @@ describe("Saved idea routes", () => {
   describe(`${routes.checkSaved.method.toUpperCase()} ${routes.checkSaved.path}`, () => {
     it("returns saved result if pin exists", async () => {
       const response = await checkSaved().query({
-        userId: db.savedIdeas[0]!.savedBy,
-        pinId: db.savedIdeas[0]!.pin,
+        userId: db.ideas[0]!.savedBy,
+        pinId: db.ideas[0]!.pin,
       });
 
       expect(response.status).toBe(HttpStatusCodes.OK);
@@ -161,7 +159,7 @@ describe("Saved idea routes", () => {
 
     it("returns not saved result if does not exist", async () => {
       const response = await checkSaved().query({
-        userId: db.savedIdeas[0]!.savedBy,
+        userId: db.ideas[0]!.savedBy,
         pinId: "68d817527719e9421cb63734",
       });
 
@@ -211,7 +209,7 @@ describe("Saved idea routes", () => {
         JSON.stringify((await PinModel.create(createPin(db.users[1]!._id))).toJSON<PinDB>())
       );
 
-      const response = await addSavedIdea().send({
+      const response = await addIdea().send({
         savedBy: db.users[0]!._id,
         pin: newPin._id,
       });
@@ -226,7 +224,7 @@ describe("Saved idea routes", () => {
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const response = await addSavedIdea()
+      const response = await addIdea()
         // @ts-expect-error
         .send({
           savedBy: db.users[0]!._id,
@@ -245,7 +243,7 @@ describe("Saved idea routes", () => {
       const date = new Date();
       date.setDate(date.getDate() + 1);
 
-      const response = await addSavedIdea().send({
+      const response = await addIdea().send({
         // @ts-expect-error
         savedBy: 12345,
       });
@@ -266,7 +264,7 @@ describe("Saved idea routes", () => {
         JSON.stringify((await PinModel.create(createPin(db.users[1]!._id))).toJSON<PinDB>())
       );
 
-      const response = await addSavedIdea().send({
+      const response = await addIdea().send({
         savedBy: db.users[0]!._id,
         pin: newPin._id,
         [extraKey]: "extra",
@@ -285,19 +283,19 @@ describe("Saved idea routes", () => {
 
   describe(`${routes.deleteOneById.method.toUpperCase()} ${routes.deleteOneById.path}`, () => {
     it("returns a successful response", async () => {
-      const savedIdea = db.savedIdeas[0]!;
+      const idea = db.ideas[0]!;
 
-      const deleteSavedIdeaResponse = await deleteSavedIdeaById({ id: savedIdea._id });
+      const deleteIdeaResponse = await deleteIdeaById({ id: idea._id });
 
-      expect(deleteSavedIdeaResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
+      expect(deleteIdeaResponse.status).toBe(HttpStatusCodes.NO_CONTENT);
 
-      const ideas = await SavedIdeaModel.findById(savedIdea._id);
+      const ideas = await IdeaModel.findById(idea._id);
 
       expect(ideas).toBe(null);
     });
 
     it("returns a validation error if missing required fields", async () => {
-      const response = await deleteSavedIdeaById();
+      const response = await deleteIdeaById();
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
 
@@ -309,7 +307,7 @@ describe("Saved idea routes", () => {
     });
 
     it("returns a validation error if payload is invalid", async () => {
-      const response = await deleteSavedIdeaById({ id: "invalid" });
+      const response = await deleteIdeaById({ id: "invalid" });
 
       expect(response.status).toBe(HttpStatusCodes.UNPROCESSABLE_ENTITY);
 
@@ -321,7 +319,7 @@ describe("Saved idea routes", () => {
     });
 
     it("returns a not found error if id does not belong to any", async () => {
-      const response = await deleteSavedIdeaById({ id: "68d817527719e9421cb63734" });
+      const response = await deleteIdeaById({ id: "68d817527719e9421cb63734" });
 
       expect(response.status).toBe(HttpStatusCodes.NOT_FOUND);
 

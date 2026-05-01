@@ -2,12 +2,12 @@ import type { PaginationPayload } from "./payload.js";
 import type { Fields as PinFields, SortableFields as SortablePinFields } from "./pin.js";
 import type { Fields as UserFields, SortableFields as SortableUserFields } from "./user.js";
 import type { FlattenObjectKeys } from "@/helpers.js";
+import type { Idea, IdeaDB } from "@/models/idea.js";
 import type { PinDB } from "@/models/pin.js";
-import type { SavedIdea, SavedIdeaDB } from "@/models/saved-idea.js";
 import type { UserDB } from "@/models/user.js";
 import type { QueryFilter } from "@/query.js";
 
-export type Fields = FlattenObjectKeys<SavedIdeaDB> | `pin.${PinFields}` | `savedBy.${UserFields}`;
+export type Fields = FlattenObjectKeys<IdeaDB> | `pin.${PinFields}` | `savedBy.${UserFields}`;
 
 export type SortableFields = Extract<
   Fields,
@@ -17,22 +17,22 @@ export type SortableFields = Extract<
 export type EmbeddableFields = Extract<Fields, "savedBy" | "pin">;
 
 type EmbedData<TQuery> =
-  TQuery extends Pick<QueryFilter<SavedIdeaDB, undefined, undefined, "savedBy">, "embed">
-    ? SavedIdeaDB<UserDB>
-    : TQuery extends Pick<QueryFilter<SavedIdeaDB, undefined, undefined, "pin">, "embed">
-      ? SavedIdeaDB<string, PinDB>
+  TQuery extends Pick<QueryFilter<IdeaDB, undefined, undefined, "savedBy">, "embed">
+    ? IdeaDB<UserDB>
+    : TQuery extends Pick<QueryFilter<IdeaDB, undefined, undefined, "pin">, "embed">
+      ? IdeaDB<string, PinDB>
       : TQuery extends {
             embed:
               | ["savedBy", "pin"]
               | ["pin", "savedBy"]
               | { path: ["savedBy", "pin"] | ["pin", "savedBy"] };
           }
-        ? SavedIdeaDB<UserDB, PinDB>
-        : SavedIdeaDB;
+        ? IdeaDB<UserDB, PinDB>
+        : IdeaDB;
 
 export type GetMany<
-  TQuery extends QueryFilter<SavedIdeaDB, Fields, SortableFields, EmbeddableFields> = QueryFilter<
-    SavedIdeaDB,
+  TQuery extends QueryFilter<IdeaDB, Fields, SortableFields, EmbeddableFields> = QueryFilter<
+    IdeaDB,
     Fields,
     SortableFields,
     EmbeddableFields
@@ -53,8 +53,8 @@ export type CheckSaved = {
 export type AddOne = {
   body: {
     pin: string;
-  } & Pick<SavedIdea, "savedBy">;
-  response: SavedIdeaDB;
+  } & Pick<Idea, "savedBy">;
+  response: IdeaDB;
 };
 
 export type DeleteOneById = {

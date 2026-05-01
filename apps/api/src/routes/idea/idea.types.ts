@@ -1,21 +1,21 @@
 import type { RouteHandler } from "@/types/route-handler.js";
 
-import type { SavedIdeaAPIs } from "@repo/types";
+import type { IdeaAPIs } from "@repo/types";
 
-import * as routes from "./saved-idea.routes.js";
+import * as routes from "./idea.routes.js";
 
 export type GetMany = {
   handler: RouteHandler<typeof routes.getMany>;
-} & SavedIdeaAPIs.GetMany;
+} & IdeaAPIs.GetMany;
 
 export type CheckSaved = {
   handler: RouteHandler<typeof routes.checkSaved>;
-} & SavedIdeaAPIs.CheckSaved;
+} & IdeaAPIs.CheckSaved;
 
 export type AddOne = {
   handler: RouteHandler<typeof routes.addOne>;
-} & SavedIdeaAPIs.AddOne;
+} & IdeaAPIs.AddOne;
 
 export type DeleteOneById = {
   handler: RouteHandler<typeof routes.deleteOneById>;
-} & SavedIdeaAPIs.DeleteOneById;
+} & IdeaAPIs.DeleteOneById;

@@ -1,8 +1,8 @@
 import { faker } from "@faker-js/faker";
-import type { Pin, PinDB, SavedIdea, SavedIdeaDB, User, UserDB } from "@repo/types";
+import type { Idea, IdeaDB, Pin, PinDB, User, UserDB } from "@repo/types";
 
+import { IdeaModel } from "@/routes/idea/idea.model.js";
 import { PinModel } from "@/routes/pin/pin.model.js";
-import { SavedIdeaModel } from "@/routes/saved-idea/saved-idea.model.js";
 import { UserModel } from "@/routes/user/user.model.js";
 
 import { testUserPassword } from "./variables.js";
@@ -43,7 +43,7 @@ export const createUser = (): Readonly<Required<User>> => {
   };
 };
 
-export const createSavedIdea = (userId: string, pinId: string): Readonly<Required<SavedIdea>> => {
+export const createIdea = (userId: string, pinId: string): Readonly<Required<Idea>> => {
   return {
     savedBy: userId,
     pin: pinId,
@@ -75,24 +75,21 @@ const insertUsers = async (): Promise<SeededDB["users"]> => {
   return jsonified;
 };
 
-const insertSavedIdeas = async (
-  userIds: string[],
-  pinIds: string[]
-): Promise<SeededDB["savedIdeas"]> => {
+const insertIdeas = async (userIds: string[], pinIds: string[]): Promise<SeededDB["ideas"]> => {
   const subPinIds = faker.helpers.arrayElements(pinIds, { min: 1, max: pinIds.length - 1 });
-  const newSavedIdeas: SavedIdea[] = [];
+  const newIdeas: Idea[] = [];
 
   for (const u of userIds) {
     for (const p of subPinIds) {
-      newSavedIdeas.push(createSavedIdea(u, p));
+      newIdeas.push(createIdea(u, p));
     }
   }
 
-  const savedIdeas = await SavedIdeaModel.insertMany(faker.helpers.shuffle(newSavedIdeas));
+  const ideas = await IdeaModel.insertMany(faker.helpers.shuffle(newIdeas));
 
-  const jsonified = savedIdeas.map((item) =>
+  const jsonified = ideas.map((item) =>
     JSON.parse(JSON.stringify(item.toJSON()))
-  ) as SeededDB["savedIdeas"];
+  ) as SeededDB["ideas"];
 
   return jsonified;
 };
@@ -100,7 +97,7 @@ const insertSavedIdeas = async (
 export type SeededDB = Readonly<{
   pins: Required<PinDB[]>;
   users: Required<UserDB[]>;
-  savedIdeas: Required<SavedIdeaDB[]>;
+  ideas: Required<IdeaDB[]>;
 }>;
 
 export const seedDatabase = async (): Promise<SeededDB> => {
@@ -110,11 +107,11 @@ export const seedDatabase = async (): Promise<SeededDB> => {
   const pins = await insertPins(userIds);
   const pinIds = faker.helpers.shuffle(pins.map((p) => p._id));
 
-  const savedIdeas = await insertSavedIdeas(userIds, pinIds);
+  const ideas = await insertIdeas(userIds, pinIds);
 
   return {
     users,
     pins,
-    savedIdeas,
+    ideas: ideas,
   };
 };

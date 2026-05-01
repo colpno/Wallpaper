@@ -1,11 +1,11 @@
-import type { SavedIdea } from "@repo/types";
+import type { Idea } from "@repo/types";
 import { model, Schema, type Types } from "mongoose";
 
 import { HttpError } from "@/utils/HttpError.js";
 
 import { PinModel } from "../pin/pin.model.js";
 
-const schema = new Schema<SavedIdea<Types.ObjectId, Types.ObjectId>>(
+const schema = new Schema<Idea<Types.ObjectId, Types.ObjectId>>(
   {
     savedBy: {
       type: Schema.ObjectId,
@@ -37,4 +37,4 @@ schema.pre("save", async function (next) {
   next();
 });
 
-export const SavedIdeaModel = model("saved_ideas", schema);
+export const IdeaModel = model("ideas", schema);

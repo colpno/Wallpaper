@@ -2,7 +2,7 @@ import { createContext, useContext } from "react";
 
 export type ViewOption = "standard" | "compact";
 
-export type SavedIdeasContextState = {
+export type IdeasPageContextState = {
   pin: {
     createdByYou: boolean;
     viewOptions: ViewOption;
@@ -11,7 +11,7 @@ export type SavedIdeasContextState = {
   };
 };
 
-export const defaultState: SavedIdeasContextState = {
+export const defaultState: IdeasPageContextState = {
   pin: {
     viewOptions: "compact",
     createdByYou: false,
@@ -20,13 +20,13 @@ export const defaultState: SavedIdeasContextState = {
   },
 };
 
-export const SaveIdeasContext = createContext<SavedIdeasContextState>(defaultState);
+export const IdeasPageProvider = createContext<IdeasPageContextState>(defaultState);
 
-export const useSaveIdeasContext = () => {
-  const context = useContext(SaveIdeasContext);
+export const useIdeasPage = () => {
+  const context = useContext(IdeasPageProvider);
 
   if (!context) {
-    throw new Error("useSaveIdeasContext must be used within SaveIdeasContext");
+    throw new Error("useIdeasPage must be used within IdeasPageProvider");
   }
 
   return context;

@@ -1,10 +1,10 @@
-import type { AddOne, CheckSaved, DeleteOneById, GetMany } from "./saved-idea.types.js";
+import type { AddOne, CheckSaved, DeleteOneById, GetMany } from "./idea.types.js";
 import type { RequestSchemas } from "@/types/common.js";
 import type { NormalizeFilterOperators } from "@/utils/parse-filter-operators.js";
 import type { ZodType } from "zod";
 
 import { HttpStatusCodes } from "@repo/shared";
-import type { PinDB, SavedIdeaAPIs, SavedIdeaDB, UserDB } from "@repo/types";
+import type { IdeaAPIs, IdeaDB, PinDB, UserDB } from "@repo/types";
 
 import { z } from "@/lib/zod.js";
 import { createQueryFilterSchema } from "@/utils/create-query-filter-schema.js";
@@ -19,9 +19,9 @@ import {
 
 import { selectableFields as selectablePinFields } from "../pin/pin.schemas.js";
 import { selectableFields as selectableUserFields } from "../user/user.schemas.js";
-import * as handlers from "./saved-idea.handlers.js";
+import * as handlers from "./idea.handlers.js";
 
-export const savedIdeaSchema = z
+export const ideaSchema = z
   .object({
     _id: objectIdSchema,
     __v: z.number(),
@@ -30,15 +30,15 @@ export const savedIdeaSchema = z
     savedBy: stringSchema,
     pin: stringSchema,
   })
-  .openapi("SavedIdea") satisfies ZodType<SavedIdeaDB>;
+  .openapi("Idea") satisfies ZodType<IdeaDB>;
 
-export const selectableFields: SavedIdeaAPIs.Fields[] = [
-  ...(Object.keys(savedIdeaSchema.shape) as Array<keyof typeof savedIdeaSchema.shape>),
+export const selectableFields: IdeaAPIs.Fields[] = [
+  ...(Object.keys(ideaSchema.shape) as Array<keyof typeof ideaSchema.shape>),
   ...selectablePinFields.map((field) => `pin.${field}` as const),
   ...selectableUserFields.map((field) => `savedBy.${field}` as const),
 ];
 
-export const sortableFields: SavedIdeaAPIs.SortableFields[] = [
+export const sortableFields: IdeaAPIs.SortableFields[] = [
   "createdAt",
   "updatedAt",
   "pin.createdAt",
@@ -48,9 +48,9 @@ export const sortableFields: SavedIdeaAPIs.SortableFields[] = [
   "pin.photoAspectRatio",
 ];
 
-export const embeddableFields: SavedIdeaAPIs.EmbeddableFields[] = ["savedBy", "pin"];
+export const embeddableFields: IdeaAPIs.EmbeddableFields[] = ["savedBy", "pin"];
 
-export const queryFilterSchema = createQueryFilterSchema<SavedIdeaDB<UserDB, PinDB<UserDB>>>()(
+export const queryFilterSchema = createQueryFilterSchema<IdeaDB<UserDB, PinDB<UserDB>>>()(
   {
     savedBy: stringSchema,
     pin: stringSchema,
@@ -67,9 +67,9 @@ export const requestSchemas = {
     query: queryFilterSchema satisfies ZodType<NormalizeFilterOperators<GetMany["query"]>>,
     responses: {
       [HttpStatusCodes.OK]: z.union([
-        z.array(savedIdeaSchema),
+        z.array(ideaSchema),
         z.object({
-          data: z.array(savedIdeaSchema),
+          data: z.array(ideaSchema),
           meta: metaPaginationSchema,
         }),
       ]) satisfies ZodType<GetMany["response"]>,
@@ -93,7 +93,7 @@ export const requestSchemas = {
   },
 
   addOne: {
-    body: savedIdeaSchema
+    body: ideaSchema
       .pick({
         savedBy: true,
       })
@@ -101,7 +101,7 @@ export const requestSchemas = {
         pin: objectIdSchema,
       }) satisfies ZodType<AddOne["body"]>,
     responses: {
-      [HttpStatusCodes.CREATED]: savedIdeaSchema satisfies ZodType<AddOne["response"]>,
+      [HttpStatusCodes.CREATED]: ideaSchema satisfies ZodType<AddOne["response"]>,
       [HttpStatusCodes.CONFLICT]: httpErrorSchema,
       [HttpStatusCodes.BAD_REQUEST]: httpErrorSchema,
       [HttpStatusCodes.UNPROCESSABLE_ENTITY]: httpValidationErrorSchema,
