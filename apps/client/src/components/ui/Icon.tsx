@@ -21,7 +21,7 @@ function Icon<TVariant extends Variant>({ variant, ...props }: Props<TVariant>) 
       return (
         <Favicon
           {...(props as ComponentProps<"favicon">)}
-          className={cn("size-10", props.className)}
+          className={cn("size-10 fill-primary", props.className)}
         />
       );
 
