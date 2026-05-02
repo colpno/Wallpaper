@@ -12,7 +12,7 @@ function Header(props: React.ComponentProps<"header">) {
     <header
       {...props}
       className={cn(
-        "sticky top-0 z-header flex h-header-height items-center gap-4 bg-background p-4 transition-[margin-left] duration-not-sidebar ease-out",
+        "fixed inset-x-0 top-0 z-header flex h-header-height items-center gap-4 bg-background p-4 transition-[margin-left] duration-not-sidebar ease-out",
         subSidebar
           ? "ml-[calc(var(--spacing-sidebar-width)+var(--spacing-sub-sidebar-width))]"
           : "ml-sidebar-width",

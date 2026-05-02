@@ -30,7 +30,7 @@ function ProtectedLayout({ children }: { children?: React.ReactNode }) {
 
       <main
         className={cn(
-          "w-full transition-[padding-left] duration-not-sidebar ease-out",
+          "flex min-h-dvh w-full flex-col pt-header-height transition-[padding-left] duration-not-sidebar ease-out",
           subSidebar
             ? "pl-[calc(var(--spacing-sidebar-width)+var(--spacing-sub-sidebar-width))]"
             : "pl-sidebar-width"

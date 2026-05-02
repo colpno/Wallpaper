@@ -1,12 +1,14 @@
+import { Outlet } from "react-router";
+
 import Header from "@/components/layout/GuessLayout/components/Header";
 
-function GuessLayout({ children, ...props }: React.ComponentProps<"div">) {
+function GuessLayout({ children }: { children?: React.ReactNode }) {
   return (
-    <div {...props}>
+    <>
       <Header />
 
-      <main className="min-h-dvh">{children}</main>
-    </div>
+      <main className="flex min-h-dvh flex-col pt-header-height">{children ?? <Outlet />}</main>
+    </>
   );
 }
 
