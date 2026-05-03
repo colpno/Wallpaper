@@ -17,6 +17,7 @@ const buttonVariants = cva(
         ghost: "hover:bg-accent hover:text-accent-foreground",
         active:
           "bg-selected-background text-selected-foreground hover:bg-selected-hover-background",
+        transparent: "",
       },
       size: {
         xs: "gap-0.5 px-2 py-1 text-xs",
