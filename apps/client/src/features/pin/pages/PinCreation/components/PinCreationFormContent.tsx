@@ -1,58 +1,69 @@
-import type { UseFormReturn } from "react-hook-form";
-
 import { cn } from "@repo/ui/lib";
-import { type ChangeEvent } from "react";
+import { type ChangeEvent, useEffect } from "react";
+import { useFormContext } from "react-hook-form";
 import { FiArrowUpCircle } from "react-icons/fi";
 import { LuPencil } from "react-icons/lu";
 
+import { useStore } from "@/app/stores/useStore";
 import TextareaField from "@/components/form/controls/TextareaField";
 import TextField from "@/components/form/controls/TextField";
-import Form from "@/components/form/Form";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
 import Image from "@/components/ui/Image";
 import Typography from "@/components/ui/Typography";
-import { type PinCreationFormData, pinCreationSchema } from "@/features/pin/constants/schemas";
-import { useObjectURL } from "@/hooks/useObjectURL";
+import { type PinCreationFormData } from "@/features/pin/constants/schemas";
 
-type Props = {
-  file: File | null;
-  onFileSelect: (file: File | null) => void;
-  onSubmit: (formData: PinCreationFormData) => void;
+type FormContentProps = {
   onEditPhotoClick: () => void;
 };
 
-function PinCreationForm({ file, onFileSelect, onSubmit, onEditPhotoClick }: Props) {
-  const imageSrc = useObjectURL(file);
-
-  return (
-    <Form onSubmit={onSubmit} schema={pinCreationSchema} showButtons={false}>
-      {(methods) => (
-        <FormContent
-          {...methods}
-          imageSrc={imageSrc}
-          onFileSelect={onFileSelect}
-          onEditPhotoClick={onEditPhotoClick}
-        />
-      )}
-    </Form>
-  );
-}
-
-type FormContentProps = {
-  imageSrc: string | null;
-  onFileSelect: (file: File | null) => void;
-  onEditPhotoClick: () => void;
-} & UseFormReturn<PinCreationFormData>;
-
-function FormContent({ imageSrc, onFileSelect, onEditPhotoClick, ...methods }: FormContentProps) {
-  const photoFieldProps = methods.register("photo");
+function PinCreationFormContent({ onEditPhotoClick }: FormContentProps) {
+  const addDraft = useStore((state) => state.draft.addDraft);
+  const updateDraft = useStore((state) => state.draft.updateDraft);
+  const currentDraft = useStore((state) => state.draft.currentDraft);
+  const imageSrc = currentDraft?.imageSrc;
+  const { register, watch, formState, setValue, getValues } = useFormContext<PinCreationFormData>();
+  const photoFieldProps = register("photo");
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
     photoFieldProps.onChange(e);
-    onFileSelect(e.target.files?.[0] || null);
+
+    if (!e.target.files?.[0]) return;
+
+    const files = e.target.files;
+
+    setValue("photo", files);
+    addDraft({ id: getValues("id"), photo: files[0]! });
   };
+
+  // Manipulate drafts
+  useEffect(() => {
+    let timeout: ReturnType<typeof setTimeout> | null = null;
+
+    const subscription = watch((values) => {
+      const { id, photo, ...formData } = values;
+      if (timeout) clearTimeout(timeout);
+      if (!id || !photo?.[0]) return;
+
+      const file = photo[0];
+
+      timeout = setTimeout(() => {
+        if (currentDraft && currentDraft.id === id) {
+          updateDraft(id, { ...formData, photo: file, originalPhoto: file });
+          return;
+        }
+      }, 200);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+
+      if (timeout) {
+        clearTimeout(timeout);
+      }
+    };
+  }, [watch, currentDraft, updateDraft]);
 
   return (
     <>
@@ -65,8 +76,8 @@ function FormContent({ imageSrc, onFileSelect, onEditPhotoClick, ...methods }: F
         <Heading className="text-xl">Create Pin</Heading>
 
         {!!imageSrc && (
-          <Button type="submit" disabled={methods.formState.isSubmitting}>
-            {methods.formState.isSubmitting ? "Publishing" : "Publish"}
+          <Button type="submit" disabled={formState.isSubmitting}>
+            {formState.isSubmitting ? "Publishing" : "Publish"}
           </Button>
         )}
       </div>
@@ -74,8 +85,8 @@ function FormContent({ imageSrc, onFileSelect, onEditPhotoClick, ...methods }: F
       <Container className="mt-8 flex max-w-6xl flex-col gap-13 lg:flex-row!">
         <div
           className={cn(
-            "relative max-w-93.75 overflow-clip rounded-4xl",
-            !imageSrc && "h-114.25 bg-secondary"
+            "relative w-93.75 overflow-clip rounded-4xl",
+            (currentDraft === null || !imageSrc) && "h-114.25 bg-secondary"
           )}
         >
           {imageSrc ? (
@@ -110,7 +121,7 @@ function FormContent({ imageSrc, onFileSelect, onEditPhotoClick, ...methods }: F
 
           <input
             className={cn(
-              "cursor-pointer opacity-0",
+              "max-w-93.75 cursor-pointer opacity-0",
               imageSrc ? "absolute inset-0 size-full" : "size-full"
             )}
             {...photoFieldProps}
@@ -121,6 +132,15 @@ function FormContent({ imageSrc, onFileSelect, onEditPhotoClick, ...methods }: F
         </div>
 
         <div className="flex-1 space-y-6">
+          <TextField
+            name="id"
+            hidden
+            disabled
+            slotProps={{
+              fieldContainer: { className: cn("hidden!") },
+            }}
+          />
+
           <TextField
             name="title"
             label="Title"
@@ -142,4 +162,4 @@ function FormContent({ imageSrc, onFileSelect, onEditPhotoClick, ...methods }: F
   );
 }
 
-export default PinCreationForm;
+export default PinCreationFormContent;

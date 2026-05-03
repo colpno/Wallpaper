@@ -6,13 +6,15 @@ import { useStore } from "@/app/stores/useStore";
 import { type PinCreationFormData } from "../../constants/schemas";
 import { addPinMutationOptions } from "../../services/api/mutations";
 import PhotoEditor from "./components/PhotoEditor";
-import PinCreationForm from "./components/PinCreationForm";
+import PinCreationTool from "./components/PinCreationTool";
+
+export type Sidebar = "drafts" | null;
 
 function PinCreation() {
   const user = useStore((state) => state.auth.user);
   const { mutateAsync } = useMutation(addPinMutationOptions());
-  const [file, setFile] = useState<File | null>(null);
   const [editFile, setEditFile] = useState<boolean>(false);
+  const currentDraft = useStore((state) => state.draft.currentDraft);
 
   const handleSubmit = async (formData: PinCreationFormData) => {
     if (!user) return;
@@ -25,25 +27,17 @@ function PinCreation() {
     });
   };
 
-  const handleEditorSubmit = (file: File) => {
-    setFile(file);
-    setEditFile(false);
-  };
-
-  if (editFile && file) {
+  if (editFile && currentDraft) {
     return (
-      <PhotoEditor file={file} onSubmit={handleEditorSubmit} onCancel={() => setEditFile(false)} />
+      <PhotoEditor
+        draft={currentDraft}
+        onDone={() => setEditFile(false)}
+        onCancel={() => setEditFile(false)}
+      />
     );
   }
 
-  return (
-    <PinCreationForm
-      file={file}
-      onFileSelect={setFile}
-      onSubmit={handleSubmit}
-      onEditPhotoClick={() => setEditFile(true)}
-    />
-  );
+  return <PinCreationTool onSubmit={handleSubmit} onEditPhotoClick={() => setEditFile(true)} />;
 }
 
 export default PinCreation;

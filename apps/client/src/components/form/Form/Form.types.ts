@@ -8,7 +8,7 @@ export type FormProps<TFormData extends FieldValues> = {
   schema: z.ZodType<any, TFormData>;
   children: React.ReactNode | ((methods: UseFormReturn<TFormData>) => React.ReactNode);
   onSubmit: (data: TFormData) => void | Promise<void>;
-  defaultValues?: TFormData;
+  defaultValues?: Partial<TFormData>;
   showButtons?: boolean;
   slotProps?: {
     submitButton?: React.ComponentProps<typeof Button>;

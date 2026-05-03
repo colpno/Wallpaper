@@ -1,9 +1,11 @@
 import "react-image-crop/dist/ReactCrop.css";
+import type { Draft } from "@/app/stores/useDraftStore";
 
 import { cn } from "@repo/ui/lib";
 import { useMemo, useState } from "react";
-import ReactCrop from "react-image-crop";
+import ReactCrop, { type PixelCrop } from "react-image-crop";
 
+import { useStore } from "@/app/stores/useStore";
 import Button from "@/components/ui/Button";
 import Heading from "@/components/ui/Heading";
 import { default as Image, default as ImageComponent } from "@/components/ui/Image";
@@ -20,29 +22,39 @@ type Layer = {
 };
 
 type Props = {
-  file: File;
-  onSubmit: (file: File) => void;
+  draft: Draft;
+  onDone: () => void;
   onCancel: () => void;
 };
 
 const DEFAULT_LAYER_INDEX: number = 0;
 
-function PhotoEditor({ file: fileProp, onSubmit, onCancel }: Props) {
-  const [file, setFile] = useState(fileProp);
-  const imageSrc = useObjectURL(file);
-  const layers = useMemo<Layer[]>(() => [{ url: imageSrc, label: "Image" }], [imageSrc]);
+function PhotoEditor({ draft, onDone, onCancel }: Props) {
+  const originalImageSrc = useObjectURL(draft.originalPhoto);
+  const layers = useMemo<Layer[]>(
+    () => [{ url: originalImageSrc, label: "Image" }],
+    [originalImageSrc]
+  );
   const [selectedLayerIndex, setSelectedLayerIndex] = useState<number>(DEFAULT_LAYER_INDEX);
   const selectedLayer = layers[selectedLayerIndex] ?? layers[DEFAULT_LAYER_INDEX];
-  const { cropImage, ...cropperProps } = useImageCropping();
+  const { cropImage, imgRef, onComplete, ...cropperProps } = useImageCropping(
+    draft.croppedArea ? { ...draft.croppedArea, unit: "px" } : undefined
+  );
+  const updateDraft = useStore((state) => state.draft.updateDraft);
 
   const handleDoneClick = async () => {
-    if (!cropperProps.crop) return;
-
-    const blob = await cropImage(imageSrc, cropperProps.crop);
+    const blob = await cropImage();
     if (!blob) return;
 
-    const photoFile = new File([blob], `photo.${mimeToExtension(blob.type)}`);
-    onSubmit(photoFile);
+    const file = new File([blob], `photo.${mimeToExtension(blob.type)}`);
+
+    updateDraft(draft.id, { croppedArea: cropperProps.crop, photo: file });
+    onDone();
+  };
+
+  const handleCropComplete = (crop: PixelCrop): void => {
+    updateDraft(draft.id, { croppedArea: crop });
+    onComplete(crop);
   };
 
   return (
@@ -92,16 +104,20 @@ function PhotoEditor({ file: fileProp, onSubmit, onCancel }: Props) {
         <div className="relative bg-secondary">
           <ReactCrop
             {...cropperProps}
+            onComplete={handleCropComplete}
             className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2"
           >
-            <Image src={imageSrc} className="max-w-93.75!" />
+            <Image ref={imgRef} src={originalImageSrc} className="max-w-93.75!" />
           </ReactCrop>
         </div>
 
         {/* Right Panel */}
         <div className="px-4 py-8">
           {selectedLayer?.label === "Image" && (
-            <PhotoEditorImageMenu imageSrc={imageSrc} onFileChange={setFile} />
+            <PhotoEditorImageMenu
+              imageSrc={originalImageSrc}
+              onFileChange={(file) => updateDraft(draft.id, { photo: file, originalPhoto: file })}
+            />
           )}
         </div>
       </div>

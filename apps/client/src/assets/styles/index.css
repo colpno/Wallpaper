@@ -16,9 +16,10 @@
   --spacing-header-height: 80px;
   --spacing-sidebar-width: 72px;
   --spacing-sub-sidebar-width: 368px;
+  --spacing-pin-creation-sub-sidebar: 351px;
 
-  --transition-duration-sidebar: 200ms;
-  --transition-duration-not-sidebar: 150ms;
+  --transition-duration-sidebar: 150ms;
+  --transition-duration-not-sidebar: 300ms;
 }
 
 @keyframes scale-down {

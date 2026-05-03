@@ -130,7 +130,7 @@ npm run dev
 - [x] Pinterest-style grid layout
 - [x] Search images using a text
 - [x] Search images using an image
-- [ ] Image upload with cropping
+- [x] Image upload with cropping
 - [x] File management with cloud
 - [ ] User profile management
 - [x] Pins management

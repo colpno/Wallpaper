@@ -6,19 +6,22 @@ import { env } from "@/configs/env";
 import { decrypt, encrypt } from "@/features/auth/services/crypto";
 
 import { authSlice, type AuthStore } from "./useAuthStore";
+import { draftSlice, type DraftStore } from "./useDraftStore";
 
 export type ImmerStateCreator<T> = StateCreator<Store, [["zustand/immer", never], never], [], T>;
 
-export type Store = AuthStore;
+export type Store = AuthStore & DraftStore;
 
 type PersistedStore = {
-  user: Store["auth"]["user"];
+  auth: Pick<Store["auth"], "user">;
 };
 
 const persistOptions: PersistOptions<Store, PersistedStore> = {
   name: "wallpaper",
   partialize: (state) => ({
-    user: state.auth.user,
+    auth: {
+      user: state.auth.user,
+    },
   }),
   storage: {
     getItem: (name) => {
@@ -37,6 +40,7 @@ const persistOptions: PersistOptions<Store, PersistedStore> = {
 
 const rootSlice: ImmerStateCreator<Store> = (...parameters) => ({
   ...authSlice(...parameters),
+  ...draftSlice(...parameters),
 });
 
 export const store = create<Store>()(persist(immer(rootSlice), persistOptions));

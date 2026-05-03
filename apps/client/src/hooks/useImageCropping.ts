@@ -1,50 +1,51 @@
 import type { Crop } from "react-image-crop";
 
 import { toast } from "@repo/ui/components";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-export const useImageCropping = () => {
-  const [crop, setCrop] = useState<Crop>({
-    unit: "%",
-    x: 0,
-    y: 0,
-    width: 100,
-    height: 100,
-  });
+export const useImageCropping = (initialCrop?: Crop) => {
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [crop, setCrop] = useState<Crop | undefined>(initialCrop);
+  const [completedCrop, setCompletedCrop] = useState<Crop | undefined>(initialCrop);
 
-  const cropImage = async (imageSrc: string, croppedArea: Crop) => {
-    const image = new Image();
-    image.src = imageSrc;
-
-    await new Promise((resolve) => (image.onload = resolve));
+  const cropImage = async () => {
+    if (!completedCrop || !imgRef.current) return;
 
     const canvas = document.createElement("canvas");
     const context = canvas.getContext("2d");
+    const image = imgRef.current;
+    const scaleX = image.naturalWidth / image.width;
+    const scaleY = image.naturalHeight / image.height;
 
     if (!context) {
       toast.error("Canvas context doesn't exist, please contact administrator.");
       return;
     }
 
-    canvas.width = croppedArea.width;
-    canvas.height = croppedArea.height;
+    if (!completedCrop) {
+      toast.error("Please draw a cropping area.");
+      return;
+    }
+
+    canvas.width = completedCrop.width! * scaleX;
+    canvas.height = completedCrop.height! * scaleY;
 
     context.drawImage(
       image,
-      croppedArea.x,
-      croppedArea.y,
-      croppedArea.width,
-      croppedArea.height,
+      completedCrop.x! * scaleX,
+      completedCrop.y! * scaleY,
+      completedCrop.width! * scaleX,
+      completedCrop.height! * scaleY,
       0,
       0,
-      croppedArea.width,
-      croppedArea.height
+      canvas.width,
+      canvas.height
     );
 
     return new Promise<Blob>((resolve, reject) => {
       canvas.toBlob((blob) => {
         if (!blob) {
-          reject("Blob doesn't while converting image to blob");
+          reject("Cannot convert canvas to blob");
         } else {
           resolve(blob);
         }
@@ -52,9 +53,15 @@ export const useImageCropping = () => {
     });
   };
 
+  useEffect(() => {
+    setCrop(initialCrop);
+  }, [initialCrop]);
+
   return {
+    imgRef,
     cropImage,
     crop,
     onChange: setCrop,
+    onComplete: setCompletedCrop,
   };
 };
