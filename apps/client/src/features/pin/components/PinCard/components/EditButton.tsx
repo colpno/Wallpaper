@@ -21,7 +21,7 @@ type Props = {
 function EditButton({ pinId, pinOwnerId, pinPhoto, ...props }: Props) {
   const { mutate: deleteIdea } = useMutation(deleteIdeaByIdMutationOptions());
   const { mutate: deletePin } = useMutation(deletePinByIdMutationOptions());
-  const user = useStore((state) => state.user);
+  const user = useStore((state) => state.auth.user);
   const isPinOwner = pinOwnerId === user?.id;
 
   const handleDelete = (confirm: boolean) => {

@@ -28,7 +28,7 @@ function LoginForm({ slotProps, ...props }: Props) {
   const { setForm } = useAuthFormContext();
   const { mutateAsync } = useMutation(loginMutationOptions());
   const navigate = useNavigate();
-  const login = useStore((state) => state.login);
+  const login = useStore((state) => state.auth.login);
 
   const handleSubmit = async (formData: LoginFormData) => {
     const user = await mutateAsync(formData);

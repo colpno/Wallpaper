@@ -15,7 +15,7 @@ import { type SubSidebarType, useSidebar } from "./Sidebar.context";
 
 function Sidebar() {
   const { setSubSidebar, subSidebar } = useSidebar();
-  const user = useStore((state) => state.user!);
+  const user = useStore((state) => state.auth.user!);
 
   const toggleSubSidebar = (type: SubSidebarType) => {
     setSubSidebar((prev) => (prev !== type ? type : null));

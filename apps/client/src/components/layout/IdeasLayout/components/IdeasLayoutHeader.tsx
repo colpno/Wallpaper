@@ -19,7 +19,7 @@ const creationDropdownMenu: DropdownMenuData = [
 ];
 
 function IdeasLayoutHeader(props: React.ComponentProps<"div">) {
-  const user = useStore((state) => state.user);
+  const user = useStore((state) => state.auth.user);
 
   if (!user) {
     return <Navigate to={ROUTES.HOME()} />;

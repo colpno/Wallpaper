@@ -61,7 +61,7 @@ describe("RegisterForm", () => {
     expect(passwordField).toHaveDisplayValue(password);
     expect(birthdateField).toHaveDisplayValue(birthdate);
     await waitFor(() => {
-      expect(mockMutateAsync).toBeCalledWith({
+      expect(mockMutateAsync).toHaveBeenCalledWith({
         email,
         password,
         birthdate: new Date(birthdate).toISOString(),

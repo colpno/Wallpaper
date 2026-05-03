@@ -35,7 +35,7 @@ type Props = {
 };
 
 function PinCard({ item, showActionButton = true, editable, showCaptions }: Props) {
-  const user = useStore((state) => state.user);
+  const user = useStore((state) => state.auth.user);
   const [isImageLoading, setIsImageLoading] = useState(true);
   const odd = useRef<number>(Math.random());
   const showTitle = odd.current > 0.6 && !!item.pinTitle;

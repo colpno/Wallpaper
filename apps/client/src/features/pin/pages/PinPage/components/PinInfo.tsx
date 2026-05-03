@@ -29,7 +29,7 @@ function PinInfo(
     | "photoAspectRatio"
   >
 ) {
-  const user = useStore((state) => state.user);
+  const user = useStore((state) => state.auth.user);
   const { data } = useQuery({
     ...checkSavedQueryOptions({ userId: user?.id || "", pinId: pin._id }),
     enabled: !!user?.id,

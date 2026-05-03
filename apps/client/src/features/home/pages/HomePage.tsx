@@ -4,7 +4,7 @@ import GuessHomePage from "./GuessHomePage";
 import UserHomePage from "./UserHomePage";
 
 function HomePage() {
-  const user = useStore((state) => state.user);
+  const user = useStore((state) => state.auth.user);
 
   if (user) {
     return <UserHomePage />;

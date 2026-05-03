@@ -10,7 +10,7 @@ import Sidebar from "./components/Sidebar";
 import { SidebarProvider, type SidebarProviderState } from "./components/Sidebar/Sidebar.context";
 
 function ProtectedLayout({ children }: { children?: React.ReactNode }) {
-  const user = useStore((state) => state.user);
+  const user = useStore((state) => state.auth.user);
   const [subSidebar, setSubSidebar] = useState<SidebarProviderState["subSidebar"]>(null);
 
   const sidebarContextState: SidebarProviderState = {

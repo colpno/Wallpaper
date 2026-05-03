@@ -21,7 +21,7 @@ import PinInfo from "./components/PinInfo";
 function PinPage() {
   const { pinId } = useParams();
   const lastSmallestScore = useRef(MAX_SIMILARITY_SCORE);
-  const user = useStore((state) => state.user);
+  const user = useStore((state) => state.auth.user);
   const navigate = useNavigate();
 
   const {

@@ -21,7 +21,7 @@ type Props = {
 
 function SavePinButton({ pinId, pinPhoto, saved, ...props }: Props) {
   const [openLoginForm, setOpenLoginForm] = useState(false);
-  const user = useStore((state) => state.user);
+  const user = useStore((state) => state.auth.user);
   const { mutate, isPending, isSuccess } = useMutation(addIdeaMutationOptions());
 
   const handleClick: MouseEventHandler<HTMLButtonElement> = (e) => {

@@ -13,8 +13,8 @@ import { ROUTES } from "@/constants/common";
 import { extractFirstLetter } from "@/utils/converters";
 
 function Account() {
-  const user = useStore((state) => state.user);
-  const logout = useStore((state) => state.logout);
+  const user = useStore((state) => state.auth.user);
+  const logout = useStore((state) => state.auth.logout);
 
   if (!user) {
     return <Navigate to={ROUTES.HOME()} />;

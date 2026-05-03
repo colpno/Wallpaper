@@ -35,7 +35,7 @@ const defaultZoomOptions: ZoomOptions = {
 
 function ZoomOutButton({ pin, zoomOptions = defaultZoomOptions, saved, ...props }: Props) {
   const [scale, setScale] = useState(zoomOptions.default);
-  const user = useStore((state) => state.user);
+  const user = useStore((state) => state.auth.user);
 
   const handleScaleUp = () => {
     setScale((prev) => prev + zoomOptions.step);

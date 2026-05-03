@@ -6,7 +6,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter, Route, Routes } from "react-router";
 import { describe, expect, it, vi } from "vitest";
 
-import { type State, store } from "@/app/stores/useStore";
+import { type Store, store } from "@/app/stores/useStore";
 import { ROUTES } from "@/constants/common";
 import { queryClient } from "@/test/variables";
 
@@ -61,6 +61,8 @@ describe("LoginForm", () => {
       email: "asdsa@gmail.com",
       username: "asd",
       avatarUrl: "http:asdas",
+      firstName: "a",
+      lastName: "sd",
     } satisfies AuthAPIs.Login["response"]);
 
     const email = "johndoe@gmail.com";
@@ -73,19 +75,24 @@ describe("LoginForm", () => {
 
     expect(emailField).toHaveDisplayValue(email);
     expect(passwordField).toHaveDisplayValue(password);
-    expect(store.getState().user).toBe(null);
+    expect(store.getState().auth.user).toBe(null);
 
     await user.click(submitBtn);
 
     await waitFor(() => {
-      expect(mockMutateAsync).toBeCalledWith({ email, password } satisfies AuthAPIs.Login["body"]);
-      expect(mockNavigate).toBeCalledWith(ROUTES.HOME());
-      expect(store.getState().user).toEqual({
+      expect(mockMutateAsync).toHaveBeenCalledWith({
+        email,
+        password,
+      } satisfies AuthAPIs.Login["body"]);
+      expect(mockNavigate).toHaveBeenCalledWith(ROUTES.HOME());
+      expect(store.getState().auth.user).toEqual({
         id: expect.any(String),
         username: expect.any(String),
         avatarUrl: expect.stringContaining("http"),
         email: expect.stringContaining("@"),
-      } satisfies State["user"]);
+        firstName: expect.any(String),
+        lastName: expect.any(String),
+      } satisfies Store["auth"]["user"]);
     });
   });
 

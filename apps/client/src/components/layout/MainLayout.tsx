@@ -6,7 +6,7 @@ import GuessLayout from "./GuessLayout";
 import ProtectedLayout from "./ProtectedLayout";
 
 function MainLayout() {
-  const user = useStore((state) => state.user);
+  const user = useStore((state) => state.auth.user);
 
   if (user) {
     return (

@@ -1,45 +1,24 @@
-import type { AuthAPIs } from "@repo/types";
-import { create, type StateCreator } from "zustand";
+import { create, type StateCreator, useStore as useZustandStore } from "zustand";
 import { persist, type PersistOptions } from "zustand/middleware";
 import { immer } from "zustand/middleware/immer";
-import { useShallow } from "zustand/react/shallow";
 
 import { env } from "@/configs/env";
 import { decrypt, encrypt } from "@/features/auth/services/crypto";
 
-export type State = {
-  user:
-    | ({
-        id: AuthAPIs.Login["response"]["_id"];
-      } & Omit<AuthAPIs.Login["response"], "_id">)
-    | null;
-};
-
-export type Actions = {
-  login: (user: AuthAPIs.Login["response"]) => void;
-  logout: () => void;
-};
-
-export type Store = State & Actions;
+import { authSlice, type AuthStore } from "./useAuthStore";
 
 export type ImmerStateCreator<T> = StateCreator<Store, [["zustand/immer", never], never], [], T>;
 
-const state: ImmerStateCreator<Store> = (set) => ({
-  user: null,
-  login: ({ _id, ...rest }) =>
-    set((state) => {
-      state.user = { ...rest, id: _id };
-    }),
-  logout: () =>
-    set((state) => {
-      state.user = null;
-    }),
-});
+export type Store = AuthStore;
 
-const persistOptions: PersistOptions<State> = {
+type PersistedStore = {
+  user: Store["auth"]["user"];
+};
+
+const persistOptions: PersistOptions<Store, PersistedStore> = {
   name: "wallpaper",
   partialize: (state) => ({
-    user: state.user,
+    user: state.auth.user,
   }),
   storage: {
     getItem: (name) => {
@@ -56,8 +35,10 @@ const persistOptions: PersistOptions<State> = {
   },
 };
 
-export const store = create(
-  immer(persist<Store>(state, persistOptions as unknown as PersistOptions<Store>))
-);
+const rootSlice: ImmerStateCreator<Store> = (...parameters) => ({
+  ...authSlice(...parameters),
+});
 
-export const useStore = <U>(selector: (state: Store) => U) => store(useShallow(selector));
+export const store = create<Store>()(persist(immer(rootSlice), persistOptions));
+
+export const useStore = <T>(selector: (state: Store) => T) => useZustandStore(store, selector);

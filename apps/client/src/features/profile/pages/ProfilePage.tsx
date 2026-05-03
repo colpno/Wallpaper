@@ -9,7 +9,7 @@ import MyPins from "@/features/pin/pages/MyPins";
 import OtherUserProfileSavedPinsPage from "./OtherUserProfileSavedPinsPage";
 
 function ProfilePage() {
-  const user = useStore((state) => state.user);
+  const user = useStore((state) => state.auth.user);
   const { username } = useParams();
 
   if (!username) {
