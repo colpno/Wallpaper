@@ -36,6 +36,17 @@ const persistOptions: PersistOptions<Store, PersistedStore> = {
       localStorage.removeItem(name);
     },
   },
+  merge: (persistedState, currentState) => {
+    const storage = persistedState as PersistedStore;
+    return {
+      ...currentState,
+      ...storage,
+      auth: {
+        ...currentState.auth,
+        ...storage.auth,
+      },
+    };
+  },
 };
 
 const rootSlice: ImmerStateCreator<Store> = (...parameters) => ({
