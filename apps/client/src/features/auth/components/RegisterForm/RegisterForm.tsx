@@ -2,6 +2,7 @@ import type { FormProps } from "@/components/form/Form";
 
 import { cn } from "@repo/ui/lib";
 import { useMutation } from "@tanstack/react-query";
+import { addYears } from "date-fns";
 
 import DatePickerField from "@/components/form/controls/DatePickerField";
 import PasswordField from "@/components/form/controls/PasswordField";
@@ -25,6 +26,7 @@ type Props = {
 function RegisterForm({ slotProps, ...props }: Props) {
   const { setForm } = useAuthFormContext();
   const { mutateAsync } = useMutation(registerMutationOptions());
+  const dateLimit = addYears(new Date(), -6);
 
   const handleSubmit = async (formData: RegisterFormData) => {
     await mutateAsync({
@@ -71,6 +73,13 @@ function RegisterForm({ slotProps, ...props }: Props) {
             placeholder="mm/dd/yyyy"
             labelHint="To help keep Pinterest safe, we now require your birthdate. Your birthdate also helps us provide more personalized recommendations and relevant ads. We won't share this information without your permission and it won't be visible on your profile."
             aria-label="Birthdate field"
+            calendarProps={{
+              today: dateLimit,
+              endMonth: dateLimit,
+              hidden: {
+                after: dateLimit,
+              },
+            }}
           />
 
           <Button type="submit" size="sm" className="w-full" aria-label="Submit button">

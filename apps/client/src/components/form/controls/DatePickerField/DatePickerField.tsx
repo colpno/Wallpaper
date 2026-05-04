@@ -58,6 +58,10 @@ function DatePickerField<TMode extends Mode = "single">({
               <DatePicker
                 {...props}
                 {...field}
+                calendarProps={{
+                  showOutsideDays: true,
+                  ...props.calendarProps,
+                }}
                 ref={ref}
                 onChange={handleInputChange}
                 onBlur={handleInputBlur}
