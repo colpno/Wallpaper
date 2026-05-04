@@ -11,7 +11,7 @@ type SchemaType = Omit<User, "birthdate"> & {
 const schema = new Schema<SchemaType>(
   {
     firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    lastName: { type: String },
     username: { type: String, required: true },
     email: { type: String, required: true, unique: true },
     birthdate: { type: Date, required: true },
@@ -25,12 +25,11 @@ const schema = new Schema<SchemaType>(
   }
 );
 
-schema.pre("save", function (next) {
-  this.username = `${this.firstName}${this.lastName}`.toLowerCase();
-  next();
-});
-
 schema.pre("validate", async function (next) {
+  if (!this.firstName) {
+    this.firstName = this.username[0]?.toUpperCase() + this.username.substring(1);
+  }
+
   if (!this.isModified("password")) return next();
 
   this.salt = generateSalt();

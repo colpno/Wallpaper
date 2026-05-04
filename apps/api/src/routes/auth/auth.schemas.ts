@@ -32,6 +32,7 @@ export const requestSchemas = {
 
   register: {
     body: userSchema.pick({
+      username: true,
       email: true,
       password: true,
       birthdate: true,

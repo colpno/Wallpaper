@@ -82,6 +82,7 @@ describe("Auth routes", () => {
 
       const response = await register().send({
         email: user.email,
+        username: user.username,
         password: "password",
         birthdate: "12/09/2000",
       });

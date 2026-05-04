@@ -103,7 +103,8 @@ function PinInfo(
             <Avatar src={pin.pinOwner.avatarUrl} alt={pin.pinOwner.username} className="size-6" />
 
             <Typography>
-              {pin.pinOwner.firstName} {pin.pinOwner.lastName}
+              {pin.pinOwner.firstName}
+              {pin.pinOwner.lastName ? ` ${pin.pinOwner.lastName}` : ""}
             </Typography>
           </Link>
         </div>

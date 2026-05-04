@@ -36,7 +36,8 @@ function Account() {
               />
               <div>
                 <Typography className="font-bold">
-                  {user.firstName} {user.lastName}
+                  {user.firstName}
+                  {user.lastName ? ` ${user.lastName}` : ""}
                 </Typography>
                 <Typography className="text-sm font-normal text-gray-500">{user.email}</Typography>
               </div>
@@ -68,7 +69,7 @@ function Account() {
               <Avatar
                 src={user.avatarUrl}
                 alt={`${user.username}'s avatar`}
-                fallback={`${extractFirstLetter(user.firstName)}${extractFirstLetter(user.lastName)}`}
+                fallback={`${extractFirstLetter(user.firstName)}${user.lastName ? extractFirstLetter(user.lastName) : ""}`}
               />
             }
           >

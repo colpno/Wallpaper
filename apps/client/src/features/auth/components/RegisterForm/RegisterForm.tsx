@@ -29,9 +29,12 @@ function RegisterForm({ slotProps, ...props }: Props) {
   const dateLimit = addYears(new Date(), -6);
 
   const handleSubmit = async (formData: RegisterFormData) => {
+    const username = formData.email.substring(0, formData.email.indexOf("@")).toLowerCase();
+
     await mutateAsync({
       ...formData,
       birthdate: formData.birthdate.toISOString(),
+      username,
     });
   };
 

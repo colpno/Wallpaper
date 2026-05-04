@@ -49,6 +49,7 @@ describe("RegisterForm", () => {
     const email = "johndoe@gmail.com";
     const password = "aso#!idj1AH2938";
     const birthdate = "09/12/2000";
+    const username = "johndoe";
 
     const { user, submitBtn, emailField, passwordField, birthdateField } = renderComponent();
 
@@ -65,6 +66,7 @@ describe("RegisterForm", () => {
         email,
         password,
         birthdate: new Date(birthdate).toISOString(),
+        username,
       } satisfies AuthAPIs.Register["body"]);
     });
   });
@@ -77,7 +79,7 @@ describe("RegisterForm", () => {
     await user.click(submitBtn);
 
     expect(screen.getByText("Invalid email address")).toBeInTheDocument();
-    expect(screen.getByText("Password must have at least 6 characters")).toBeInTheDocument();
+    expect(screen.getByText("Password must have at least 8 characters")).toBeInTheDocument();
     expect(screen.getByText("Invalid date")).toBeInTheDocument();
   });
 });

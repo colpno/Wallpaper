@@ -28,7 +28,7 @@ export const userSchema = z
     updatedAt: escapedStringSchema,
     email: z.email(),
     firstName: escapedStringSchema,
-    lastName: escapedStringSchema,
+    lastName: escapedStringSchema.optional(),
     username: escapedStringSchema,
     birthdate: escapedStringSchema,
     password: z.string().min(6).transform(escapeHTML),

@@ -38,7 +38,8 @@ function OtherUserProfileSavedPinsPage() {
   return (
     <Container className="max-w-none">
       <Typography className="my-6 text-center text-2xl font-bold">
-        More ideas from {user.firstName} {user.lastName}
+        More ideas from {user.firstName}
+        {user.lastName ? ` ${user.lastName}` : ""}
       </Typography>
 
       <Masonry>

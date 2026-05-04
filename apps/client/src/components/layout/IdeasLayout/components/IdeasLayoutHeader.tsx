@@ -64,7 +64,7 @@ function IdeasLayoutHeader(props: React.ComponentProps<"div">) {
             "flex translate-x-3.5 -translate-y-3 gap-3 px-3.5 py-3"
           )}
         >
-          <Typography className="self-start text-xl font-bold">{`${user.firstName} ${user.lastName}`}</Typography>
+          <Typography className="self-start text-xl font-bold">{`${user.firstName} ${user.lastName ? ` ${user.lastName}` : ""}`}</Typography>
 
           <Avatar
             src={user.avatarUrl}

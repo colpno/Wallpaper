@@ -104,6 +104,6 @@ describe("LoginForm", () => {
     await user.click(submitBtn);
 
     expect(screen.getByText("Invalid email address")).toBeInTheDocument();
-    expect(screen.getByText("Password must have at least 6 characters")).toBeInTheDocument();
+    expect(screen.getByText("Password must have at least 8 characters")).toBeInTheDocument();
   });
 });
