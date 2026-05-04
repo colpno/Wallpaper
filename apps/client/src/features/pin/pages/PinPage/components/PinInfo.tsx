@@ -4,8 +4,8 @@ import { useQuery } from "@tanstack/react-query";
 import { LuDownload } from "react-icons/lu";
 
 import { useStore } from "@/app/stores/useStore";
-import Avatar from "@/components/common/Avatar";
 import SavePinButton from "@/components/common/SavePinButton";
+import UserAvatar from "@/components/common/UserAvatar";
 import Button from "@/components/ui/Button";
 import Image from "@/components/ui/Image";
 import Link from "@/components/ui/Link";
@@ -100,7 +100,11 @@ function PinInfo(
           {!!pin.pinDescription && <PinInfoDescription>{pin.pinDescription}</PinInfoDescription>}
 
           <Link to={ROUTES.PROFILE(pin.pinOwner.username)} className="flex items-center gap-2">
-            <Avatar src={pin.pinOwner.avatarUrl} alt={pin.pinOwner.username} className="size-6" />
+            <UserAvatar
+              src={pin.pinOwner.avatarUrl}
+              alt={pin.pinOwner.username}
+              className="size-6"
+            />
 
             <Typography>
               {pin.pinOwner.firstName}

@@ -4,13 +4,12 @@ import { FaChevronDown } from "react-icons/fa6";
 import { Navigate } from "react-router";
 
 import { useStore } from "@/app/stores/useStore";
-import Avatar from "@/components/common/Avatar";
 import DropdownMenu from "@/components/common/DropdownMenu";
 import Tooltip from "@/components/common/Tooltip";
+import UserAvatar from "@/components/common/UserAvatar";
 import Button from "@/components/ui/Button";
 import Typography from "@/components/ui/Typography";
 import { ROUTES } from "@/constants/common";
-import { extractFirstLetter } from "@/utils/converters";
 
 function Account() {
   const user = useStore((state) => state.auth.user);
@@ -29,11 +28,7 @@ function Account() {
           key: "user",
           label: (
             <div className="flex items-center gap-2">
-              <Avatar
-                src={user.avatarUrl}
-                alt={`${user.username}'s avatar`}
-                className="size-15 rounded-full"
-              />
+              <UserAvatar className="size-15" />
               <div>
                 <Typography className="font-bold">
                   {user.firstName}
@@ -64,17 +59,7 @@ function Account() {
       data={avatarMenu}
       trigger={
         <div className="flex items-center gap-1">
-          <Tooltip
-            trigger={
-              <Avatar
-                src={user.avatarUrl}
-                alt={`${user.username}'s avatar`}
-                fallback={`${extractFirstLetter(user.firstName)}${user.lastName ? extractFirstLetter(user.lastName) : ""}`}
-              />
-            }
-          >
-            Profile
-          </Tooltip>
+          <Tooltip trigger={<UserAvatar />}>Profile</Tooltip>
 
           <Tooltip
             align="end"

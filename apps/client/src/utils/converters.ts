@@ -1,5 +1,3 @@
-export const extractFirstLetter = (text: string) => text.split(" ").map((t) => t[0]!);
-
 export const mimeToExtension = (mime: string) => {
   switch (mime) {
     case "image/jpeg":

@@ -4,8 +4,8 @@ import { PiSlidersHorizontal } from "react-icons/pi";
 import { Navigate, useMatch } from "react-router";
 
 import { useStore } from "@/app/stores/useStore";
-import Avatar from "@/components/common/Avatar";
 import DropdownMenu, { type DropdownMenuData } from "@/components/common/DropdownMenu";
+import UserAvatar from "@/components/common/UserAvatar";
 import Button from "@/components/ui/Button";
 import Container from "@/components/ui/Container";
 import Heading from "@/components/ui/Heading";
@@ -66,11 +66,7 @@ function IdeasLayoutHeader(props: React.ComponentProps<"div">) {
         >
           <Typography className="self-start text-xl font-bold">{`${user.firstName} ${user.lastName ? ` ${user.lastName}` : ""}`}</Typography>
 
-          <Avatar
-            src={user.avatarUrl}
-            alt={`${user.username}'s avatar`}
-            className="size-15 rounded-full"
-          />
+          <UserAvatar className="size-15" />
         </Link>
       </Container>
 

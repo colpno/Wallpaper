@@ -9,7 +9,7 @@ import {
 } from "@/contexts/otherUserProfileContext";
 import { getUserQueryOptions } from "@/features/user/services/api/queries";
 
-import Avatar from "../common/Avatar";
+import UserAvatar from "../common/UserAvatar";
 import Icon from "../ui/Icon";
 import Link from "../ui/Link";
 import Spinner from "../ui/Spinner";
@@ -41,7 +41,7 @@ function OtherUserProfileLayout({ children }: { children?: React.ReactNode }) {
   return (
     <OtherUserProfileProvider value={contextValue}>
       <div className="flex flex-col items-center justify-center gap-2 pt-3">
-        <Avatar src={data.avatarUrl} alt={`${data.username}`} className="size-30" />
+        <UserAvatar className="size-30" />
 
         <Typography className="text-[36px] font-bold">{`${data.firstName}${data.lastName ? ` ${data.lastName}` : data.lastName}`}</Typography>
 
