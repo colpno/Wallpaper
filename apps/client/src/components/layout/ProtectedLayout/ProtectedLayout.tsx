@@ -1,10 +1,11 @@
 import { cn } from "@repo/ui/lib";
 import { useState } from "react";
-import { Navigate, Outlet } from "react-router";
+import { Navigate } from "react-router";
 
 import { useStore } from "@/app/stores/useStore";
 import { ROUTES } from "@/constants/common";
 
+import SuspenseLayout from "../SuspenseLayout";
 import Header from "./components/Header";
 import Sidebar from "./components/Sidebar";
 import { SidebarProvider, type SidebarProviderState } from "./components/Sidebar/Sidebar.context";
@@ -36,7 +37,7 @@ function ProtectedLayout({ children }: { children?: React.ReactNode }) {
             : "pl-sidebar-width"
         )}
       >
-        {children ?? <Outlet />}
+        <SuspenseLayout>{children}</SuspenseLayout>
       </main>
     </SidebarProvider>
   );
