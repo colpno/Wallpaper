@@ -82,11 +82,11 @@ function PinCreationFormContent({ onEditPhotoClick }: FormContentProps) {
         )}
       </div>
 
-      <Container className="mt-8 flex max-w-6xl flex-col gap-13 lg:flex-row!">
+      <Container className="mt-8 flex max-w-6xl flex-col gap-8 lg:flex-row! lg:gap-13">
         <div
           className={cn(
-            "relative w-93.75 overflow-clip rounded-4xl",
-            (currentDraft === null || !imageSrc) && "h-114.25 bg-secondary"
+            "relative w-full max-w-93.75 overflow-clip rounded-4xl",
+            (currentDraft === null || !imageSrc) && "h-80 bg-secondary lg:h-114.25"
           )}
         >
           {imageSrc ? (
@@ -94,7 +94,7 @@ function PinCreationFormContent({ onEditPhotoClick }: FormContentProps) {
               <Image src={imageSrc} alt="Pin Photo" className="size-full" />
               <Button
                 variant="tertiary"
-                className="absolute top-4 right-4 z-2 size-9 rounded-lg"
+                className="absolute top-4 right-4 z-2 size-9 rounded-lg not-lg:hidden!"
                 onClick={onEditPhotoClick}
               >
                 <LuPencil />

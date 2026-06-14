@@ -36,13 +36,13 @@ function HomeSignup(props: React.ComponentProps<"section">) {
       <div className="absolute inset-0 bg-black/60" />
 
       {/* Auth form */}
-      <Container className="relative grid h-full grid-cols-2 place-items-center gap-60">
-        <Heading variant="h2" className="text-[60px] text-white">
+      <Container className="relative grid h-full place-items-center gap-60 lg:grid-cols-2">
+        <Heading variant="h2" className="text-[60px] text-white not-lg:hidden">
           Sign up to get your ideas
         </Heading>
 
         <div className="relative size-full">
-          <AuthForm className="absolute top-20 right-0 py-8" />
+          <AuthForm className="absolute top-40 right-0 py-8 not-lg:w-full lg:top-20" />
         </div>
       </Container>
 

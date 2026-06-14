@@ -13,8 +13,11 @@ function Header() {
   return (
     <header className="fixed inset-x-0 top-0 z-header flex h-header-height gap-4 bg-background p-4 shadow-[0_2px_1px_rgba(0,0,0,0.05)]">
       <nav className="flex items-center gap-3">
-        <Link to={ROUTES.HOME()}>
+        <Link to={ROUTES.HOME()} className="not-md:hidden">
           <Icon variant="default" />
+        </Link>
+        <Link to={ROUTES.HOME()} className="md:hidden">
+          <Icon variant="favicon" />
         </Link>
 
         <ul className="space-y-2">
@@ -30,7 +33,7 @@ function Header() {
 
       <SearchBar className="flex-1" />
 
-      <div className="space-x-2">
+      <div className="flex space-x-2">
         <FormDialog trigger={<Button>Log In</Button>} slotProps={{ trigger: { asChild: true } }}>
           <Icon variant="favicon" className="m-[8px_auto_6px]" />
           <AuthForm defaultForm="login" className="py-0" />
@@ -38,7 +41,12 @@ function Header() {
 
         <FormDialog
           trigger={<Button variant="secondary">Sign Up</Button>}
-          slotProps={{ trigger: { asChild: true } }}
+          slotProps={{
+            trigger: {
+              asChild: true,
+              className: "not-md:hidden!",
+            },
+          }}
         >
           <Icon variant="favicon" className="m-[8px_auto_6px]" />
           <AuthForm className="py-0" />

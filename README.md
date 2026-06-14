@@ -137,7 +137,7 @@ npm run dev
 - [x] Member layout, pages for logged in users.
 - [x] Guess layout, home page, explore page
 - [x] Improve loading states
-- [ ] Make layout fully responsive
+- [x] Make layout fully responsive
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 

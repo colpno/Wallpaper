@@ -28,7 +28,7 @@ function DraftPanel({ setSidebar, sidebar, onCreateNew }: Props) {
     <>
       <div
         className={cn(
-          "fixed top-header-height right-0 bottom-0 w-pin-creation-sub-sidebar border border-border bg-background transition-[translate] duration-sidebar ease-in",
+          "fixed top-header-height right-0 bottom-0 z-draft-panel w-pin-creation-sub-sidebar border border-border bg-background transition-[translate] duration-sidebar ease-in",
           sidebar === "drafts" ? "translate-x-0" : "translate-x-full"
         )}
       >
@@ -62,7 +62,7 @@ function DraftPanel({ setSidebar, sidebar, onCreateNew }: Props) {
 
       {!sidebar && (
         <div className="border border-border">
-          <div className="space-y-4 border-b border-border p-4">
+          <div className="space-y-4 border-b border-border py-4 lg:p-4">
             <Button
               variant="ghost"
               size="icon-lg"
@@ -114,7 +114,7 @@ function DraftItem({ draft }: DraftItemProps) {
       <div
         role="button"
         onClick={handleItemClick}
-        className="flex cursor-pointer items-center gap-2"
+        className="flex flex-1 cursor-pointer items-center gap-2"
       >
         <Image src={draft.imageSrc} alt="Draft photo" className="size-18 rounded-lg object-cover" />
 

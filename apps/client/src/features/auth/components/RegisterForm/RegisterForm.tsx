@@ -41,7 +41,7 @@ function RegisterForm({ slotProps, ...props }: Props) {
   return (
     <div
       className={cn(
-        "min-h-100 w-112.5 overflow-clip rounded-4xl bg-background px-2.5 py-8",
+        "min-h-100 w-full max-w-112.5 overflow-clip rounded-4xl bg-background px-2.5 py-8",
         props.className
       )}
     >

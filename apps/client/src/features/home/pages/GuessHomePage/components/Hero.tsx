@@ -51,7 +51,7 @@ function Hero(props: React.ComponentProps<"section">) {
       {...props}
       as="section"
       className={cn(
-        "relative grid h-150 max-w-6xl grid-cols-2 place-items-center",
+        "relative grid h-150 max-w-6xl place-items-center not-lg:gap-y-30 lg:grid-cols-2",
         props.className
       )}
       style={
@@ -65,8 +65,8 @@ function Hero(props: React.ComponentProps<"section">) {
       }
     >
       {/* Left column */}
-      <div>
-        <div className="font-extrabold">
+      <div className="not-lg:order-2">
+        <div className="overflow-x-clip font-extrabold">
           <Heading variant="h2">Find ideas for</Heading>
 
           <Slider
@@ -109,7 +109,7 @@ function Hero(props: React.ComponentProps<"section">) {
           </Slider>
         </div>
 
-        <div className="mt-10 flex gap-2">
+        <div className="mt-10 flex gap-2 not-lg:flex-col">
           <FormDialog
             trigger={<Button>Join Pinterest for free</Button>}
             slotProps={{ trigger: { asChild: true } }}
@@ -129,8 +129,8 @@ function Hero(props: React.ComponentProps<"section">) {
       </div>
 
       {/* Right column */}
-      <div className="relative w-fit">
-        <div className="relative h-100 w-75">
+      <div className="relative not-lg:top-10 lg:w-fit">
+        <div className="relative h-75 w-50 lg:h-100 lg:w-75">
           {heroContents.map((item, index) => (
             <Image
               key={item.text}
@@ -149,7 +149,7 @@ function Hero(props: React.ComponentProps<"section">) {
           ))}
         </div>
 
-        <div className="absolute -right-27 bottom-0 h-67.5 w-50">
+        <div className="absolute -right-15 bottom-0 h-50 w-32.5 lg:-right-27 lg:h-67.5 lg:w-50">
           {heroContents.map((item, index) => (
             <Image
               key={item.text}
@@ -169,7 +169,7 @@ function Hero(props: React.ComponentProps<"section">) {
 
         <div
           className={cn(
-            "absolute -top-7.5 right-0 grid size-20 rotate-5 place-items-center rounded-[28px] transition-all duration-300",
+            "absolute -top-7.5 right-0 grid size-16 rotate-5 place-items-center rounded-[28px] transition-all duration-300 lg:size-20",
             showPinIcon ? "scale-100 opacity-100" : "scale-80 opacity-0",
             showPinIcon && currentIndex === 0 && "bg-(--color-1)",
             showPinIcon && currentIndex === 1 && "bg-(--color-2)",
@@ -178,18 +178,18 @@ function Hero(props: React.ComponentProps<"section">) {
             showPinIcon && currentIndex === 4 && "bg-(--color-5)"
           )}
         >
-          <TiPinOutline className="size-12 text-white" />
+          <TiPinOutline className="size-10 text-white lg:size-12" />
         </div>
-      </div>
 
-      {/* Play button */}
-      <Button
-        size="icon-md"
-        className="absolute right-5 bottom-5 bg-secondary text-foreground"
-        onClick={handlePlayButtonClick}
-      >
-        {isAutoPlay ? <FaPause /> : <FaPlay className="ml-1" />}
-      </Button>
+        {/* Play button */}
+        <Button
+          size="icon-md"
+          className="absolute right-0 -bottom-15 bg-secondary text-foreground lg:-bottom-20"
+          onClick={handlePlayButtonClick}
+        >
+          {isAutoPlay ? <FaPause /> : <FaPlay className="ml-1" />}
+        </Button>
+      </div>
     </Container>
   );
 }

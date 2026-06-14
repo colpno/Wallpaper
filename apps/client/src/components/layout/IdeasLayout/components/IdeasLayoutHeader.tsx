@@ -31,7 +31,7 @@ function IdeasLayoutHeader(props: React.ComponentProps<"div">) {
     <div
       {...props}
       className={cn(
-        "sticky top-header-height z-saved-ideas-header bg-background pt-5 pb-4",
+        "ld:top-header-height z-saved-ideas-header bg-background pt-5 pb-4 lg:sticky",
         props.className
       )}
     >
@@ -61,7 +61,7 @@ function IdeasLayoutHeader(props: React.ComponentProps<"div">) {
           to={ROUTES.PROFILE(user.username)}
           className={cn(
             buttonVariants({ variant: "ghost" }),
-            "flex translate-x-3.5 -translate-y-3 gap-3 px-3.5 py-3"
+            "hidden translate-x-3.5 -translate-y-3 gap-3 px-3.5 py-3 md:flex"
           )}
         >
           <Typography className="self-start text-xl font-bold">{`${user.firstName} ${user.lastName ? ` ${user.lastName}` : ""}`}</Typography>

@@ -43,7 +43,7 @@ function OtherUserProfileLayout({ children }: { children?: React.ReactNode }) {
       <div className="flex flex-col items-center justify-center gap-2 pt-3">
         <UserAvatar className="size-30" />
 
-        <Typography className="text-[36px] font-bold">{`${data.firstName}${data.lastName ? ` ${data.lastName}` : data.lastName}`}</Typography>
+        <Typography className="text-[36px] font-bold">{`${data.firstName}${data.lastName ? ` ${data.lastName}` : ""}`}</Typography>
 
         <div className="flex items-center gap-1">
           <Icon variant="favicon" className="size-5 fill-gray-600" />

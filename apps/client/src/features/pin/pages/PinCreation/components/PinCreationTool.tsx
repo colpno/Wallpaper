@@ -30,7 +30,7 @@ function PinCreationTool({ onSubmit, onEditPhotoClick }: Props) {
     >
       {({ reset }) => (
         <>
-          <div className={cn(!!sidebar && "pr-pin-creation-sub-sidebar")}>
+          <div className={cn(!!sidebar && "lg:pr-pin-creation-sub-sidebar")}>
             <PinCreationFormContent onEditPhotoClick={onEditPhotoClick} />
           </div>
 

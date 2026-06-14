@@ -12,6 +12,7 @@
   --z-index-sub-sidebar: 49;
   --z-index-pinpage-detail: 38;
   --z-index-saved-ideas-header: 38;
+  --z-index-draft-panel: 4;
 
   --spacing-header-height: 80px;
   --spacing-sidebar-width: 72px;
@@ -20,6 +21,13 @@
 
   --transition-duration-sidebar: 150ms;
   --transition-duration-not-sidebar: 300ms;
+}
+
+@media (min-width: 720px) {
+  @theme {
+    --spacing-sidebar-width: 54px;
+    --spacing-sub-sidebar-width: 70vw;
+  }
 }
 
 @keyframes scale-down {

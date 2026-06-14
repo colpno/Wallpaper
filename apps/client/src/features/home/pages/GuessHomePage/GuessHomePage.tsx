@@ -23,22 +23,21 @@ function GuessHomePage() {
         </Typography>
       </section>
 
-      <Container as="section" className="grid grid-cols-2 items-center">
+      <Container as="section" className="grid items-center gap-8 lg:grid-cols-2 lg:gap-0">
         <div className="place-self-end">
           <Image
             src={SearchBySkinTone}
             alt="Search by skin tone"
-            className="size-137.5 rounded-4xl"
+            className="aspect-square size-full max-h-137.5 max-w-137.5 rounded-4xl"
           />
         </div>
 
-        <div className="ml-20 space-y-5">
-          <Heading variant="h2" className="leading-9.5">
+        <div className="space-y-5 lg:ml-20">
+          <Heading variant="h2" className="leading-9.5 not-lg:text-center">
             Search by skin tone
           </Heading>
 
-          <Typography size="lg">
-            {" "}
+          <Typography size="lg" className="not-lg:text-center">
             Search with skin tone ranges for beauty ideas that represent you
           </Typography>
 
@@ -46,13 +45,13 @@ function GuessHomePage() {
         </div>
       </Container>
 
-      <Container as="section" className="grid grid-cols-2 items-center">
-        <div className="mr-20 space-y-5">
-          <Heading variant="h2" className="leading-9.5">
+      <Container as="section" className="grid items-center gap-8 lg:grid-cols-2 lg:gap-0">
+        <div className="space-y-5 not-lg:order-2 lg:mr-20">
+          <Heading variant="h2" className="leading-9.5 not-lg:text-center">
             Collaborate with group boards
           </Heading>
 
-          <Typography size="lg">
+          <Typography size="lg" className="not-lg:text-center">
             Visualize your ideas with others, using a Pinterest account
           </Typography>
 
@@ -63,26 +62,26 @@ function GuessHomePage() {
           <Image
             src={GroupBoards}
             alt="Collaborate with group boards"
-            className="size-137.5 rounded-4xl"
+            className="aspect-square size-full max-h-137.5 max-w-137.5 rounded-4xl"
           />
         </div>
       </Container>
 
-      <Container as="section" className="grid grid-cols-2 items-center">
+      <Container as="section" className="grid items-center gap-8 lg:grid-cols-2 lg:gap-0">
         <div className="place-self-end">
           <Image
             src={VisualSearch}
             alt="Search visually with images"
-            className="size-137.5 rounded-4xl"
+            className="aspect-square size-full max-h-137.5 max-w-137.5 rounded-4xl"
           />
         </div>
 
-        <div className="ml-20 space-y-5">
-          <Heading variant="h2" className="leading-9.5">
+        <div className="space-y-5 lg:ml-20">
+          <Heading variant="h2" className="leading-9.5 not-lg:text-center">
             Search visually with images
           </Heading>
 
-          <Typography size="lg">
+          <Typography size="lg" className="not-lg:text-center">
             Search objects within an image to find more styles you’ll love
           </Typography>
 
@@ -98,7 +97,16 @@ function GuessHomePage() {
 }
 
 function HomePageAuthForm() {
-  return <RegisterDialogForm trigger={<Button>Join Pinterest</Button>} />;
+  return (
+    <RegisterDialogForm
+      trigger={<Button>Join Pinterest</Button>}
+      slotProps={{
+        trigger: {
+          className: "not-lg:mx-auto not-lg:flex!",
+        },
+      }}
+    />
+  );
 }
 
 export default GuessHomePage;

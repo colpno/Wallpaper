@@ -125,7 +125,8 @@ function PinPage() {
   }
 
   if (!user) {
-    return <LoginDialogForm open={true} showCloseButton={false} />;
+    toast.info("Sorry, you need to login to view this page.");
+    return <Navigate to={ROUTES.EXPLORE()} />;
   }
 
   return (
