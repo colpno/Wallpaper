@@ -94,7 +94,7 @@ function MyPins() {
       >
         {pins.map((item) => (
           <MasonryWrapper key={item._id}>
-            <PinCard item={item} showActionButton={false} editable />
+            <PinCard item={item} editable />
           </MasonryWrapper>
         ))}
       </Masonry>

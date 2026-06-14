@@ -2,11 +2,9 @@ import type { PinDB } from "@repo/types";
 import { cn } from "@repo/ui/lib";
 import { useRef, useState } from "react";
 import { BlurhashCanvas } from "react-blurhash";
-import { BsThreeDots } from "react-icons/bs";
 
 import { useStore } from "@/app/stores/useStore";
 import SavePinButton from "@/components/common/SavePinButton";
-import Button from "@/components/ui/Button";
 import Image from "@/components/ui/Image";
 import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
@@ -107,12 +105,6 @@ function PinCard({ item, showActionButton = true, editable, showCaptions }: Prop
                 </Typography>
               )}
             </div>
-          )}
-
-          {showActionButton && (
-            <Button size="icon-sm" variant="ghost" className="ml-auto">
-              <BsThreeDots />
-            </Button>
           )}
         </div>
       )}

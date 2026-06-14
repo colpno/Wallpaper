@@ -1,12 +1,10 @@
 import type { PinDB, UserDB } from "@repo/types";
 import { cn } from "@repo/ui/lib";
 import { useQuery } from "@tanstack/react-query";
-import { LuDownload } from "react-icons/lu";
 
 import { useStore } from "@/app/stores/useStore";
 import SavePinButton from "@/components/common/SavePinButton";
 import UserAvatar from "@/components/common/UserAvatar";
-import Button from "@/components/ui/Button";
 import Image from "@/components/ui/Image";
 import Link from "@/components/ui/Link";
 import Typography from "@/components/ui/Typography";
@@ -40,12 +38,6 @@ function PinInfo(
     <div className="w-full overflow-clip rounded-b-2xl border-x border-b border-border">
       {/* Header */}
       <div className="sticky top-header-height right-0 left-0 z-pinpage-detail flex h-16 items-center justify-between border-t border-border bg-background px-4 py-2">
-        <div>
-          <Button variant="ghost" size="icon-lg">
-            <LuDownload />
-          </Button>
-        </div>
-
         <div className="flex items-center gap-2">
           {user && (
             <Link
